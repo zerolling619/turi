@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/fd_tri_color"
+    tools:context=".ui.Start_app">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="180dp">
+
+            <TextView
+                android:layout_width="200dp"
+                android:layout_height="80dp"
+                android:text="Bienvenido \na "
+                android:layout_marginTop="40dp"
+                android:layout_marginLeft="30dp"
+                android:textSize="35dp"
+                android:textColor="@color/black"/>
+
+            <TextView
+                android:layout_width="200dp"
+                android:layout_height="40dp"
+                android:layout_marginLeft="-170dp"
+                android:layout_marginTop="80dp"
+                android:text="TURISTEA"
+                android:textSize="35dp"
+                android:textStyle="bold"
+                android:textColor="@color/black" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:layout_marginTop="300dp">
+            
+            <TextView
+                android:layout_width="250dp"
+                android:layout_height="60dp"
+                android:text="Tu viaje seguro y confiable \ncomienza aqui"
+                android:textSize="20dp"
+                android:textColor="@color/white"
+                android:layout_marginTop="50dp"
+                android:layout_marginLeft="20dp"/>
+
+            <ImageView
+                android:id="@+id/tv_next"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@drawable/fd_blanco_circulo"
+                android:src="@drawable/ic_back_arrow"
+                android:rotation="180"
+                android:layout_marginTop="150dp"
+                android:layout_marginLeft="55dp"/>
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+
+</FrameLayout>
