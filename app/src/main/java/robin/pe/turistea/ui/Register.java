@@ -2,22 +2,41 @@ package robin.pe.turistea.ui;
 
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.InputFilter;
 import android.text.Spanned;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
+import com.facebook.AccessToken;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.login.LoginManager;
+import com.facebook.login.LoginResult;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputLayout;
 
+import java.util.Arrays;
 import java.util.Calendar;
 
 import robin.pe.turistea.R;
@@ -28,6 +47,13 @@ public class Register extends Fragment {
     private TextInputLayout tilNombres, tilApellidos, tilFechNaci, tilDni, tilCelular, tilSexo, tilCorreo, tilPasswordd, tilConfirPasswordd;
     private Context context;
     private NavController navController;
+    
+    // Google Sign-In
+    private GoogleSignInClient mGoogleSignInClient;
+    private ActivityResultLauncher<Intent> googleSignInLauncher;
+    
+    // Facebook Login
+    private CallbackManager callbackManager;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -133,6 +159,12 @@ public class Register extends Fragment {
 
         // Botón iniciar sesión
         view.findViewById(R.id.tvIniciarSesion).setOnClickListener(v -> navController.navigate(R.id.navigation_login));
+        
+        // Configurar Google Sign-In
+        view.findViewById(R.id.IcGoogle).setOnClickListener(v -> signInWithGoogle());
+        
+        // Configurar Facebook Login
+        view.findViewById(R.id.IcFacebook).setOnClickListener(v -> signInWithFacebook());
     }
 
     private void btnRegister() {
@@ -325,13 +357,37 @@ public class Register extends Fragment {
                         } else {
                             // Registro exitoso
                             android.widget.Toast.makeText(context, "¡Registro exitoso! Revisa tu correo para verificar tu cuenta", android.widget.Toast.LENGTH_LONG).show();
-                            navController.navigate(R.id.navigation_login);
+                            // Navegar a verificación de código
+                            if (getActivity() != null) {
+                                getActivity().runOnUiThread(() -> {
+                                    try {
+                                        Bundle args = new Bundle();
+                                        args.putString("correo", email);
+                                        navController.navigate(R.id.action_navigation_register_to_navigation_verification_code, args);
+                                    } catch (Exception e) {
+                                        android.util.Log.e("Register", "Error al navegar: " + e.getMessage());
+                                        android.widget.Toast.makeText(context, "Error al navegar a verificación", android.widget.Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                            }
                         }
                     } else {
                         // Respuesta es texto directo
                         if (result.contains("exito") || result.contains("éxito") || result.contains("creado")) {
                             android.widget.Toast.makeText(context, result, android.widget.Toast.LENGTH_LONG).show();
-                            navController.navigate(R.id.navigation_login);
+                            // Navegar a verificación de código
+                            if (getActivity() != null) {
+                                getActivity().runOnUiThread(() -> {
+                                    try {
+                                        Bundle args = new Bundle();
+                                        args.putString("correo", email);
+                                        navController.navigate(R.id.action_navigation_register_to_navigation_verification_code, args);
+                                    } catch (Exception e) {
+                                        android.util.Log.e("Register", "Error al navegar: " + e.getMessage());
+                                        android.widget.Toast.makeText(context, "Error al navegar a verificación", android.widget.Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                            }
                         } else {
                             android.widget.Toast.makeText(context, result, android.widget.Toast.LENGTH_LONG).show();
                         }
@@ -375,6 +431,138 @@ public class Register extends Fragment {
         } catch (Exception e) {
             android.util.Log.e("Register", "Error al validar edad: " + e.getMessage());
             return false;
+        }
+    }
+    
+    // ==================== GOOGLE SIGN-IN ====================
+    
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        
+        // Configurar Google Sign-In
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build();
+        mGoogleSignInClient = GoogleSignIn.getClient(requireActivity(), gso);
+        
+        // Configurar el launcher para Google Sign-In
+        googleSignInLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(result.getData());
+                    handleGoogleSignInResult(task);
+                }
+        );
+        
+        // Configurar Facebook Login
+        callbackManager = CallbackManager.Factory.create();
+    }
+    
+    private void signInWithGoogle() {
+        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+        googleSignInLauncher.launch(signInIntent);
+    }
+    
+    private void handleGoogleSignInResult(Task<GoogleSignInAccount> completedTask) {
+        try {
+            GoogleSignInAccount account = completedTask.getResult(ApiException.class);
+            
+            // Usuario autenticado con Google
+            String email = account.getEmail();
+            String displayName = account.getDisplayName();
+            
+            Log.d("GoogleSignIn", "Usuario: " + displayName + ", Email: " + email);
+            
+            // Guardar datos en SharedPreferences
+            SharedPreferences prefs = requireActivity().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putString("user_name", displayName != null ? displayName : "Usuario");
+            editor.putString("user_email", email != null ? email : "");
+            editor.putString("jwt", "google_token_" + account.getId()); // Token temporal
+            editor.apply();
+            
+            Toast.makeText(context, "Inicio de sesión exitoso con Google", Toast.LENGTH_SHORT).show();
+            
+            // Navegar al perfil
+            navController.navigate(R.id.navigation_profile);
+            
+        } catch (ApiException e) {
+            Log.w("GoogleSignIn", "Error al iniciar sesión: " + e.getStatusCode(), e);
+            Toast.makeText(context, "Error al iniciar sesión con Google", Toast.LENGTH_SHORT).show();
+        }
+    }
+    
+    // ==================== FACEBOOK LOGIN ====================
+    
+    private void signInWithFacebook() {
+        LoginManager.getInstance().logInWithReadPermissions(
+                this,
+                Arrays.asList("email", "public_profile")
+        );
+        
+        LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                AccessToken accessToken = loginResult.getAccessToken();
+                Log.d("FacebookLogin", "Inicio de sesión exitoso");
+                
+                // Obtener información del usuario
+                com.facebook.GraphRequest request = com.facebook.GraphRequest.newMeRequest(
+                        accessToken,
+                        (object, response) -> {
+                            try {
+                                String email = object.optString("email", "");
+                                String name = object.optString("name", "Usuario");
+                                String id = object.optString("id", "");
+                                
+                                Log.d("FacebookLogin", "Usuario: " + name + ", Email: " + email);
+                                
+                                // Guardar datos en SharedPreferences
+                                SharedPreferences prefs = requireActivity().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
+                                SharedPreferences.Editor editor = prefs.edit();
+                                editor.putString("user_name", name);
+                                editor.putString("user_email", email);
+                                editor.putString("jwt", "facebook_token_" + id); // Token temporal
+                                editor.apply();
+                                
+                                Toast.makeText(context, "Inicio de sesión exitoso con Facebook", Toast.LENGTH_SHORT).show();
+                                
+                                // Navegar al perfil
+                                navController.navigate(R.id.navigation_profile);
+                                
+                            } catch (Exception e) {
+                                Log.e("FacebookLogin", "Error al obtener datos del usuario", e);
+                            }
+                        }
+                );
+                
+                Bundle parameters = new Bundle();
+                parameters.putString("fields", "id,name,email");
+                request.setParameters(parameters);
+                request.executeAsync();
+            }
+            
+            @Override
+            public void onCancel() {
+                Log.d("FacebookLogin", "Login cancelado");
+                Toast.makeText(context, "Login cancelado", Toast.LENGTH_SHORT).show();
+            }
+            
+            @Override
+            public void onError(FacebookException error) {
+                Log.e("FacebookLogin", "Error al iniciar sesión", error);
+                Toast.makeText(context, "Error al iniciar sesión con Facebook", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+    
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        // Pasar el resultado a Facebook callback manager
+        if (callbackManager != null) {
+            callbackManager.onActivityResult(requestCode, resultCode, data);
         }
     }
 }

@@ -43,6 +43,13 @@ dependencies {
     implementation(libs.lifecycle.viewmodel.ktx)
     implementation(libs.navigation.fragment)
     implementation(libs.navigation.ui)
+    
+    // Google Sign-In
+    implementation("com.google.android.gms:play-services-auth:20.7.0")
+    
+    // Facebook Login
+    implementation("com.facebook.android:facebook-login:16.1.3")
+    
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)

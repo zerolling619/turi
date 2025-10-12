@@ -9,33 +9,56 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="270dp"
-        android:background="@drawable/fd_btn_azul_bordes"
+        android:layout_height="269dp"
+        android:background="@drawable/fd_btn_azul_bordes_perfil"
         android:orientation="vertical">
 
-        <TextView
-            android:layout_width="80dp"
-            android:layout_height="40dp"
-            android:layout_marginLeft="170dp"
-            android:layout_marginTop="30dp"
-            android:text="Perfil"
-            android:textColor="@color/white"
-            android:textSize="30dp"
-            android:textStyle="bold" />
 
-        <ImageView
-            android:layout_width="70dp"
-            android:layout_height="70dp"
-            android:layout_marginLeft="170dp"
-            android:layout_marginTop="5dp"
-            android:background="@drawable/fd_blanco_circulo"
-            android:src="@drawable/ic_user" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/IcMenuLateral"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="20dp"
+                android:src="@drawable/ic_menu_lateral" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="119dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="80dp"
+                    android:layout_height="40dp"
+                    android:layout_marginLeft="165dp"
+                    android:layout_marginTop="0dp"
+                    android:text="Perfil"
+                    android:textColor="@color/white"
+                    android:textSize="30dp"
+                    android:textStyle="bold" />
+
+                <ImageView
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:layout_marginLeft="170dp"
+                    android:layout_marginTop="5dp"
+                    android:background="@drawable/fd_blanco_circulo"
+                    android:src="@drawable/ic_user" />
+
+            </LinearLayout>
+
+
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="40dp"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/fd_btn_azul_bordes"
+            android:layout_marginTop="0dp"
             android:gravity="center">
 
             <TextView
@@ -63,20 +86,20 @@
                 <ImageView
                     android:layout_width="30dp"
                     android:layout_height="30dp"
-                    android:src="@drawable/ic_corona"
+                    android:layout_marginLeft="50dp"
                     android:layout_marginTop="15dp"
-                    android:layout_marginLeft="50dp"/>
-                
+                    android:src="@drawable/ic_corona" />
+
                 <TextView
                     android:layout_width="50dp"
                     android:layout_height="40dp"
+                    android:layout_marginTop="12dp"
+                    android:gravity="center"
                     android:text="VIP"
                     android:textColor="@color/white"
-                    android:textSize="18dp"
-                    android:layout_marginTop="12dp"
-                    android:gravity="center"/>
+                    android:textSize="18dp" />
 
-                
+
             </LinearLayout>
 
             <LinearLayout
@@ -87,18 +110,18 @@
                 <ImageView
                     android:layout_width="40dp"
                     android:layout_height="40dp"
-                    android:src="@drawable/ic_carro"
+                    android:layout_marginLeft="50dp"
                     android:layout_marginTop="11dp"
-                    android:layout_marginLeft="50dp"/>
+                    android:src="@drawable/ic_carro" />
 
                 <TextView
                     android:layout_width="50dp"
                     android:layout_height="40dp"
+                    android:layout_marginTop="12dp"
+                    android:gravity="center"
                     android:text="3000"
                     android:textColor="@color/white"
-                    android:textSize="18dp"
-                    android:layout_marginTop="12dp"
-                    android:gravity="center"/>
+                    android:textSize="18dp" />
 
             </LinearLayout>
 
@@ -144,6 +167,7 @@
                     android:textStyle="bold" />
 
                 <TextView
+                    android:id="@+id/textViewEmailValue"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:text="j.santibañez@gmail.com"
@@ -180,6 +204,7 @@
                     android:textStyle="bold" />
 
                 <TextView
+                    android:id="@+id/textViewTelefonoValue"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:text="987 654 321"
@@ -228,7 +253,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="165dp">
+        android:layout_height="166dp">
 
         <Button
             android:layout_width="200dp"

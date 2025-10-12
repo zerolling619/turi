@@ -29,16 +29,16 @@
         android:id="@+id/navigation_forget_password"
         android:name="robin.pe.turistea.ui.Forget_password"
         android:label="fragment_forget_password"
-        tools:layout="@layout/fragment_forget_password" >
-        <action
-            android:id="@+id/action_forget_password_to_verification_code"
-            app:destination="@id/navigation_verification_code" />
-    </fragment>
+        tools:layout="@layout/fragment_forget_password" />
     <fragment
         android:id="@+id/navigation_register"
         android:name="robin.pe.turistea.ui.Register"
         android:label="fragment_register"
-        tools:layout="@layout/fragment_register" />
+        tools:layout="@layout/fragment_register" >
+        <action
+            android:id="@+id/action_navigation_register_to_navigation_verification_code"
+            app:destination="@id/navigation_verification_code" />
+    </fragment>
     <fragment
         android:id="@+id/navigation_settings"
         android:name="robin.pe.turistea.ui.Settings"
@@ -48,7 +48,11 @@
         android:id="@+id/navigation_verification_code"
         android:name="robin.pe.turistea.ui.Verification_code"
         android:label="fragment_verification_code"
-        tools:layout="@layout/fragment_verification_code" />
+        tools:layout="@layout/fragment_verification_code" >
+        <action
+            android:id="@+id/action_navigation_verification_code_to_navigation_login"
+            app:destination="@id/navigation_login" />
+    </fragment>
     <activity
         android:id="@+id/mainActivity"
         android:name="robin.pe.turistea.MainActivity"

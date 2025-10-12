@@ -22,6 +22,18 @@ public class Settings extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_settings, container, false);
+        View view = inflater.inflate(R.layout.fragment_settings, container, false);
+        
+        // Configurar el clic en el icono del menú lateral
+        android.widget.ImageView icMenuLateral = view.findViewById(R.id.IcMenuLateral);
+        if (icMenuLateral != null) {
+            icMenuLateral.setOnClickListener(v -> {
+                if (getActivity() instanceof robin.pe.turistea.MainActivity) {
+                    ((robin.pe.turistea.MainActivity) getActivity()).openDrawer();
+                }
+            });
+        }
+        
+        return view;
     }
 }

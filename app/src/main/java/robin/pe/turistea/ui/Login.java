@@ -175,6 +175,20 @@ public class Login extends Fragment {
                     
                     if (hasToken) {
                         // Login exitoso
+                        String jwt = null;
+                        if (json.has("JWT")) jwt = json.getString("JWT");
+                        else if (json.has("jwt")) jwt = json.getString("jwt");
+                        else if (json.has("token")) jwt = json.getString("token");
+                        else if (json.has("accessToken")) jwt = json.getString("accessToken");
+                        else if (json.has("access_token")) jwt = json.getString("access_token");
+                        else if (json.has("authToken")) jwt = json.getString("authToken");
+                        if (jwt != null) {
+                            android.content.SharedPreferences prefs = context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
+                            prefs.edit().putString("jwt", jwt).apply();
+                            android.util.Log.d("Login", "JWT guardado: " + jwt);
+                        } else {
+                            android.util.Log.e("Login", "JWT es null, no se puede guardar");
+                        }
                         android.widget.Toast.makeText(context, "Login exitoso!", android.widget.Toast.LENGTH_SHORT).show();
                         navController.navigate(R.id.action_navigation_login_to_navigation_profile);
                     } else {
@@ -192,6 +206,10 @@ public class Login extends Fragment {
                     // Si no es JSON, verificar si es JWT directo
                     String jwtRegex = "^[A-Za-z0-9-_]+\\.[A-Za-z0-9-_]+\\.[A-Za-z0-9-_.+/=]*$";
                     if (result.matches(jwtRegex)) {
+                        // Si la respuesta es el JWT directo
+                        android.content.SharedPreferences prefs = context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
+                        prefs.edit().putString("jwt", result).apply();
+                        android.util.Log.d("Login", "JWT directo guardado: " + result);
                         android.widget.Toast.makeText(context, "JWT detectado - Login exitoso!", android.widget.Toast.LENGTH_SHORT).show();
                         navController.navigate(R.id.action_navigation_login_to_navigation_profile);
                     } else {
