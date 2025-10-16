@@ -190,47 +190,13 @@ public class Login extends Fragment {
                         if (jwt != null) {
                             editor.putString("jwt", jwt);
                             android.util.Log.d("Login", "JWT guardado: " + jwt);
+                            
+                            // Hacer petición para obtener datos del usuario
+                            fetchUserProfile(context, jwt, editor, email);
                         } else {
                             android.util.Log.e("Login", "JWT es null, no se puede guardar");
                         }
                         
-                        // Guardar datos del usuario
-                        String userName = "";
-                        String userEmail = email; // Usar el email ingresado
-                        
-                        // Intentar obtener el nombre del usuario desde diferentes campos posibles
-                        if (json.has("user")) {
-                            org.json.JSONObject user = json.getJSONObject("user");
-                            if (user.has("name")) userName = user.getString("name");
-                            else if (user.has("nombre")) userName = user.getString("nombre");
-                            else if (user.has("username")) userName = user.getString("username");
-                            else if (user.has("fullName")) userName = user.getString("fullName");
-                            
-                            if (user.has("email")) userEmail = user.getString("email");
-                            else if (user.has("correo")) userEmail = user.getString("correo");
-                        } else if (json.has("name")) {
-                            userName = json.getString("name");
-                        } else if (json.has("nombre")) {
-                            userName = json.getString("nombre");
-                        } else if (json.has("username")) {
-                            userName = json.getString("username");
-                        }
-                        
-                        // Si no se obtuvo nombre, usar el email
-                        if (userName.isEmpty()) {
-                            userName = userEmail.split("@")[0];
-                        }
-                        
-                        editor.putString("user_name", userName);
-                        editor.putString("user_email", userEmail);
-                        editor.apply();
-                        
-                        android.util.Log.d("Login", "Datos guardados - Nombre: " + userName + ", Email: " + userEmail);
-                        
-                        // Actualizar el header del drawer si la actividad es MainActivity
-                        if (getActivity() instanceof robin.pe.turistea.MainActivity) {
-                            ((robin.pe.turistea.MainActivity) getActivity()).updateDrawerHeader();
-                        }
                         
                         android.widget.Toast.makeText(context, "Login exitoso!", android.widget.Toast.LENGTH_SHORT).show();
                         navController.navigate(R.id.action_navigation_login_to_navigation_inicio);
@@ -246,6 +212,9 @@ public class Login extends Fragment {
                         showError(msg);
                     }
                 } catch (Exception e) {
+                    android.util.Log.e("Login", "Error al procesar respuesta del servidor: " + e.getMessage(), e);
+                    android.util.Log.e("Login", "Respuesta del servidor que causó el error: " + result);
+                    
                     // Si no es JSON, verificar si es JWT directo
                     String jwtRegex = "^[A-Za-z0-9-_]+\\.[A-Za-z0-9-_]+\\.[A-Za-z0-9-_.+/=]*$";
                     if (result.matches(jwtRegex)) {
@@ -303,6 +272,125 @@ public class Login extends Fragment {
                 binding.tilPasswordd.setError(null);
             }
         }
+    }
+
+    // Método para obtener los datos del usuario usando el JWT
+    private void fetchUserProfile(Context context, String jwt, android.content.SharedPreferences.Editor editor, String email) {
+        new Thread(() -> {
+            try {
+                android.util.Log.d("Login", "Obteniendo perfil del usuario con JWT: " + jwt);
+                
+                java.net.URL url = new java.net.URL("http://10.0.2.2:4001/api/user-account");
+                java.net.HttpURLConnection conn = (java.net.HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("GET");
+                conn.setRequestProperty("Authorization", "Bearer " + jwt);
+                conn.setRequestProperty("X-Requested-With", "XMLHttpRequest");
+                conn.setRequestProperty("Accept", "application/json");
+                conn.setRequestProperty("Content-Type", "application/json");
+                
+                int responseCode = conn.getResponseCode();
+                android.util.Log.d("Login", "Código de respuesta del perfil: " + responseCode);
+                
+                if (responseCode == java.net.HttpURLConnection.HTTP_OK) {
+                    java.io.BufferedReader reader = new java.io.BufferedReader(new java.io.InputStreamReader(conn.getInputStream()));
+                    StringBuilder response = new StringBuilder();
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        response.append(line);
+                    }
+                    reader.close();
+                    
+                    android.util.Log.d("Login", "Perfil del usuario recibido: " + response.toString());
+                    org.json.JSONObject userProfile = new org.json.JSONObject(response.toString());
+                    
+                    // Procesar los datos en el hilo principal
+                    requireActivity().runOnUiThread(() -> {
+                        try {
+                            String userName = userProfile.optString("name", "");
+                            String userLastName = userProfile.optString("lastname", "");
+                            String userEmail = userProfile.optString("email", email);
+                            String userCellphone = userProfile.optString("cellphone", "");
+                            
+                            android.util.Log.d("Login", "Datos del perfil - Nombre: '" + userName + "', Apellido: '" + userLastName + "', Email: '" + userEmail + "', Cellphone: '" + userCellphone + "'");
+                            
+                            // Combinar nombre y apellido
+                            String fullName = "";
+                            if (!userName.isEmpty() && !userLastName.isEmpty()) {
+                                fullName = userName + " " + userLastName;
+                            } else if (!userName.isEmpty()) {
+                                fullName = userName;
+                            } else if (!userLastName.isEmpty()) {
+                                fullName = userLastName;
+                            }
+                            
+                            // Si no se obtuvo nombre, usar el email de forma más presentable
+                            if (fullName.isEmpty()) {
+                                String emailUser = userEmail.split("@")[0];
+                                fullName = emailUser.replaceAll("([a-z])([A-Z])", "$1 $2")
+                                                   .replaceAll("([a-z])([0-9])", "$1 $2")
+                                                   .replaceAll("([0-9])([a-z])", "$1 $2")
+                                                   .replaceAll("_", " ")
+                                                   .replaceAll("-", " ")
+                                                   .toLowerCase();
+                                
+                                String[] words = fullName.split(" ");
+                                StringBuilder capitalized = new StringBuilder();
+                                for (String word : words) {
+                                    if (word.length() > 0) {
+                                        capitalized.append(Character.toUpperCase(word.charAt(0)));
+                                        if (word.length() > 1) {
+                                            capitalized.append(word.substring(1));
+                                        }
+                                        capitalized.append(" ");
+                                    }
+                                }
+                                fullName = capitalized.toString().trim();
+                            }
+                            
+                            // Guardar los datos del usuario
+                            editor.putString("user_name", fullName);
+                            editor.putString("user_email", userEmail);
+                            editor.putString("user_cellphone", userCellphone);
+                            editor.apply();
+                            
+                            android.util.Log.d("Login", "Perfil guardado - Nombre completo: " + fullName + ", Email: " + userEmail + ", Cellphone: " + userCellphone);
+                            
+                            // Actualizar el header del drawer si la actividad es MainActivity
+                            if (getActivity() instanceof robin.pe.turistea.MainActivity) {
+                                ((robin.pe.turistea.MainActivity) getActivity()).updateDrawerHeader();
+                            }
+                            
+                        } catch (Exception e) {
+                            android.util.Log.e("Login", "Error al procesar perfil del usuario: " + e.getMessage(), e);
+                            // En caso de error, usar datos básicos
+                            editor.putString("user_name", email.split("@")[0]);
+                            editor.putString("user_email", email);
+                            editor.putString("user_cellphone", "");
+                            editor.apply();
+                        }
+                    });
+                    
+                } else {
+                    android.util.Log.e("Login", "Error al obtener perfil: " + responseCode);
+                    // En caso de error, usar datos básicos
+                    requireActivity().runOnUiThread(() -> {
+                        editor.putString("user_name", email.split("@")[0]);
+                        editor.putString("user_email", email);
+                        editor.putString("user_cellphone", "");
+                        editor.apply();
+                    });
+                }
+            } catch (Exception e) {
+                android.util.Log.e("Login", "Error al obtener perfil del usuario: " + e.getMessage(), e);
+                // En caso de error, usar datos básicos
+                requireActivity().runOnUiThread(() -> {
+                    editor.putString("user_name", email.split("@")[0]);
+                    editor.putString("user_email", email);
+                    editor.putString("user_cellphone", "");
+                    editor.apply();
+                });
+            }
+        }).start();
     }
 
 }

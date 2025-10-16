@@ -29,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
     public DrawerLayout drawerLayout;
     private NavigationView navigationView;
+    private NavController navController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
 
         drawerLayout = findViewById(R.id.drawer_layout);
         BottomNavigationView navView = findViewById(R.id.nav_view);
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
+        navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
         NavigationUI.setupWithNavController(binding.navView, navController);
 
         // Configurar el Navigation Drawer
@@ -120,6 +121,10 @@ public class MainActivity extends AppCompatActivity {
     
     public void updateDrawerHeader() {
         loadUserDataInHeader();
+    }
+    
+    public void navigateToLogin() {
+        navController.navigate(R.id.navigation_login);
     }
 
 }

@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import robin.pe.turistea.R;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.TextView;
 
@@ -40,125 +39,85 @@ public class Profile extends Fragment {
             });
         }
         
-        // Leer el JWT guardado en las preferencias compartidas
+        // Cargar datos del usuario desde SharedPreferences
         SharedPreferences prefs = getContext().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
-        String jwt = prefs.getString("jwt", null);
-        if (jwt != null) {
-            new FetchProfileTask(view, jwt).execute();
-        } else {
-            // Si no hay JWT, mostrar mensaje de error en los campos
-            TextView tvNombreApellido = view.findViewById(R.id.tvNombreApellido);
-            TextView tvEmail = view.findViewById(R.id.textViewEmailValue);
-            TextView tvTelefono = view.findViewById(R.id.textViewTelefonoValue);
-            if (tvNombreApellido != null) tvNombreApellido.setText("No autenticado");
-            if (tvEmail != null) tvEmail.setText("-");
-            if (tvTelefono != null) tvTelefono.setText("-");
+        String userName = prefs.getString("user_name", "");
+        String userEmail = prefs.getString("user_email", "");
+        String userCellphone = prefs.getString("user_cellphone", "");
+        
+        Log.d("Profile", "Datos cargados desde SharedPreferences:");
+        Log.d("Profile", "user_name: '" + userName + "'");
+        Log.d("Profile", "user_email: '" + userEmail + "'");
+        Log.d("Profile", "user_cellphone: '" + userCellphone + "'");
+        
+        // Obtener referencias a los TextView
+        TextView tvNombreApellido = view.findViewById(R.id.tvNombreApellido);
+        TextView tvEmail = view.findViewById(R.id.textViewEmailValue);
+        TextView tvTelefono = view.findViewById(R.id.textViewTelefonoValue);
+        
+        Log.d("Profile", "TextView encontrados:");
+        Log.d("Profile", "tvNombreApellido: " + (tvNombreApellido != null ? "OK" : "NULL"));
+        Log.d("Profile", "tvEmail: " + (tvEmail != null ? "OK" : "NULL"));
+        Log.d("Profile", "tvTelefono: " + (tvTelefono != null ? "OK" : "NULL"));
+        
+        // Mostrar los datos guardados
+        if (tvNombreApellido != null) {
+            String displayName = userName.isEmpty() ? "Usuario" : userName;
+            tvNombreApellido.setText(displayName);
+            Log.d("Profile", "Texto establecido en tvNombreApellido: '" + displayName + "'");
         }
+        if (tvEmail != null) {
+            String displayEmail = userEmail.isEmpty() ? "-" : userEmail;
+            tvEmail.setText(displayEmail);
+            Log.d("Profile", "Texto establecido en tvEmail: '" + displayEmail + "'");
+        }
+        if (tvTelefono != null) {
+            String displayPhone = userCellphone.isEmpty() ? "-" : userCellphone;
+            tvTelefono.setText(displayPhone);
+            Log.d("Profile", "Texto establecido en tvTelefono: '" + displayPhone + "'");
+        }
+        
+        // Configurar el botón de cerrar sesión
+        android.widget.Button btnCerrarSesion = view.findViewById(R.id.btnCerrarSesion);
+        if (btnCerrarSesion != null) {
+            btnCerrarSesion.setOnClickListener(v -> {
+                Log.d("Profile", "Botón cerrar sesión presionado");
+                cerrarSesion();
+            });
+        } else {
+            Log.e("Profile", "No se encontró el botón btnCerrarSesion");
+        }
+        
         return view;
     }
-
-    // Tarea asíncrona para obtener los datos del usuario desde el backend
-    private static class FetchProfileTask extends AsyncTask<Void, Void, org.json.JSONObject> {
-        private View view;
-        private String jwt;
-        FetchProfileTask(View view, String jwt) {
-            this.view = view;
-            this.jwt = jwt;
-        }
-        @Override
-        protected org.json.JSONObject doInBackground(Void... voids) {
-            try {
-                Log.d("Perfil", "Iniciando petición a: http://10.0.2.2:4001/api/user-account");
-                Log.d("Perfil", "JWT usado: " + jwt);
+    
+    private void cerrarSesion() {
+        // Mostrar diálogo de confirmación
+        new android.app.AlertDialog.Builder(getContext())
+            .setTitle("Cerrar Sesión")
+            .setMessage("¿Estás seguro de que quieres cerrar sesión?")
+            .setPositiveButton("Sí", (dialog, which) -> {
+                Log.d("Profile", "Usuario confirmó cerrar sesión");
                 
-                // Validar que el JWT no esté vacío
-                if (jwt == null || jwt.trim().isEmpty()) {
-                    Log.e("Perfil", "JWT es null o vacío");
-                    return null;
+                // Limpiar SharedPreferences
+                SharedPreferences prefs = getContext().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
+                prefs.edit().clear().apply();
+                
+                Log.d("Profile", "Datos de usuario eliminados de SharedPreferences");
+                
+                // Mostrar mensaje de confirmación
+                android.widget.Toast.makeText(getContext(), "Sesión cerrada", android.widget.Toast.LENGTH_SHORT).show();
+                
+                // Navegar al fragmento de login
+                if (getActivity() instanceof robin.pe.turistea.MainActivity) {
+                    ((robin.pe.turistea.MainActivity) getActivity()).navigateToLogin();
                 }
-                
-                java.net.URL url = new java.net.URL("http://10.0.2.2:4001/api/user-account");
-                java.net.HttpURLConnection conn = (java.net.HttpURLConnection) url.openConnection();
-                conn.setRequestMethod("GET");
-                conn.setRequestProperty("Authorization", "Bearer " + jwt);
-                conn.setRequestProperty("X-Requested-With", "XMLHttpRequest");
-                conn.setRequestProperty("Accept", "application/json");
-                conn.setRequestProperty("Content-Type", "application/json");
-                
-                int responseCode = conn.getResponseCode();
-                Log.d("Perfil", "Código de respuesta: " + responseCode);
-                
-                if (responseCode == java.net.HttpURLConnection.HTTP_OK) {
-                    java.io.BufferedReader reader = new java.io.BufferedReader(new java.io.InputStreamReader(conn.getInputStream()));
-                    StringBuilder response = new StringBuilder();
-                    String line;
-                    while ((line = reader.readLine()) != null) {
-                        response.append(line);
-                    }
-                    reader.close();
-                    
-                    Log.d("Perfil", "Respuesta recibida: " + response.toString());
-                    return new org.json.JSONObject(response.toString());
-                } else {
-                    // Leer el mensaje de error
-                    java.io.BufferedReader errorReader = new java.io.BufferedReader(new java.io.InputStreamReader(conn.getErrorStream()));
-                    StringBuilder errorResponse = new StringBuilder();
-                    String errorLine;
-                    while ((errorLine = errorReader.readLine()) != null) {
-                        errorResponse.append(errorLine);
-                    }
-                    errorReader.close();
-                    Log.e("Perfil", "Error en la petición: " + responseCode + " - " + errorResponse.toString());
-                }
-            } catch (Exception e) {
-                Log.e("Perfil", "Excepción al obtener datos: " + e.getMessage(), e);
-            }
-            return null;
-        }
-        @Override
-        protected void onPostExecute(org.json.JSONObject user) {
-            TextView tvNombreApellido = view.findViewById(R.id.tvNombreApellido);
-            TextView tvEmail = view.findViewById(R.id.textViewEmailValue);
-            TextView tvTelefono = view.findViewById(R.id.textViewTelefonoValue);
-            
-            if (user != null) {
-                try {
-                    Log.d("Perfil", "Datos del usuario recibidos: " + user.toString());
-                    
-                    String nombre = user.optString("name", "");
-                    String apellido = user.optString("lastname", "");
-                    String email = user.optString("email", "");
-                    String dni = user.optString("dni", "");
-                    String sexo = user.optString("sexo", "");
-                    
-                    Log.d("Perfil", "Nombre: " + nombre + ", Apellido: " + apellido + ", Email: " + email);
-                    
-                    // Mostrar los datos en los TextView
-                    if (tvNombreApellido != null) {
-                        String nombreCompleto = (nombre + " " + apellido).trim();
-                        tvNombreApellido.setText(nombreCompleto.isEmpty() ? "Usuario" : nombreCompleto);
-                    }
-                    if (tvEmail != null) tvEmail.setText(email.isEmpty() ? "-" : email);
-                    // Como el backend no devuelve cellphone, mostramos DNI o sexo si lo prefieres
-                    if (tvTelefono != null) {
-                        String infoExtra = dni.isEmpty() || dni.equals("null") ? 
-                            (sexo.isEmpty() ? "-" : sexo) : dni;
-                        tvTelefono.setText(infoExtra);
-                    }
-                    
-                } catch (Exception e) {
-                    Log.e("Perfil", "Error al mostrar datos: " + e.getMessage(), e);
-                    if (tvNombreApellido != null) tvNombreApellido.setText("Error al mostrar datos");
-                    if (tvEmail != null) tvEmail.setText("-");
-                    if (tvTelefono != null) tvTelefono.setText("-");
-                }
-            } else {
-                Log.e("Perfil", "No se recibieron datos del usuario");
-                // Si no se pudo obtener el usuario, mostrar mensaje
-                if (tvNombreApellido != null) tvNombreApellido.setText("No se pudo obtener el perfil");
-                if (tvEmail != null) tvEmail.setText("-");
-                if (tvTelefono != null) tvTelefono.setText("-");
-            }
-        }
+            })
+            .setNegativeButton("Cancelar", (dialog, which) -> {
+                Log.d("Profile", "Usuario canceló cerrar sesión");
+                dialog.dismiss();
+            })
+            .show();
     }
+
 }
