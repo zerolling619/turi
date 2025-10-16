@@ -24,6 +24,12 @@
         <action
             android:id="@+id/action_navigation_login_to_navigation_profile"
             app:destination="@id/navigation_profile" />
+        <action
+            android:id="@+id/action_navigation_login_to_navigation_inicio"
+            app:destination="@id/navigation_inicio" />
+        <action
+            android:id="@+id/action_navigation_login_to_navigation_settings"
+            app:destination="@id/navigation_settings" />
     </fragment>
     <fragment
         android:id="@+id/navigation_forget_password"
@@ -80,4 +86,18 @@
             android:id="@+id/action_start_app_to_login"
             app:destination="@id/navigation_login" />
     </fragment>
+    <fragment
+        android:id="@+id/navigation_inicio"
+        android:name="robin.pe.turistea.ui.Inicio"
+        android:label="fragment_inicio"
+        tools:layout="@layout/fragment_inicio" >
+        <action
+            android:id="@+id/action_navigation_inicio_to_navigation_location"
+            app:destination="@id/navigation_location" />
+    </fragment>
+    <fragment
+        android:id="@+id/navigation_location"
+        android:name="robin.pe.turistea.ui.Location"
+        android:label="fragment_location"
+        tools:layout="@layout/fragment_location" />
 </navigation>

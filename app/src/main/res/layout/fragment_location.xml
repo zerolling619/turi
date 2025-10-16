@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/fd_celeste_degrade"
+    tools:context=".ui.Location">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <!-- Header -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:background="@drawable/fd_btn_azul_bordes_perfil"
+            android:orientation="horizontal"
+            android:padding="10dp">
+
+            <ImageView
+                android:id="@+id/IcBack"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="10dp"
+                android:src="@drawable/ic_back_arrow"
+                android:background="@drawable/fd_blanco_circulo"
+                android:padding="5dp"
+                android:contentDescription="Volver"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="20dp"
+                android:text="Seleccionar Ubicación"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <!-- Contenedor del Mapa -->
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_margin="20dp"
+            android:background="@drawable/fd_blanco_bordes">
+
+            <!-- Contenedor para el mapa -->
+            <FrameLayout
+                android:id="@+id/ImMapa"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <!-- Marcador central para indicar el punto seleccionado -->
+            <ImageView
+                android:id="@+id/IcMarker"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_location"
+                android:contentDescription="Marcador de ubicación"/>
+
+        </FrameLayout>
+
+        <!-- Información y botones -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp"
+            android:background="@color/white"
+            android:layout_margin="20dp"
+            android:layout_marginTop="0dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Mueve el mapa para seleccionar tu ubicación"
+                android:textColor="@color/azul_oscuro"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:layout_marginBottom="10dp"/>
+
+            <TextView
+                android:id="@+id/TvSelectedLocation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Buscando dirección..."
+                android:textColor="@color/azul_oscuro"
+                android:textSize="12sp"
+                android:gravity="center"
+                android:layout_marginBottom="15dp"
+                android:minHeight="40dp"
+                android:maxLines="3"
+                android:ellipsize="end"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btnCurrentLocation"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="1"
+                    android:layout_marginRight="10dp"
+                    android:background="@drawable/fd_contorno_azul"
+                    android:text="Lima Centro"
+                    android:textColor="@color/white"
+                    android:textSize="12sp"/>
+
+                <Button
+                    android:id="@+id/btnConfirmLocation"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/fd_btn_azul_bordes"
+                    android:text="Confirmar"
+                    android:textColor="@color/white"
+                    android:textSize="12sp"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</FrameLayout>

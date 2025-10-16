@@ -53,7 +53,9 @@ public class MainActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 int id = item.getItemId();
                 
-                if (id == R.id.nav_profile) {
+                if (id == R.id.nav_inicio) {
+                    navController.navigate(R.id.navigation_inicio);
+                } else if (id == R.id.nav_profile) {
                     navController.navigate(R.id.navigation_profile);
                 } else if (id == R.id.nav_settings) {
                     navController.navigate(R.id.navigation_settings);

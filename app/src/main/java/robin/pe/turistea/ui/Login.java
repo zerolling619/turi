@@ -182,15 +182,58 @@ public class Login extends Fragment {
                         else if (json.has("accessToken")) jwt = json.getString("accessToken");
                         else if (json.has("access_token")) jwt = json.getString("access_token");
                         else if (json.has("authToken")) jwt = json.getString("authToken");
+                        
+                        // Guardar JWT y datos del usuario
+                        android.content.SharedPreferences prefs = context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
+                        android.content.SharedPreferences.Editor editor = prefs.edit();
+                        
                         if (jwt != null) {
-                            android.content.SharedPreferences prefs = context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
-                            prefs.edit().putString("jwt", jwt).apply();
+                            editor.putString("jwt", jwt);
                             android.util.Log.d("Login", "JWT guardado: " + jwt);
                         } else {
                             android.util.Log.e("Login", "JWT es null, no se puede guardar");
                         }
+                        
+                        // Guardar datos del usuario
+                        String userName = "";
+                        String userEmail = email; // Usar el email ingresado
+                        
+                        // Intentar obtener el nombre del usuario desde diferentes campos posibles
+                        if (json.has("user")) {
+                            org.json.JSONObject user = json.getJSONObject("user");
+                            if (user.has("name")) userName = user.getString("name");
+                            else if (user.has("nombre")) userName = user.getString("nombre");
+                            else if (user.has("username")) userName = user.getString("username");
+                            else if (user.has("fullName")) userName = user.getString("fullName");
+                            
+                            if (user.has("email")) userEmail = user.getString("email");
+                            else if (user.has("correo")) userEmail = user.getString("correo");
+                        } else if (json.has("name")) {
+                            userName = json.getString("name");
+                        } else if (json.has("nombre")) {
+                            userName = json.getString("nombre");
+                        } else if (json.has("username")) {
+                            userName = json.getString("username");
+                        }
+                        
+                        // Si no se obtuvo nombre, usar el email
+                        if (userName.isEmpty()) {
+                            userName = userEmail.split("@")[0];
+                        }
+                        
+                        editor.putString("user_name", userName);
+                        editor.putString("user_email", userEmail);
+                        editor.apply();
+                        
+                        android.util.Log.d("Login", "Datos guardados - Nombre: " + userName + ", Email: " + userEmail);
+                        
+                        // Actualizar el header del drawer si la actividad es MainActivity
+                        if (getActivity() instanceof robin.pe.turistea.MainActivity) {
+                            ((robin.pe.turistea.MainActivity) getActivity()).updateDrawerHeader();
+                        }
+                        
                         android.widget.Toast.makeText(context, "Login exitoso!", android.widget.Toast.LENGTH_SHORT).show();
-                        navController.navigate(R.id.action_navigation_login_to_navigation_profile);
+                        navController.navigate(R.id.action_navigation_login_to_navigation_inicio);
                     } else {
                         // Buscar mensaje de error en diferentes campos
                         String msg = "";
@@ -208,10 +251,24 @@ public class Login extends Fragment {
                     if (result.matches(jwtRegex)) {
                         // Si la respuesta es el JWT directo
                         android.content.SharedPreferences prefs = context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
-                        prefs.edit().putString("jwt", result).apply();
+                        android.content.SharedPreferences.Editor editor = prefs.edit();
+                        editor.putString("jwt", result);
+                        
+                        // Guardar datos básicos del usuario
+                        String userName = email.split("@")[0];
+                        editor.putString("user_name", userName);
+                        editor.putString("user_email", email);
+                        editor.apply();
+                        
                         android.util.Log.d("Login", "JWT directo guardado: " + result);
+                        
+                        // Actualizar el header del drawer si la actividad es MainActivity
+                        if (getActivity() instanceof robin.pe.turistea.MainActivity) {
+                            ((robin.pe.turistea.MainActivity) getActivity()).updateDrawerHeader();
+                        }
+                        
                         android.widget.Toast.makeText(context, "JWT detectado - Login exitoso!", android.widget.Toast.LENGTH_SHORT).show();
-                        navController.navigate(R.id.action_navigation_login_to_navigation_profile);
+                        navController.navigate(R.id.action_navigation_login_to_navigation_inicio);
                     } else {
                         showError("Respuesta inválida del servidor: " + result);
                     }

@@ -47,6 +47,12 @@ dependencies {
     // Google Sign-In
     implementation("com.google.android.gms:play-services-auth:20.7.0")
     
+    // Google Location Services
+    implementation("com.google.android.gms:play-services-location:21.0.1")
+    
+    // Google Maps
+    implementation("com.google.android.gms:play-services-maps:18.2.0")
+    
     // Facebook Login
     implementation("com.facebook.android:facebook-login:16.1.3")
     
