@@ -10,24 +10,35 @@
         android:layout_height="200dp"
         android:background="@drawable/fd_btn_azul_bordes_menu_lateral"
         android:orientation="vertical"
+<<<<<<< HEAD
         android:paddingBottom="16dp">
 
         <ImageView
             android:id="@+id/nav_header_image"
+=======
+        >
+
+        <ImageView
+>>>>>>> 4b04106b6799400d36a5b8aa209a5db1f51e27e9
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:layout_marginTop="40dp"
             android:layout_marginLeft="20dp"
             android:background="@drawable/fd_blanco_circulo"
             android:src="@drawable/ic_user"
+<<<<<<< HEAD
             android:padding="15dp"
             android:contentDescription="Foto de perfil"/>
+=======
+            android:padding="15dp"/>
+>>>>>>> 4b04106b6799400d36a5b8aa209a5db1f51e27e9
 
         <TextView
             android:id="@+id/nav_header_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
+<<<<<<< HEAD
             android:layout_marginTop="10dp"
             android:layout_marginRight="20dp"
             android:text="Usuario"
@@ -36,12 +47,19 @@
             android:textStyle="bold"
             android:maxLines="1"
             android:ellipsize="end"/>
+=======
+            android:text="Usuario"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:textStyle="bold"/>
+>>>>>>> 4b04106b6799400d36a5b8aa209a5db1f51e27e9
 
         <TextView
             android:id="@+id/nav_header_email"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
+<<<<<<< HEAD
             android:layout_marginTop="4dp"
             android:layout_marginRight="20dp"
             android:text="correo@ejemplo.com"
@@ -49,6 +67,11 @@
             android:textSize="14sp"
             android:maxLines="1"
             android:ellipsize="end"/>
+=======
+            android:text="correo@ejemplo.com"
+            android:textColor="@color/white"
+            android:textSize="14sp"/>
+>>>>>>> 4b04106b6799400d36a5b8aa209a5db1f51e27e9
 
     </LinearLayout>
 

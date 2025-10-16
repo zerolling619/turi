@@ -182,6 +182,7 @@ public class Login extends Fragment {
                         else if (json.has("accessToken")) jwt = json.getString("accessToken");
                         else if (json.has("access_token")) jwt = json.getString("access_token");
                         else if (json.has("authToken")) jwt = json.getString("authToken");
+<<<<<<< HEAD
                         
                         // Guardar JWT y datos del usuario
                         android.content.SharedPreferences prefs = context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
@@ -189,10 +190,16 @@ public class Login extends Fragment {
                         
                         if (jwt != null) {
                             editor.putString("jwt", jwt);
+=======
+                        if (jwt != null) {
+                            android.content.SharedPreferences prefs = context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
+                            prefs.edit().putString("jwt", jwt).apply();
+>>>>>>> 4b04106b6799400d36a5b8aa209a5db1f51e27e9
                             android.util.Log.d("Login", "JWT guardado: " + jwt);
                         } else {
                             android.util.Log.e("Login", "JWT es null, no se puede guardar");
                         }
+<<<<<<< HEAD
                         
                         // Guardar datos del usuario
                         String userName = "";
@@ -234,6 +241,10 @@ public class Login extends Fragment {
                         
                         android.widget.Toast.makeText(context, "Login exitoso!", android.widget.Toast.LENGTH_SHORT).show();
                         navController.navigate(R.id.action_navigation_login_to_navigation_inicio);
+=======
+                        android.widget.Toast.makeText(context, "Login exitoso!", android.widget.Toast.LENGTH_SHORT).show();
+                        navController.navigate(R.id.action_navigation_login_to_navigation_profile);
+>>>>>>> 4b04106b6799400d36a5b8aa209a5db1f51e27e9
                     } else {
                         // Buscar mensaje de error en diferentes campos
                         String msg = "";
@@ -251,6 +262,7 @@ public class Login extends Fragment {
                     if (result.matches(jwtRegex)) {
                         // Si la respuesta es el JWT directo
                         android.content.SharedPreferences prefs = context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
+<<<<<<< HEAD
                         android.content.SharedPreferences.Editor editor = prefs.edit();
                         editor.putString("jwt", result);
                         
@@ -269,6 +281,12 @@ public class Login extends Fragment {
                         
                         android.widget.Toast.makeText(context, "JWT detectado - Login exitoso!", android.widget.Toast.LENGTH_SHORT).show();
                         navController.navigate(R.id.action_navigation_login_to_navigation_inicio);
+=======
+                        prefs.edit().putString("jwt", result).apply();
+                        android.util.Log.d("Login", "JWT directo guardado: " + result);
+                        android.widget.Toast.makeText(context, "JWT detectado - Login exitoso!", android.widget.Toast.LENGTH_SHORT).show();
+                        navController.navigate(R.id.action_navigation_login_to_navigation_profile);
+>>>>>>> 4b04106b6799400d36a5b8aa209a5db1f51e27e9
                     } else {
                         showError("Respuesta inválida del servidor: " + result);
                     }

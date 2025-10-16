@@ -3,8 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
+<<<<<<< HEAD
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+=======
+>>>>>>> 4b04106b6799400d36a5b8aa209a5db1f51e27e9
 
     <application
         android:usesCleartextTraffic="true"
@@ -17,11 +20,14 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Turistea">
         
+<<<<<<< HEAD
         <!-- Google Maps API Key -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBo4grLLf8jN9XNsEF8UwcwcXROYh8D4sA" />
         
+=======
+>>>>>>> 4b04106b6799400d36a5b8aa209a5db1f51e27e9
         <!-- Facebook App ID - DEBES CAMBIAR ESTO POR TU APP ID REAL -->
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"

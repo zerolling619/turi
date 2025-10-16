@@ -8,7 +8,10 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="azul_oscuro">#053755</color>
+<<<<<<< HEAD
     <color name="gris">#A9A9A9</color>
     <color name="grisClaro">#c2c2c2</color>
 
+=======
+>>>>>>> 4b04106b6799400d36a5b8aa209a5db1f51e27e9
 </resources>
