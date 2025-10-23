@@ -21,14 +21,14 @@
     <!-- ScrollView para permitir scroll si hay muchos campos -->
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="600dp"
+        android:layout_height="564dp"
         android:layout_marginTop="80dp"
         android:fillViewport="true">
 
         <!-- Caja blanca con bordes redondeados -->
         <LinearLayout
             android:layout_width="335dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_marginHorizontal="37dp"
             android:layout_marginTop="0dp"
             android:background="@drawable/fd_blanco_bordes"
@@ -66,7 +66,8 @@
                         android:background="@drawable/fd_contorno_azul"
                         android:inputType="textPersonName"
                         android:maxLength="50"
-                        android:padding="12dp" />
+                        android:padding="8dp"
+                        android:paddingTop="8dp" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -104,7 +105,8 @@
                         android:background="@drawable/fd_contorno_azul"
                         android:inputType="textPersonName"
                         android:maxLength="50"
-                        android:padding="12dp" />
+                        android:padding="8dp"
+                        android:paddingTop="8dp" />
 
                 </com.google.android.material.textfield.TextInputLayout>
             </FrameLayout>
@@ -141,7 +143,8 @@
                         android:background="@drawable/fd_contorno_azul"
                         android:inputType="textEmailAddress"
                         android:maxLength="50"
-                        android:padding="12dp" />
+                        android:padding="8dp"
+                        android:paddingTop="8dp" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -188,7 +191,8 @@
                             android:background="@drawable/fd_contorno_azul"
                             android:inputType="textEmailAddress"
                             android:maxLength="50"
-                            android:padding="12dp" />
+                            android:padding="8dp"
+                            android:paddingTop="8dp" />
 
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -226,7 +230,8 @@
                             android:background="@drawable/fd_contorno_azul"
                             android:inputType="textEmailAddress"
                             android:maxLength="50"
-                            android:padding="12dp" />
+                            android:padding="8dp"
+                            android:paddingTop="8dp" />
 
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -267,7 +272,8 @@
                         android:focusable="false"
                         android:hint="Seleccionar sexo"
                         android:inputType="none"
-                        android:padding="12dp" />
+                        android:padding="8dp"
+                        android:paddingTop="8dp" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -305,7 +311,8 @@
                         android:background="@drawable/fd_contorno_azul"
                         android:inputType="textEmailAddress"
                         android:maxLength="50"
-                        android:padding="12dp" />
+                        android:padding="8dp"
+                        android:paddingTop="8dp" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -344,7 +351,8 @@
                         android:background="@drawable/fd_contorno_azul"
                         android:inputType="textPassword"
                         android:maxLength="50"
-                        android:padding="12dp" />
+                        android:padding="8dp"
+                        android:paddingTop="8dp" />
 
                 </com.google.android.material.textfield.TextInputLayout>
             </FrameLayout>
@@ -382,7 +390,8 @@
                         android:background="@drawable/fd_contorno_azul"
                         android:inputType="textPassword"
                         android:maxLength="50"
-                        android:padding="12dp" />
+                        android:padding="8dp"
+                        android:paddingTop="8dp" />
 
                 </com.google.android.material.textfield.TextInputLayout>
             </FrameLayout>
@@ -393,38 +402,18 @@
                 android:layout_height="40dp"
                 android:layout_marginTop="20dp"
                 android:background="@drawable/fd_btn_azul_bordes"
-                android:text="Registrar" />
+                android:text="Registrar"
+                android:textColor="@color/white" />
 
             <TextView
                 android:id="@+id/tvIniciarSesion"
                 android:layout_width="match_parent"
                 android:layout_height="16dp"
+                android:layout_marginTop="5dp"
                 android:gravity="center"
                 android:text="Ya tienes una cuenta, Inicia Sesion"
                 android:textColor="@color/azul_oscuro"
                 android:textSize="10dp" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:orientation="horizontal"
-                android:padding="10dp">
-
-                <ImageView
-                    android:id="@+id/IcFacebook"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_marginLeft="90dp"
-                    android:src="@drawable/ic_facebook"/>
-
-                <ImageView
-                    android:id="@+id/IcGoogle"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_marginLeft="20dp"
-                    android:src="@drawable/ic_google"/>
-
-            </LinearLayout>
 
         </LinearLayout>
 

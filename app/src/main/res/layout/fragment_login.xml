@@ -8,15 +8,6 @@
     android:background="@drawable/fd_celeste_degrade"
     tools:context=".ui.Login">
 
-    <ImageView
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="25dp"
-        android:layout_marginLeft="37dp"
-        android:background="@drawable/fd_blanco_circulo"
-        android:src="@drawable/ic_back_arrow"
-        />
-
     <!-- Título -->
     <TextView
         android:layout_width="220dp"
@@ -30,7 +21,7 @@
     <!-- Caja blanca con bordes redondeados -->
     <LinearLayout
         android:layout_width="335dp"
-        android:layout_height="wrap_content"
+        android:layout_height="355dp"
         android:layout_marginHorizontal="37dp"
         android:layout_marginTop="250dp"
         android:background="@drawable/fd_blanco_bordes"
@@ -54,12 +45,12 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/tilCorreo"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="14dp"
+                android:layout_height="60dp"
+                android:layout_marginTop="15dp"
                 android:inputType="textEmailAddress"
+                app:boxBackgroundMode="none"
                 app:errorEnabled="true"
-                app:hintEnabled="false"
-                app:boxBackgroundMode="none">
+                app:hintEnabled="false">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/edtCorreo"
@@ -69,7 +60,8 @@
                     android:background="@drawable/fd_contorno_azul"
                     android:inputType="textEmailAddress"
                     android:maxLength="30"
-                    android:padding="12dp" />
+                    android:padding="8dp"
+                    android:paddingTop="8dp" />
             </com.google.android.material.textfield.TextInputLayout>
 
         </FrameLayout>
@@ -77,7 +69,8 @@
         <!-- Contraseña -->
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="0dp">
 
             <TextView
                 android:layout_width="72dp"
@@ -93,10 +86,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:layout_marginTop="15dp"
+                android:inputType="textPassword"
+                app:boxBackgroundMode="none"
                 app:errorEnabled="true"
                 app:hintEnabled="false"
-                app:endIconMode="password_toggle"
-                app:boxBackgroundMode="none">
+                app:passwordToggleEnabled="true">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/edtPasswordd"
@@ -105,7 +99,8 @@
                     android:background="@drawable/fd_contorno_azul"
                     android:inputType="textPassword"
                     android:maxLength="15"
-                    android:padding="12dp" />
+                    android:padding="8dp"
+                    android:paddingTop="8dp" />
 
             </com.google.android.material.textfield.TextInputLayout>
         </FrameLayout>
@@ -116,26 +111,79 @@
             android:layout_height="40dp"
             android:layout_marginTop="20dp"
             android:background="@drawable/fd_btn_azul_bordes"
-            android:text="Iniciar Sesion" />
+            android:text="Iniciar Sesion"
+            android:textColor="@color/white" />
 
-        <TextView
-            android:id="@+id/tvOlvidastePasswordd"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="16dp"
-            android:layout_marginTop="25dp"
-            android:gravity="center"
-            android:text="¿Olvidaste tu contraseña?"
-            android:textColor="@color/azul_oscuro"
-            android:textSize="10sp" />
+            android:layout_height="19dp"
+            android:layout_marginTop="20dp">
 
-        <TextView
-            android:id="@+id/tvRegistrate"
+            <View
+                android:layout_width="100dp"
+                android:layout_height="2dp"
+                android:layout_marginTop="5dp"
+                android:background="@color/azul_oscuro"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:layout_marginTop="-5dp"
+                android:text=" O inicia con "
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <View
+                android:layout_width="100dp"
+                android:layout_height="2dp"
+                android:layout_marginTop="5dp"
+                android:background="@color/azul_oscuro"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="16dp"
-            android:gravity="center"
-            android:text="Aun no tienes una cuenta Registrate"
-            android:textColor="@color/azul_oscuro"
-            android:textSize="10sp" />
+            android:layout_height="50dp"
+            android:orientation="horizontal"
+            android:padding="10dp">
+
+            <ImageView
+                android:id="@+id/IcGoogle"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginLeft="125dp"
+                android:src="@drawable/ic_google" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="43dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvOlvidastePasswordd"
+                android:layout_width="match_parent"
+                android:layout_height="16dp"
+                android:gravity="center"
+                android:text="¿Olvidaste tu contraseña?"
+                android:textColor="@color/azul_oscuro"
+                android:textSize="10sp" />
+
+            <TextView
+                android:id="@+id/tvRegistrate"
+                android:layout_width="match_parent"
+                android:layout_height="16dp"
+                android:gravity="center"
+                android:text="Aun no tienes una cuenta Registrate"
+                android:textColor="@color/azul_oscuro"
+                android:textSize="10sp" />
+
+        </LinearLayout>
 
     </LinearLayout>
 

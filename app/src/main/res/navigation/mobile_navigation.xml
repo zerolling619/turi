@@ -35,7 +35,11 @@
         android:id="@+id/navigation_forget_password"
         android:name="robin.pe.turistea.ui.Forget_password"
         android:label="fragment_forget_password"
-        tools:layout="@layout/fragment_forget_password" />
+        tools:layout="@layout/fragment_forget_password" >
+        <action
+            android:id="@+id/action_navigation_forget_password_to_navigation_change_passwordd"
+            app:destination="@id/navigation_change_passwordd" />
+    </fragment>
     <fragment
         android:id="@+id/navigation_register"
         android:name="robin.pe.turistea.ui.Register"

@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -47,14 +48,8 @@ public class Register extends Fragment {
     private TextInputLayout tilNombres, tilApellidos, tilFechNaci, tilDni, tilCelular, tilSexo, tilCorreo, tilPasswordd, tilConfirPasswordd;
     private Context context;
     private NavController navController;
+    private TextView tvPasswordRequisitos; // Agrega arriba o junto a tilPasswordd
     
-    // Google Sign-In
-    private GoogleSignInClient mGoogleSignInClient;
-    private ActivityResultLauncher<Intent> googleSignInLauncher;
-    
-    // Facebook Login
-    private CallbackManager callbackManager;
-
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_register, container, false);
@@ -79,6 +74,12 @@ public class Register extends Fragment {
         tilCorreo = view.findViewById(R.id.tilCorreo);
         tilPasswordd = view.findViewById(R.id.tilPasswordd);
         tilConfirPasswordd = view.findViewById(R.id.tilConfirPasswordd);
+
+        tvPasswordRequisitos = new TextView(getContext());
+        tvPasswordRequisitos.setText("Se requiere al menos un número y un caracter especial");
+        tvPasswordRequisitos.setTextColor(getResources().getColor(R.color.azul_oscuro));
+        tvPasswordRequisitos.setTextSize(10);
+        ((ViewGroup) view.findViewById(R.id.tilPasswordd).getParent()).addView(tvPasswordRequisitos, ((ViewGroup) view.findViewById(R.id.tilPasswordd)).getLayoutParams());
 
         return view;
     }
@@ -112,8 +113,10 @@ public class Register extends Fragment {
                 edtFechNaci.setText(fecha);
             }, year, month, day);
             
-            // Establecer fecha máxima (hoy - 18 años)
-            datePickerDialog.getDatePicker().setMaxDate(c.getTimeInMillis());
+            // Establecer fecha máxima (hoy - 18 años exactos)
+            Calendar maxDate = Calendar.getInstance();
+            maxDate.add(Calendar.YEAR, -18);
+            datePickerDialog.getDatePicker().setMaxDate(maxDate.getTimeInMillis());
             
             // Establecer fecha mínima (hace 100 años)
             Calendar minDate = Calendar.getInstance();
@@ -159,12 +162,6 @@ public class Register extends Fragment {
 
         // Botón iniciar sesión
         view.findViewById(R.id.tvIniciarSesion).setOnClickListener(v -> navController.navigate(R.id.navigation_login));
-        
-        // Configurar Google Sign-In
-        view.findViewById(R.id.IcGoogle).setOnClickListener(v -> signInWithGoogle());
-        
-        // Configurar Facebook Login
-        view.findViewById(R.id.IcFacebook).setOnClickListener(v -> signInWithFacebook());
     }
 
     private void btnRegister() {
@@ -236,8 +233,8 @@ public class Register extends Fragment {
         if (password.isEmpty()) {
             tilPasswordd.setError("La contraseña es obligatoria");
             hayErrores = true;
-        } else if (password.length() < 6 || password.length() > 16) {
-            tilPasswordd.setError("La contraseña debe tener entre 6 y 16 caracteres");
+        } else if (!password.matches("^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,16}$")) {
+            tilPasswordd.setError("La contraseña debe tener entre 6 y 16 caracteres, incluir al menos un número y un caracter especial entre !@#$%^&*");
             hayErrores = true;
         }
         if (confirPassword.isEmpty()) {
@@ -249,12 +246,26 @@ public class Register extends Fragment {
         }
         
         if (hayErrores) {
+            // Si cualquier error se detecta, nos detenemos antes de intentar el registro y no llamamos a RegisterTask
             android.widget.Toast.makeText(context, "Complete todos los campos obligatorios", android.widget.Toast.LENGTH_LONG).show();
             return;
         }
 
         // Ejecutar registro
         android.widget.Toast.makeText(context, "Registrando usuario...", android.widget.Toast.LENGTH_SHORT).show();
+        
+        // Log final antes de enviar
+        android.util.Log.d("Register", "=== DATOS A REGISTRAR ===");
+        android.util.Log.d("Register", "nombres: [" + nombres + "]");
+        android.util.Log.d("Register", "apellidos: [" + apellidos + "]");
+        android.util.Log.d("Register", "correo: [" + correo + "]");
+        android.util.Log.d("Register", "celular: [" + celular + "]");
+        android.util.Log.d("Register", "sexo: [" + sexo + "]");
+        android.util.Log.d("Register", "fechaNaci: [" + fechaNaci + "]");
+        android.util.Log.d("Register", "dni: [" + dni + "]");
+        android.util.Log.d("Register", "password length: " + password.length());
+        android.util.Log.d("Register", "========================");
+        
         new RegisterTask(nombres, apellidos, correo, celular, sexo, password, fechaNaci, dni).execute();
     }
 
@@ -263,14 +274,25 @@ public class Register extends Fragment {
         private String errorMsg = "";
 
         RegisterTask(String name, String lastname, String email, String cellphone, String sexo, String password, String date_of_birth, String dni) {
-            this.name = name;
-            this.lastname = lastname;
-            this.email = email;
-            this.cellphone = cellphone;
-            this.sexo = sexo;
-            this.password = password;
-            this.date_of_birth = date_of_birth;
-            this.dni = dni;
+            // Limpiar y formatear los datos antes de enviar
+            this.name = name.trim();
+            this.lastname = lastname.trim();
+            this.email = email.trim().toLowerCase(); // Email siempre en minúsculas
+            this.cellphone = cellphone.trim();
+            this.sexo = sexo.trim().toLowerCase(); // Sexo siempre en minúsculas
+            this.password = password; // Password NO se hace trim (puede tener espacios intencionales)
+            this.date_of_birth = date_of_birth.trim();
+            this.dni = dni.trim();
+            
+            // Log para verificar datos antes de enviar
+            android.util.Log.d("RegisterTask", "Datos procesados:");
+            android.util.Log.d("RegisterTask", "name=" + this.name + " (length=" + this.name.length() + ")");
+            android.util.Log.d("RegisterTask", "lastname=" + this.lastname + " (length=" + this.lastname.length() + ")");
+            android.util.Log.d("RegisterTask", "email=" + this.email + " (length=" + this.email.length() + ")");
+            android.util.Log.d("RegisterTask", "cellphone=" + this.cellphone + " (length=" + this.cellphone.length() + ")");
+            android.util.Log.d("RegisterTask", "sexo=" + this.sexo);
+            android.util.Log.d("RegisterTask", "date_of_birth=" + this.date_of_birth);
+            android.util.Log.d("RegisterTask", "dni=" + this.dni + " (length=" + this.dni.length() + ")");
         }
 
         @Override
@@ -338,21 +360,45 @@ public class Register extends Fragment {
 
             if (result != null) {
                 try {
-                    // El backend puede responder con un JSON o un string directo
                     if (result.startsWith("{")) {
                         org.json.JSONObject json = new org.json.JSONObject(result);
-
+                        
+                        // LOG COMPLETO para debug
+                        android.util.Log.d("RegisterTask", "JSON completo recibido: " + json.toString());
+                        
                         // Buscar mensaje de error
                         if (json.has("error") || json.has("message")) {
                             String msg = json.has("error") ? json.getString("error") : json.getString("message");
-
-                            // Verificar si es correo duplicado
-                            if (msg.contains("email") || msg.contains("correo") || msg.contains("existe") || msg.contains("duplicate")) {
-                                android.widget.Toast.makeText(context, "Este correo ya está registrado", android.widget.Toast.LENGTH_LONG).show();
+                            
+                            android.util.Log.d("RegisterTask", "Mensaje de error del backend: " + msg);
+                            
+                            // Mostrar el mensaje real del backend al usuario para debug
+                            android.widget.Toast.makeText(context, "Error del servidor: " + msg + "\n\nPor favor verifica los datos y vuelve a intentar.", android.widget.Toast.LENGTH_LONG).show();
+                            
+                            // Manejar diferentes tipos de errores
+                            if (msg.toLowerCase().contains("contraseña") || msg.toLowerCase().contains("password") || msg.toLowerCase().contains("especial") || msg.toLowerCase().contains("numero")) {
+                                tilPasswordd.setError(msg);
+                            } else if (msg.contains("email") || msg.contains("correo") || msg.contains("existe") || msg.contains("duplicate") || msg.toLowerCase().contains("ya existe el email")) {
                                 tilCorreo.setError("Este correo ya está registrado");
+                            } else if (msg.toLowerCase().contains("validation error")) {
+                                // Error de validación genérico - puede ser cualquier cosa
+                                tilCorreo.setError("Error de validación");
+                                } else if (msg.contains("403") || msg.contains("Request failed")) {
+                                // Error 403: El usuario probablemente fue creado pero falló el envío del email
+                                android.widget.Toast.makeText(context, "Tu cuenta fue creada pero hubo un problema al enviar el email. Por favor contacta a soporte o intenta iniciar sesión directamente.", android.widget.Toast.LENGTH_LONG).show();
+                                // Navegar al login ya que la cuenta ya existe
+                                if (getActivity() != null) {
+                                    getActivity().runOnUiThread(() -> {
+                                        try {
+                                            navController.navigate(R.id.navigation_login);
+                                        } catch (Exception e) {
+                                            android.util.Log.e("Register", "Error al navegar: " + e.getMessage());
+                                        }
+                                    });
+                                }
                             } else {
-                                android.widget.Toast.makeText(context, msg, android.widget.Toast.LENGTH_LONG).show();
-                                tilCorreo.setError(msg);
+                                // Cualquier otro error
+                                tilCorreo.setError("Error en el registro");
                             }
                         } else {
                             // Registro exitoso
@@ -374,7 +420,7 @@ public class Register extends Fragment {
                     } else {
                         // Respuesta es texto directo
                         if (result.contains("exito") || result.contains("éxito") || result.contains("creado")) {
-                            android.widget.Toast.makeText(context, result, android.widget.Toast.LENGTH_LONG).show();
+                            android.widget.Toast.makeText(context, "¡Registro exitoso! Revisa tu correo para verificar tu cuenta", android.widget.Toast.LENGTH_LONG).show();
                             // Navegar a verificación de código
                             if (getActivity() != null) {
                                 getActivity().runOnUiThread(() -> {
@@ -389,7 +435,7 @@ public class Register extends Fragment {
                                 });
                             }
                         } else {
-                            android.widget.Toast.makeText(context, result, android.widget.Toast.LENGTH_LONG).show();
+                            android.widget.Toast.makeText(context, "Error: " + result, android.widget.Toast.LENGTH_LONG).show();
                         }
                     }
                 } catch (Exception e) {
@@ -431,138 +477,6 @@ public class Register extends Fragment {
         } catch (Exception e) {
             android.util.Log.e("Register", "Error al validar edad: " + e.getMessage());
             return false;
-        }
-    }
-    
-    // ==================== GOOGLE SIGN-IN ====================
-    
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        
-        // Configurar Google Sign-In
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestEmail()
-                .build();
-        mGoogleSignInClient = GoogleSignIn.getClient(requireActivity(), gso);
-        
-        // Configurar el launcher para Google Sign-In
-        googleSignInLauncher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                result -> {
-                    Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(result.getData());
-                    handleGoogleSignInResult(task);
-                }
-        );
-        
-        // Configurar Facebook Login
-        callbackManager = CallbackManager.Factory.create();
-    }
-    
-    private void signInWithGoogle() {
-        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
-        googleSignInLauncher.launch(signInIntent);
-    }
-    
-    private void handleGoogleSignInResult(Task<GoogleSignInAccount> completedTask) {
-        try {
-            GoogleSignInAccount account = completedTask.getResult(ApiException.class);
-            
-            // Usuario autenticado con Google
-            String email = account.getEmail();
-            String displayName = account.getDisplayName();
-            
-            Log.d("GoogleSignIn", "Usuario: " + displayName + ", Email: " + email);
-            
-            // Guardar datos en SharedPreferences
-            SharedPreferences prefs = requireActivity().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = prefs.edit();
-            editor.putString("user_name", displayName != null ? displayName : "Usuario");
-            editor.putString("user_email", email != null ? email : "");
-            editor.putString("jwt", "google_token_" + account.getId()); // Token temporal
-            editor.apply();
-            
-            Toast.makeText(context, "Inicio de sesión exitoso con Google", Toast.LENGTH_SHORT).show();
-            
-            // Navegar al perfil
-            navController.navigate(R.id.navigation_profile);
-            
-        } catch (ApiException e) {
-            Log.w("GoogleSignIn", "Error al iniciar sesión: " + e.getStatusCode(), e);
-            Toast.makeText(context, "Error al iniciar sesión con Google", Toast.LENGTH_SHORT).show();
-        }
-    }
-    
-    // ==================== FACEBOOK LOGIN ====================
-    
-    private void signInWithFacebook() {
-        LoginManager.getInstance().logInWithReadPermissions(
-                this,
-                Arrays.asList("email", "public_profile")
-        );
-        
-        LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
-            @Override
-            public void onSuccess(LoginResult loginResult) {
-                AccessToken accessToken = loginResult.getAccessToken();
-                Log.d("FacebookLogin", "Inicio de sesión exitoso");
-                
-                // Obtener información del usuario
-                com.facebook.GraphRequest request = com.facebook.GraphRequest.newMeRequest(
-                        accessToken,
-                        (object, response) -> {
-                            try {
-                                String email = object.optString("email", "");
-                                String name = object.optString("name", "Usuario");
-                                String id = object.optString("id", "");
-                                
-                                Log.d("FacebookLogin", "Usuario: " + name + ", Email: " + email);
-                                
-                                // Guardar datos en SharedPreferences
-                                SharedPreferences prefs = requireActivity().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
-                                SharedPreferences.Editor editor = prefs.edit();
-                                editor.putString("user_name", name);
-                                editor.putString("user_email", email);
-                                editor.putString("jwt", "facebook_token_" + id); // Token temporal
-                                editor.apply();
-                                
-                                Toast.makeText(context, "Inicio de sesión exitoso con Facebook", Toast.LENGTH_SHORT).show();
-                                
-                                // Navegar al perfil
-                                navController.navigate(R.id.navigation_profile);
-                                
-                            } catch (Exception e) {
-                                Log.e("FacebookLogin", "Error al obtener datos del usuario", e);
-                            }
-                        }
-                );
-                
-                Bundle parameters = new Bundle();
-                parameters.putString("fields", "id,name,email");
-                request.setParameters(parameters);
-                request.executeAsync();
-            }
-            
-            @Override
-            public void onCancel() {
-                Log.d("FacebookLogin", "Login cancelado");
-                Toast.makeText(context, "Login cancelado", Toast.LENGTH_SHORT).show();
-            }
-            
-            @Override
-            public void onError(FacebookException error) {
-                Log.e("FacebookLogin", "Error al iniciar sesión", error);
-                Toast.makeText(context, "Error al iniciar sesión con Facebook", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-    
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        // Pasar el resultado a Facebook callback manager
-        if (callbackManager != null) {
-            callbackManager.onActivityResult(requestCode, resultCode, data);
         }
     }
 }

@@ -22,7 +22,7 @@ import android.widget.EditText;
 public class Verification_code extends Fragment {
     private String correo;
     private NavController navController;
-    private TextView tvCodigo1, tvCodigo2, tvCodigo3, tvCodigo4;
+    private EditText tvCodigo1, tvCodigo2, tvCodigo3, tvCodigo4;
     private String codigoCompleto = "";
 
     @Override
@@ -90,48 +90,53 @@ public class Verification_code extends Fragment {
     }
     
     private void configurarCamposCodigo() {
-        // Configurar cada TextView para que sea clickeable y permita ingresar un dígito
-        tvCodigo1.setOnClickListener(v -> mostrarTecladoNumerico(0));
-        tvCodigo2.setOnClickListener(v -> mostrarTecladoNumerico(1));
-        tvCodigo3.setOnClickListener(v -> mostrarTecladoNumerico(2));
-        tvCodigo4.setOnClickListener(v -> mostrarTecladoNumerico(3));
+        // Configurar auto-avance entre campos
+        setupEditText(tvCodigo1, null, tvCodigo2);
+        setupEditText(tvCodigo2, tvCodigo1, tvCodigo3);
+        setupEditText(tvCodigo3, tvCodigo2, tvCodigo4);
+        setupEditText(tvCodigo4, tvCodigo3, null);
+        
+        // Poner foco en el primer campo
+        tvCodigo1.requestFocus();
     }
     
-    private void mostrarTecladoNumerico(int posicion) {
-        // Crear un diálogo simple para ingresar un dígito
-        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(getContext());
-        builder.setTitle("Ingresar dígito " + (posicion + 1));
-        
-        final EditText input = new EditText(getContext());
-        input.setInputType(android.text.InputType.TYPE_CLASS_NUMBER);
-        input.setFilters(new android.text.InputFilter[]{new android.text.InputFilter.LengthFilter(1)});
-        builder.setView(input);
-        
-        builder.setPositiveButton("OK", (dialog, which) -> {
-            String digito = input.getText().toString();
-            if (!digito.isEmpty()) {
-                actualizarCodigo(posicion, digito);
+    private void setupEditText(EditText currentField, EditText previousField, EditText nextField) {
+        currentField.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+            
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // Si se ingresó un dígito, avanzar al siguiente campo
+                if (s.length() == 1 && nextField != null) {
+                    nextField.requestFocus();
+                }
+                
+                // Actualizar código completo
+                actualizarCodigoCompleto();
+            }
+            
+            @Override
+            public void afterTextChanged(Editable s) {
+                // Si está vacío y se presiona backspace, retroceder al campo anterior
+                if (s.length() == 0 && previousField != null) {
+                    previousField.requestFocus();
+                }
             }
         });
         
-        builder.setNegativeButton("Cancelar", (dialog, which) -> dialog.cancel());
-        builder.show();
+        // Permitir que al hacer clic seleccione todo el texto
+        currentField.setOnClickListener(v -> currentField.selectAll());
     }
     
-    private void actualizarCodigo(int posicion, String digito) {
-        // Actualizar el código completo
-        StringBuilder codigo = new StringBuilder(codigoCompleto);
-        while (codigo.length() <= posicion) {
-            codigo.append(" ");
-        }
-        codigo.setCharAt(posicion, digito.charAt(0));
-        codigoCompleto = codigo.toString().replace(" ", "");
+    private void actualizarCodigoCompleto() {
+        codigoCompleto = tvCodigo1.getText().toString() +
+                        tvCodigo2.getText().toString() +
+                        tvCodigo3.getText().toString() +
+                        tvCodigo4.getText().toString();
         
-        // Actualizar los TextView
-        tvCodigo1.setText(posicion >= 0 ? String.valueOf(codigoCompleto.charAt(0)) : "");
-        tvCodigo2.setText(posicion >= 1 ? String.valueOf(codigoCompleto.charAt(1)) : "");
-        tvCodigo3.setText(posicion >= 2 ? String.valueOf(codigoCompleto.charAt(2)) : "");
-        tvCodigo4.setText(posicion >= 3 ? String.valueOf(codigoCompleto.charAt(3)) : "");
+        android.util.Log.d("Verification", "Código actual: " + codigoCompleto + " (length=" + codigoCompleto.length() + ")");
     }
 
     // Tarea asíncrona para verificar el código

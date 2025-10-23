@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "556675201105",
+    "project_id": "turistea-397b4",
+    "storage_bucket": "turistea-397b4.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:556675201105:android:99a33277263e5141c7e070",
+        "android_client_info": {
+          "package_name": "robin.pe.turistea"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCK_zU_y2ZiyK9ZW1ND-YFqSdLYQ_ckhaw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

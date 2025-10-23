@@ -54,7 +54,7 @@
         android:padding="20dp"
         android:weightSum="4">
 
-        <TextView
+        <EditText
             android:id="@+id/tvCodigo1"
             android:layout_width="50dp"
             android:layout_height="50dp"
@@ -62,9 +62,11 @@
             android:layout_marginEnd="20dp"
             android:gravity="center"
             android:textSize="18sp"
-            android:textColor="@color/azul_oscuro"/>
+            android:textColor="@color/azul_oscuro"
+            android:inputType="number"
+            android:maxLength="1" />
 
-        <TextView
+        <EditText
             android:id="@+id/tvCodigo2"
             android:layout_width="50dp"
             android:layout_height="50dp"
@@ -72,9 +74,11 @@
             android:layout_marginEnd="20dp"
             android:gravity="center"
             android:textSize="18sp"
-            android:textColor="@color/azul_oscuro"/>
+            android:textColor="@color/azul_oscuro"
+            android:inputType="number"
+            android:maxLength="1" />
 
-        <TextView
+        <EditText
             android:id="@+id/tvCodigo3"
             android:layout_width="50dp"
             android:layout_height="50dp"
@@ -82,16 +86,20 @@
             android:layout_marginEnd="20dp"
             android:gravity="center"
             android:textSize="18sp"
-            android:textColor="@color/azul_oscuro"/>
+            android:textColor="@color/azul_oscuro"
+            android:inputType="number"
+            android:maxLength="1" />
 
-        <TextView
+        <EditText
             android:id="@+id/tvCodigo4"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:background="@drawable/fd_contorno_azu_fd_blancol"
             android:gravity="center"
             android:textSize="18sp"
-            android:textColor="@color/azul_oscuro" />
+            android:textColor="@color/azul_oscuro"
+            android:inputType="number"
+            android:maxLength="1" />
 
     </LinearLayout>
 
@@ -125,6 +133,7 @@
         android:layout_marginTop="470dp"
         android:layout_marginLeft="52dp"
         android:background="@drawable/fd_btn_azul_bordes"
-        android:text="Enviar"/>
+        android:text="Enviar"
+        android:textColor="@color/white"/>
 
 </FrameLayout>
