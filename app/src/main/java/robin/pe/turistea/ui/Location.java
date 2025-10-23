@@ -41,6 +41,7 @@ public class Location extends Fragment implements OnMapReadyCallback {
 
     private GoogleMap mMap;
     private ImageView icBack;
+    private Button btnCurrentLocation;
     private Button btnConfirmLocation;
     private TextView tvSelectedLocation;
     private FusedLocationProviderClient fusedLocationClient;
@@ -73,11 +74,15 @@ public class Location extends Fragment implements OnMapReadyCallback {
         
         // Inicializar vistas
         icBack = view.findViewById(R.id.IcBack);
+        btnCurrentLocation = view.findViewById(R.id.btnCurrentLocation);
         btnConfirmLocation = view.findViewById(R.id.btnConfirmLocation);
         tvSelectedLocation = view.findViewById(R.id.TvSelectedLocation);
         
         // Configurar el botón de volver
         icBack.setOnClickListener(v -> navController.navigateUp());
+        
+        // Configurar el botón de ubicación actual
+        btnCurrentLocation.setOnClickListener(v -> moveToCurrentLocation());
         
         // Configurar el botón de confirmar
         btnConfirmLocation.setOnClickListener(v -> confirmLocation());
@@ -116,6 +121,7 @@ public class Location extends Fragment implements OnMapReadyCallback {
         if (checkLocationPermissions()) {
             try {
                 mMap.setMyLocationEnabled(true);
+                moveToCurrentLocation();
             } catch (SecurityException e) {
                 Toast.makeText(getContext(), "Error al acceder a la ubicación", Toast.LENGTH_SHORT).show();
             }
@@ -129,6 +135,15 @@ public class Location extends Fragment implements OnMapReadyCallback {
                 Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED;
     }
     
+    private void moveToCurrentLocation() {
+        // Mover al centro de Lima
+        if (mMap != null) {
+            selectedLatLng = DEFAULT_LOCATION;
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(selectedLatLng, 15));
+            getAddressFromLocation(selectedLatLng);
+            Toast.makeText(getContext(), "Ubicación establecida en Lima Centro", Toast.LENGTH_SHORT).show();
+        }
+    }
     
     private void getAddressFromLocation(LatLng latLng) {
         // Ejecutar en un hilo separado para no bloquear la UI

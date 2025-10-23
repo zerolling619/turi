@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+<<<<<<< HEAD
     tools:context=".ui.Splash">
 
     <ImageView
@@ -14,6 +15,11 @@
         android:adjustViewBounds="false"
         android:cropToPadding="false"/>
 
+=======
+    android:background="@mipmap/ic_fondo_inicio_foreground"
+    tools:context=".ui.Splash">
+
+>>>>>>> 4b04106b6799400d36a5b8aa209a5db1f51e27e9
     <LinearLayout
         android:id="@+id/tv_star_app"
         android:layout_width="match_parent"

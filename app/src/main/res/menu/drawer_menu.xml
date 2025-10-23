@@ -4,10 +4,13 @@
     <!-- Sección Principal -->
     <group android:checkableBehavior="single">
         <item
+<<<<<<< HEAD
             android:id="@+id/nav_inicio"
             android:icon="@drawable/ic_home"
             android:title="Inicio" />
         <item
+=======
+>>>>>>> 4b04106b6799400d36a5b8aa209a5db1f51e27e9
             android:id="@+id/nav_profile"
             android:icon="@drawable/ic_user"
             android:title="Mi Perfil" />

@@ -55,7 +55,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:layout_marginTop="15dp"
+<<<<<<< HEAD
                     app:boxBackgroundMode="none"
+=======
+>>>>>>> 4b04106b6799400d36a5b8aa209a5db1f51e27e9
                     app:errorEnabled="true"
                     app:hintEnabled="false">
 
@@ -94,7 +97,10 @@
                     android:layout_height="40dp"
                     android:layout_marginTop="15dp"
                     android:background="@drawable/fd_contorno_azul"
+<<<<<<< HEAD
                     app:boxBackgroundMode="none"
+=======
+>>>>>>> 4b04106b6799400d36a5b8aa209a5db1f51e27e9
                     app:errorEnabled="true"
                     app:hintEnabled="false">
 
@@ -132,7 +138,10 @@
                     android:layout_height="40dp"
                     android:layout_marginTop="15dp"
                     android:background="@drawable/fd_contorno_azul"
+<<<<<<< HEAD
                     app:boxBackgroundMode="none"
+=======
+>>>>>>> 4b04106b6799400d36a5b8aa209a5db1f51e27e9
                     app:errorEnabled="true"
                     app:hintEnabled="false">
 
@@ -180,7 +189,10 @@
                         android:layout_height="40dp"
                         android:layout_marginTop="15dp"
                         android:background="@drawable/fd_contorno_azul"
+<<<<<<< HEAD
                         app:boxBackgroundMode="none"
+=======
+>>>>>>> 4b04106b6799400d36a5b8aa209a5db1f51e27e9
                         app:errorEnabled="true"
                         app:hintEnabled="false">
 
@@ -219,7 +231,10 @@
                         android:layout_height="40dp"
                         android:layout_marginTop="15dp"
                         android:background="@drawable/fd_contorno_azul"
+<<<<<<< HEAD
                         app:boxBackgroundMode="none"
+=======
+>>>>>>> 4b04106b6799400d36a5b8aa209a5db1f51e27e9
                         app:errorEnabled="true"
                         app:hintEnabled="false">
 
@@ -259,7 +274,10 @@
                     android:layout_height="40dp"
                     android:layout_marginTop="15dp"
                     android:background="@drawable/fd_contorno_azul"
+<<<<<<< HEAD
                     app:boxBackgroundMode="none"
+=======
+>>>>>>> 4b04106b6799400d36a5b8aa209a5db1f51e27e9
                     app:errorEnabled="true"
                     app:hintEnabled="false">
 
@@ -300,7 +318,10 @@
                     android:layout_height="40dp"
                     android:layout_marginTop="15dp"
                     android:background="@drawable/fd_contorno_azul"
+<<<<<<< HEAD
                     app:boxBackgroundMode="none"
+=======
+>>>>>>> 4b04106b6799400d36a5b8aa209a5db1f51e27e9
                     app:errorEnabled="true"
                     app:hintEnabled="false">
 
@@ -339,7 +360,10 @@
                     android:layout_height="40dp"
                     android:layout_marginTop="15dp"
                     android:background="@drawable/fd_contorno_azul"
+<<<<<<< HEAD
                     app:boxBackgroundMode="none"
+=======
+>>>>>>> 4b04106b6799400d36a5b8aa209a5db1f51e27e9
                     app:errorEnabled="true"
                     app:hintEnabled="false"
                     app:passwordToggleEnabled="true">
@@ -349,7 +373,11 @@
                         android:layout_width="match_parent"
                         android:layout_height="40dp"
                         android:background="@drawable/fd_contorno_azul"
+<<<<<<< HEAD
                         android:inputType="textPassword"
+=======
+                        android:inputType="textEmailAddress"
+>>>>>>> 4b04106b6799400d36a5b8aa209a5db1f51e27e9
                         android:maxLength="50"
                         android:padding="8dp"
                         android:paddingTop="8dp" />
@@ -378,7 +406,10 @@
                     android:layout_height="40dp"
                     android:layout_marginTop="15dp"
                     android:background="@drawable/fd_contorno_azul"
+<<<<<<< HEAD
                     app:boxBackgroundMode="none"
+=======
+>>>>>>> 4b04106b6799400d36a5b8aa209a5db1f51e27e9
                     app:errorEnabled="true"
                     app:hintEnabled="false"
                     app:passwordToggleEnabled="true">
@@ -388,7 +419,11 @@
                         android:layout_width="match_parent"
                         android:layout_height="40dp"
                         android:background="@drawable/fd_contorno_azul"
+<<<<<<< HEAD
                         android:inputType="textPassword"
+=======
+                        android:inputType="textEmailAddress"
+>>>>>>> 4b04106b6799400d36a5b8aa209a5db1f51e27e9
                         android:maxLength="50"
                         android:padding="8dp"
                         android:paddingTop="8dp" />

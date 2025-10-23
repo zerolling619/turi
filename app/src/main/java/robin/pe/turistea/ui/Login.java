@@ -235,7 +235,6 @@ public class Login extends Fragment {
                             android.util.Log.e("Login", "JWT es null, no se puede guardar");
                         }
                         
-                        
                         android.widget.Toast.makeText(context, "Login exitoso!", android.widget.Toast.LENGTH_SHORT).show();
                         navController.navigate(R.id.action_navigation_login_to_navigation_inicio);
                     } else {
