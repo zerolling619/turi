@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import robin.pe.turistea.R;
+import robin.pe.turistea.Config;
 import robin.pe.turistea.databinding.FragmentLoginBinding;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -141,9 +142,9 @@ public class Login extends Fragment {
         protected String doInBackground(Void... voids) {
             try {
                 // Log 1: Iniciando petición
-                android.util.Log.d("LoginTask", "Iniciando petición a: http://10.0.2.2:4001/api/signin");
+                android.util.Log.d("LoginTask", "Iniciando petición a: " + Config.LOGIN_URL);
                 
-                java.net.URL url = new java.net.URL("http://10.0.2.2:4001/api/signin");
+                java.net.URL url = new java.net.URL(Config.LOGIN_URL);
                 java.net.HttpURLConnection conn = (java.net.HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("POST");
                 conn.setDoOutput(true);
@@ -236,7 +237,7 @@ public class Login extends Fragment {
                         }
                         
                         android.widget.Toast.makeText(context, "Login exitoso!", android.widget.Toast.LENGTH_SHORT).show();
-                        navController.navigate(R.id.action_navigation_login_to_navigation_inicio);
+                        // La navegación se hará después de obtener el perfil del usuario
                     } else {
                         // Buscar mensaje de error en diferentes campos
                         String msg = "";
@@ -274,7 +275,7 @@ public class Login extends Fragment {
                         }
                         
                         android.widget.Toast.makeText(context, "JWT detectado - Login exitoso!", android.widget.Toast.LENGTH_SHORT).show();
-                        navController.navigate(R.id.action_navigation_login_to_navigation_inicio);
+                        navigateBasedOnRole(context, navController);
                     } else {
                         showError("Respuesta inválida del servidor: " + result);
                     }
@@ -317,7 +318,7 @@ public class Login extends Fragment {
             try {
                 android.util.Log.d("Login", "Obteniendo perfil del usuario con JWT: " + jwt);
                 
-                java.net.URL url = new java.net.URL("http://10.0.2.2:4001/api/user-account");
+                java.net.URL url = new java.net.URL(Config.USER_ACCOUNT_URL);
                 java.net.HttpURLConnection conn = (java.net.HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("GET");
                 conn.setRequestProperty("Authorization", "Bearer " + jwt);
@@ -338,7 +339,17 @@ public class Login extends Fragment {
                     reader.close();
                     
                     android.util.Log.d("Login", "Perfil del usuario recibido: " + response.toString());
+                    android.util.Log.d("Login", "=== ANÁLISIS DE LA RESPUESTA JSON ===");
+                    android.util.Log.d("Login", "Respuesta completa: " + response.toString());
                     org.json.JSONObject userProfile = new org.json.JSONObject(response.toString());
+                    
+                    // Verificar qué campos están disponibles en la respuesta
+                    android.util.Log.d("Login", "Campos disponibles en la respuesta:");
+                    java.util.Iterator<String> keys = userProfile.keys();
+                    while (keys.hasNext()) {
+                        String key = keys.next();
+                        android.util.Log.d("Login", "- Campo: '" + key + "' = '" + userProfile.optString(key, "NULL") + "'");
+                    }
                     
                     // Procesar los datos en el hilo principal
                     requireActivity().runOnUiThread(() -> {
@@ -347,8 +358,30 @@ public class Login extends Fragment {
                             String userLastName = userProfile.optString("lastname", "");
                             String userEmail = userProfile.optString("email", email);
                             String userCellphone = userProfile.optString("cellphone", "");
+                            String userImagePath = userProfile.optString("path", ""); // URL de la imagen de perfil
+                            // Intentar obtener el rol con diferentes nombres de campo
+                            String userRole = "user"; // Valor por defecto
+                            if (userProfile.has("role")) {
+                                userRole = userProfile.optString("role", "user");
+                            } else if (userProfile.has("admin_rol_id")) {
+                                int adminRolId = userProfile.optInt("admin_rol_id", 0);
+                                // Mapear admin_rol_id a nombres de rol
+                                if (adminRolId == 1) userRole = "admin";
+                                else if (adminRolId == 2) userRole = "driver";
+                                else if (adminRolId == 3) userRole = "guide";
+                                else userRole = "user";
+                            } else if (userProfile.has("user_role")) {
+                                userRole = userProfile.optString("user_role", "user");
+                            } else if (userProfile.has("rol")) {
+                                userRole = userProfile.optString("rol", "user");
+                            }
                             
-                            android.util.Log.d("Login", "Datos del perfil - Nombre: '" + userName + "', Apellido: '" + userLastName + "', Email: '" + userEmail + "', Cellphone: '" + userCellphone + "'");
+                            android.util.Log.d("Login", "=== DATOS DEL PERFIL RECIBIDOS ===");
+                            android.util.Log.d("Login", "Nombre: '" + userName + "'");
+                            android.util.Log.d("Login", "Apellido: '" + userLastName + "'");
+                            android.util.Log.d("Login", "Email: '" + userEmail + "'");
+                            android.util.Log.d("Login", "Cellphone: '" + userCellphone + "'");
+                            android.util.Log.d("Login", "ROL: '" + userRole + "'");
                             
                             // Combinar nombre y apellido
                             String fullName = "";
@@ -384,18 +417,27 @@ public class Login extends Fragment {
                                 fullName = capitalized.toString().trim();
                             }
                             
-                            // Guardar los datos del usuario
+                            // Guardar los datos del usuario incluyendo el rol y la imagen
                             editor.putString("user_name", fullName);
                             editor.putString("user_email", userEmail);
                             editor.putString("user_cellphone", userCellphone);
+                            editor.putString("user_role", userRole); // Guardar rol del usuario
+                            editor.putString("user_image_path", userImagePath); // Guardar URL de imagen
                             editor.apply();
                             
-                            android.util.Log.d("Login", "Perfil guardado - Nombre completo: " + fullName + ", Email: " + userEmail + ", Cellphone: " + userCellphone);
+                            android.util.Log.d("Login", "=== PERFIL GUARDADO EN SHAREDPREFERENCES ===");
+                            android.util.Log.d("Login", "Nombre completo: " + fullName);
+                            android.util.Log.d("Login", "Email: " + userEmail);
+                            android.util.Log.d("Login", "Cellphone: " + userCellphone);
+                            android.util.Log.d("Login", "ROL GUARDADO: '" + userRole + "'");
                             
                             // Actualizar el header del drawer si la actividad es MainActivity
                             if (getActivity() instanceof robin.pe.turistea.MainActivity) {
                                 ((robin.pe.turistea.MainActivity) getActivity()).updateDrawerHeader();
                             }
+                            
+                            // Navegar según el rol del usuario después de guardar los datos
+                            navigateBasedOnRole(context, navController);
                             
                         } catch (Exception e) {
                             android.util.Log.e("Login", "Error al procesar perfil del usuario: " + e.getMessage(), e);
@@ -403,31 +445,64 @@ public class Login extends Fragment {
                             editor.putString("user_name", email.split("@")[0]);
                             editor.putString("user_email", email);
                             editor.putString("user_cellphone", "");
+                            editor.putString("user_role", "user"); // Rol por defecto
                             editor.apply();
+                            
+                            // Navegar con rol por defecto
+                            navigateBasedOnRole(context, navController);
                         }
                     });
                     
                 } else {
                     android.util.Log.e("Login", "Error al obtener perfil: " + responseCode);
-                    // En caso de error, usar datos básicos
+                    // En caso de error, usar datos básicos y navegar
                     requireActivity().runOnUiThread(() -> {
                         editor.putString("user_name", email.split("@")[0]);
                         editor.putString("user_email", email);
                         editor.putString("user_cellphone", "");
+                        editor.putString("user_role", "user"); // Rol por defecto
                         editor.apply();
+                        
+                        // Navegar con rol por defecto
+                        navigateBasedOnRole(context, navController);
                     });
                 }
             } catch (Exception e) {
                 android.util.Log.e("Login", "Error al obtener perfil del usuario: " + e.getMessage(), e);
-                // En caso de error, usar datos básicos
+                // En caso de error, usar datos básicos y navegar
                 requireActivity().runOnUiThread(() -> {
                     editor.putString("user_name", email.split("@")[0]);
                     editor.putString("user_email", email);
                     editor.putString("user_cellphone", "");
+                    editor.putString("user_role", "user"); // Rol por defecto
                     editor.apply();
+                    
+                    // Navegar con rol por defecto
+                    navigateBasedOnRole(context, navController);
                 });
             }
         }).start();
+    }
+
+    // Función estática para navegar según el rol del usuario
+    private static void navigateBasedOnRole(Context context, NavController navController) {
+        android.content.SharedPreferences prefs = context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
+        String userRole = prefs.getString("user_role", "user");
+        
+        android.util.Log.d("Login", "=== NAVEGACIÓN BASADA EN ROL ===");
+        android.util.Log.d("Login", "Rol obtenido de SharedPreferences: '" + userRole + "'");
+        android.util.Log.d("Login", "Todos los datos en SharedPreferences:");
+        android.util.Log.d("Login", "- user_name: '" + prefs.getString("user_name", "NO_ENCONTRADO") + "'");
+        android.util.Log.d("Login", "- user_email: '" + prefs.getString("user_email", "NO_ENCONTRADO") + "'");
+        android.util.Log.d("Login", "- user_role: '" + prefs.getString("user_role", "NO_ENCONTRADO") + "'");
+        
+        if (userRole.equals("driver") || userRole.equals("guide")) {
+            android.util.Log.d("Login", "Navegando a vista de reservas (driver/guide)");
+            navController.navigate(R.id.action_navigation_login_to_navigation_inicio_VistaReservas);
+        } else {
+            android.util.Log.d("Login", "Navegando a vista normal de inicio (user/admin)");
+            navController.navigate(R.id.action_navigation_login_to_navigation_inicio);
+        }
     }
 
     private void signInWithGoogle() {
@@ -490,7 +565,7 @@ public class Login extends Fragment {
                 // PASO 1: Intentar login con Google ID Token (más seguro)
                 if (idToken != null && !idToken.isEmpty()) {
                     android.util.Log.d("GoogleSignInBackend", "Intentando signin con Google ID Token");
-                    java.net.URL url = new java.net.URL("http://10.0.2.2:4001/api/signin-google");
+                    java.net.URL url = new java.net.URL(Config.GOOGLE_SIGNIN_URL);
                     java.net.HttpURLConnection conn = (java.net.HttpURLConnection) url.openConnection();
                     conn.setRequestMethod("POST");
                     conn.setDoOutput(true);
@@ -524,9 +599,9 @@ public class Login extends Fragment {
                     }
                 }
                 
-                // PASO 2: Si falla o no hay token, crear usuario con signup-social-network
+                // PASO 2: Si falla o no hay token, crear usuario con singup-social-network-user
                 android.util.Log.d("GoogleSignInBackend", "Creando usuario en backend: " + email);
-                java.net.URL url = new java.net.URL("http://10.0.2.2:4001/api/signup-social-network");
+                java.net.URL url = new java.net.URL(Config.SOCIAL_REGISTER_URL);
                 java.net.HttpURLConnection conn = (java.net.HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("POST");
                 conn.setDoOutput(true);
@@ -542,6 +617,7 @@ public class Login extends Fragment {
                 jsonParam.put("dni", "");
                 jsonParam.put("date_of_birth", "");
                 jsonParam.put("origin", "google");
+                jsonParam.put("path", "https://ui-avatars.com/api/?name=" + name + "+" + lastname + "&background=random"); // Avatar por defecto
                 
                 android.util.Log.d("GoogleSignInBackend", "Datos enviados: " + jsonParam.toString());
                 
@@ -576,73 +652,210 @@ public class Login extends Fragment {
         
         @Override
         protected void onPostExecute(String result) {
-            if (result != null && !result.startsWith("ERROR:")) {
-                try {
-                    // Caso especial: Usuario verificado con signin-google
-                    if (result.startsWith("GOOGLE_VERIFIED:")) {
-                        android.util.Log.d("GoogleSignInBackend", "Usuario verificado con Google");
-                        android.content.SharedPreferences prefs = context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
-                        android.content.SharedPreferences.Editor editor = prefs.edit();
-                        editor.putString("user_name", name + " " + lastname);
-                        editor.putString("user_email", email);
-                        editor.putString("jwt", "google_verified_" + googleId);
-                        editor.apply();
-                        
-                        // Actualizar el header del drawer
-                        if (context instanceof robin.pe.turistea.MainActivity) {
-                            ((robin.pe.turistea.MainActivity) context).updateDrawerHeader();
+            try {
+                // Manejar casos de error JSON: message
+                if (result != null && result.trim().startsWith("{")) {
+                    org.json.JSONObject obj = new org.json.JSONObject(result);
+                    if (obj.has("message")) {
+                        String msg = obj.getString("message");
+                        android.util.Log.e("GoogleSignUpBackend", "Error backend: " + msg);
+                        if (msg.equalsIgnoreCase("NO REGISTERED USER")) {
+                            // Intentar inscripción automática a signup-social-network
+                            new SignUpSocialNetworkTask(email, name, lastname, googleId, navController, context).execute();
+                            return;
                         }
-                        
-                        android.widget.Toast.makeText(context, "¡Bienvenido " + name + "!", android.widget.Toast.LENGTH_SHORT).show();
-                        navController.navigate(R.id.action_navigation_login_to_navigation_inicio);
+                        android.widget.Toast.makeText(context, msg, android.widget.Toast.LENGTH_LONG).show();
                         return;
                     }
+                }
+                // Manejar error antiguo tipo string
+                if (result != null && (result.equalsIgnoreCase("Unauthorized") || result.startsWith("ERROR:"))) {
+                    android.util.Log.e("GoogleSignUpBackend", "No autorizado o error en Google SignIn");
+                    android.widget.Toast.makeText(context, "No autorizado. Verifica tu cuenta Google o usa otro método.", android.widget.Toast.LENGTH_LONG).show();
+                    return;
+                }
+                // Caso especial: Usuario verificado con signin-google
+                if (result != null && result.startsWith("GOOGLE_VERIFIED:")) {
+                    android.util.Log.d("GoogleSignInBackend", "Usuario verificado con Google");
                     
-                    org.json.JSONObject json = new org.json.JSONObject(result);
+                    // Para usuarios de Google, siempre usar rol "user"
+                    String userRole = "user";
+                    String userImagePath = "https://ui-avatars.com/api/?name=" + name + "+" + lastname + "&background=random";
                     
-                    // Obtener el JWT (puede venir como JWT, jwt o token)
-                    String jwt = null;
-                    if (json.has("JWT")) jwt = json.getString("JWT");
-                    else if (json.has("jwt")) jwt = json.getString("jwt");
-                    else if (json.has("token")) jwt = json.getString("token");
+                    android.util.Log.d("GoogleSignInBackend", "ROL ASIGNADO para usuario Google: '" + userRole + "'");
                     
-                    if (jwt != null && !jwt.isEmpty()) {
-                        android.util.Log.d("GoogleSignUpBackend", "JWT recibido exitosamente");
-                        
-                        // Guardar datos en SharedPreferences
-                        android.content.SharedPreferences prefs = context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
-                        android.content.SharedPreferences.Editor editor = prefs.edit();
-                        editor.putString("user_name", name + " " + lastname);
-                        editor.putString("user_email", email);
-                        editor.putString("jwt", jwt);
-                        editor.apply();
-                        
-                        // Actualizar el header del drawer
-                        if (context instanceof robin.pe.turistea.MainActivity) {
-                            ((robin.pe.turistea.MainActivity) context).updateDrawerHeader();
-                        }
-                        
-                        android.widget.Toast.makeText(context, "¡Bienvenido " + name + "!", android.widget.Toast.LENGTH_SHORT).show();
-                        
-                        // Navegar al inicio
+                    android.content.SharedPreferences prefs = context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
+                    android.content.SharedPreferences.Editor editor = prefs.edit();
+                    editor.putString("user_name", name + " " + lastname);
+                    editor.putString("user_email", email);
+                    editor.putString("jwt", "google_verified_" + googleId);
+                    editor.putString("user_role", userRole); // Siempre "user" para Google
+                    editor.putString("user_image_path", userImagePath); // Avatar generado
+                    editor.apply();
+                    
+                    android.util.Log.d("GoogleSignInBackend", "ROL GUARDADO en SharedPreferences: '" + userRole + "'");
+                    
+                    // Actualizar el header del drawer
+                    if (context instanceof robin.pe.turistea.MainActivity) {
+                        ((robin.pe.turistea.MainActivity) context).updateDrawerHeader();
+                    }
+                    
+                    android.widget.Toast.makeText(context, "¡Bienvenido " + name + "!", android.widget.Toast.LENGTH_SHORT).show();
+                    navigateBasedOnRole(context, navController);
+                    return;
+                }
+                
+                org.json.JSONObject json = new org.json.JSONObject(result);
+                
+                // Obtener el JWT (puede venir como JWT, jwt o token)
+                String jwt = null;
+                if (json.has("JWT")) jwt = json.getString("JWT");
+                else if (json.has("jwt")) jwt = json.getString("jwt");
+                else if (json.has("token")) jwt = json.getString("token");
+                
+                if (jwt != null && !jwt.isEmpty()) {
+                    android.util.Log.d("GoogleSignUpBackend", "JWT recibido exitosamente");
+                    
+                    // Para usuarios de Google, siempre usar rol "user"
+                    String userRole = "user";
+                    String userImagePath = "https://ui-avatars.com/api/?name=" + name + "+" + lastname + "&background=random";
+                    
+                    android.util.Log.d("GoogleSignUpBackend", "ROL ASIGNADO para usuario Google: '" + userRole + "'");
+                    
+                    // Guardar datos en SharedPreferences
+                    android.content.SharedPreferences prefs = context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
+                    android.content.SharedPreferences.Editor editor = prefs.edit();
+                    editor.putString("user_name", name + " " + lastname);
+                    editor.putString("user_email", email);
+                    editor.putString("jwt", jwt);
+                    editor.putString("user_role", userRole); // Siempre "user" para Google
+                    editor.putString("user_image_path", userImagePath); // Avatar generado
+                    editor.apply();
+                    
+                    android.util.Log.d("GoogleSignUpBackend", "ROL GUARDADO en SharedPreferences: '" + userRole + "'");
+                    
+                    // Actualizar el header del drawer
+                    if (context instanceof robin.pe.turistea.MainActivity) {
+                        ((robin.pe.turistea.MainActivity) context).updateDrawerHeader();
+                    }
+                    
+                    android.widget.Toast.makeText(context, "¡Bienvenido " + name + "!", android.widget.Toast.LENGTH_SHORT).show();
+                    
+                        // Navegar según el rol del usuario
                         try {
-                            navController.navigate(R.id.action_navigation_login_to_navigation_inicio);
+                            navigateBasedOnRole(context, navController);
                             android.util.Log.d("GoogleSignUpBackend", "Navegación exitosa");
                         } catch (Exception navEx) {
                             android.util.Log.e("GoogleSignUpBackend", "Error al navegar: " + navEx.getMessage());
                             android.widget.Toast.makeText(context, "Login exitoso. Por favor reinicia la app.", android.widget.Toast.LENGTH_LONG).show();
                         }
-                    } else {
-                        android.util.Log.e("GoogleSignUpBackend", "No se recibió JWT en la respuesta");
-                        android.widget.Toast.makeText(context, "Error: No se recibió token de autenticación", android.widget.Toast.LENGTH_LONG).show();
-                    }
-                } catch (Exception e) {
-                    android.util.Log.e("GoogleSignUpBackend", "Error al procesar respuesta: " + e.getMessage(), e);
-                    android.widget.Toast.makeText(context, "Error al procesar respuesta del servidor", android.widget.Toast.LENGTH_LONG).show();
+                } else {
+                    android.util.Log.e("GoogleSignUpBackend", "No se recibió JWT en la respuesta");
+                    android.widget.Toast.makeText(context, "Error: No se recibió token de autenticación", android.widget.Toast.LENGTH_LONG).show();
                 }
-            } else {
-                android.util.Log.e("GoogleSignUpBackend", "Error en backend: " + result);
-                android.widget.Toast.makeText(context, "Error al conectar con el servidor", android.widget.Toast.LENGTH_LONG).show();
+            } catch (Exception e) {
+                android.util.Log.e("GoogleSignUpBackend", "Error al procesar respuesta: " + e.getMessage(), e);
+                android.widget.Toast.makeText(context, "Error al procesar respuesta del servidor", android.widget.Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
+    // Definición de SignUpSocialNetworkTask a nivel de clase (no dentro de GoogleSignInBackendTask)
+    private static class SignUpSocialNetworkTask extends android.os.AsyncTask<Void, Void, String> {
+        private String email, name, lastname, googleId;
+        private NavController navController;
+        private Context context;
+
+        SignUpSocialNetworkTask(String email, String name, String lastname, String googleId, NavController navController, Context context) {
+            this.email = email;
+            this.name = name;
+            this.lastname = lastname;
+            this.googleId = googleId;
+            this.navController = navController;
+            this.context = context;
+        }
+
+        @Override
+        protected String doInBackground(Void... voids) {
+            try {
+                android.util.Log.d("SignUpSocialNetwork", "=== INICIANDO REGISTRO SOCIAL ===");
+                // Usar el endpoint que acepta el campo 'path' (singup-social-network-user)
+                java.net.URL url = new java.net.URL(Config.SOCIAL_REGISTER_URL);
+                java.net.HttpURLConnection conn = (java.net.HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("POST");
+                conn.setDoOutput(true);
+                conn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+                conn.setRequestProperty("Accept", "application/json");
+                conn.setConnectTimeout(10000);
+                conn.setReadTimeout(10000);
+
+                org.json.JSONObject jsonParam = new org.json.JSONObject();
+                jsonParam.put("email", email);
+                jsonParam.put("name", name);
+                jsonParam.put("lastname", lastname);
+                jsonParam.put("password", "google_" + googleId);
+                jsonParam.put("cellphone", "");
+                jsonParam.put("sexo", "");
+                jsonParam.put("dni", "");
+                jsonParam.put("date_of_birth", "");
+                jsonParam.put("origin", "google");
+                jsonParam.put("path", "https://ui-avatars.com/api/?name=" + name + "+" + lastname + "&background=random"); // Avatar por defecto
+
+                android.util.Log.d("SignUpSocialNetwork", "URL: " + url);
+                android.util.Log.d("SignUpSocialNetwork", "Datos a enviar: " + jsonParam.toString());
+
+                java.io.OutputStream os = conn.getOutputStream();
+                os.write(jsonParam.toString().getBytes("UTF-8"));
+                os.flush();
+                os.close();
+
+                int responseCode = conn.getResponseCode();
+                String responseMessage = conn.getResponseMessage();
+                android.util.Log.d("SignUpSocialNetwork", "Código de respuesta: " + responseCode);
+                android.util.Log.d("SignUpSocialNetwork", "Mensaje de respuesta: " + responseMessage);
+
+                java.io.InputStream inputStream = (responseCode == java.net.HttpURLConnection.HTTP_OK)
+                        ? conn.getInputStream() : conn.getErrorStream();
+
+                if (inputStream != null) {
+                    java.io.BufferedReader reader = new java.io.BufferedReader(new java.io.InputStreamReader(inputStream));
+                    StringBuilder response = new StringBuilder();
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        response.append(line);
+                    }
+                    reader.close();
+                    android.util.Log.d("SignUpSocialNetwork", "Respuesta: " + response.toString());
+                    return response.toString();
+                }
+            } catch (Exception e) {
+                android.util.Log.e("SignUpSocialNetwork", "Error: " + e.getMessage(), e);
+                return "ERROR:" + e.getMessage();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            try {
+                if (result != null && result.trim().startsWith("{")) {
+                    org.json.JSONObject obj = new org.json.JSONObject(result);
+                    if (obj.has("message")) {
+                        String msg = obj.getString("message");
+                        android.util.Log.e("SignUpSocialNetwork", "Respuesta backend: " + msg);
+                        android.widget.Toast.makeText(context, msg, android.widget.Toast.LENGTH_LONG).show();
+                        return;
+                    }
+                    // Si se obtiene respuesta con usuario creado, puedes parsear datos aquí si tu backend devuelve el usuario
+                    // Por ejemplo:
+                    // String jwt = obj.optString("jwt", null);
+                    // if (jwt != null) { ... guardar en SharedPreferences ... }
+                }
+                // Si llega aquí y no hubo error, podrías volver a intentar login automático
+                new GoogleSignInBackendTask(email, name, lastname, googleId, null, navController, context).execute();
+            } catch (Exception e) {
+                android.util.Log.e("SignUpSocialNetwork", "Error al procesar respuesta: " + e.getMessage(), e);
+                android.widget.Toast.makeText(context, "Error al procesar registro Google", android.widget.Toast.LENGTH_SHORT).show();
             }
         }
     }

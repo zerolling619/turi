@@ -35,6 +35,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // TEMPORAL: Limpiar datos de SharedPreferences para resetear la app
+        SharedPreferences prefs = getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
+        prefs.edit().clear().apply();
+        android.util.Log.d("MainActivity", "SharedPreferences limpiado - Datos de usuario eliminados");
+        Toast.makeText(this, "Datos limpiados - Inicia sesión de nuevo", Toast.LENGTH_LONG).show();
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
@@ -55,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
                 int id = item.getItemId();
                 
                 if (id == R.id.nav_inicio) {
-                    navController.navigate(R.id.navigation_inicio);
+                    navigateBasedOnRole();
                 } else if (id == R.id.nav_profile) {
                     navController.navigate(R.id.navigation_profile);
                 } else if (id == R.id.nav_settings) {
@@ -86,16 +91,28 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences prefs = getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
         String userName = prefs.getString("user_name", "Usuario");
         String userEmail = prefs.getString("user_email", "correo@ejemplo.com");
+        String userImagePath = prefs.getString("user_image_path", "");
         
         View headerView = navigationView.getHeaderView(0);
         TextView nameTextView = headerView.findViewById(R.id.nav_header_name);
         TextView emailTextView = headerView.findViewById(R.id.nav_header_email);
+        android.widget.ImageView imgProfile = headerView.findViewById(R.id.ImgProfile);
         
         if (nameTextView != null) {
             nameTextView.setText(userName);
         }
         if (emailTextView != null) {
             emailTextView.setText(userEmail);
+        }
+        
+        // Cargar imagen de perfil
+        if (imgProfile != null && !userImagePath.isEmpty()) {
+            com.bumptech.glide.Glide.with(this)
+                .load(userImagePath)
+                .circleCrop()
+                .placeholder(R.drawable.fd_blanco_circulo)
+                .error(R.drawable.fd_blanco_circulo)
+                .into(imgProfile);
         }
     }
 
@@ -125,6 +142,23 @@ public class MainActivity extends AppCompatActivity {
     
     public void navigateToLogin() {
         navController.navigate(R.id.navigation_login);
+    }
+    
+    // Función para navegar según el rol del usuario
+    private void navigateBasedOnRole() {
+        SharedPreferences prefs = getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
+        String userRole = prefs.getString("user_role", "user");
+        
+        android.util.Log.d("MainActivity", "=== NAVEGACIÓN BASADA EN ROL (MENÚ LATERAL) ===");
+        android.util.Log.d("MainActivity", "Rol obtenido de SharedPreferences: '" + userRole + "'");
+        
+        if (userRole.equals("driver") || userRole.equals("guide")) {
+            android.util.Log.d("MainActivity", "Navegando a vista de reservas (driver/guide)");
+            navController.navigate(R.id.navigation_inicio_VistaReservas);
+        } else {
+            android.util.Log.d("MainActivity", "Navegando a vista normal de inicio (user/admin)");
+            navController.navigate(R.id.navigation_inicio);
+        }
     }
 
 }

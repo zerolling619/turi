@@ -30,6 +30,9 @@
         <action
             android:id="@+id/action_navigation_login_to_navigation_settings"
             app:destination="@id/navigation_settings" />
+        <action
+            android:id="@+id/action_navigation_login_to_navigation_inicio_VistaReservas"
+            app:destination="@id/navigation_inicio_VistaReservas" />
     </fragment>
     <fragment
         android:id="@+id/navigation_forget_password"
@@ -98,10 +101,44 @@
         <action
             android:id="@+id/action_navigation_inicio_to_navigation_location"
             app:destination="@id/navigation_location" />
+        <action
+            android:id="@+id/action_navigation_inicio_to_navigation_packageTour"
+            app:destination="@id/navigation_packageTour" />
     </fragment>
     <fragment
         android:id="@+id/navigation_location"
         android:name="robin.pe.turistea.ui.Location"
         android:label="fragment_location"
         tools:layout="@layout/fragment_location" />
+    <fragment
+        android:id="@+id/navigation_inicio_VistaReservas"
+        android:name="robin.pe.turistea.ui.Inicio_VistaReservas"
+        android:label="fragment_inicio__vista_reservas"
+        tools:layout="@layout/fragment_inicio_vista_reservas" >
+        <action
+            android:id="@+id/action_navigation_inicio_VistaReservas_to_reservationDetail"
+            app:destination="@id/reservationDetail" />
+    </fragment>
+    <fragment
+        android:id="@+id/reservationDetail"
+        android:name="robin.pe.turistea.ui.ReservationDetail"
+        android:label="fragment_reservation_detail"
+        tools:layout="@layout/fragment_reservation_detail" />
+    <fragment
+        android:id="@+id/navigation_packageTour"
+        android:name="robin.pe.turistea.ui.PackageTour"
+        android:label="fragment_package_tour"
+        tools:layout="@layout/fragment_package_tour" >
+        <action
+            android:id="@+id/action_navigation_packageTour_to_navigation_package_tourTracking"
+            app:destination="@id/navigation_package_tourTracking" />
+    </fragment>
+    <fragment
+        android:id="@+id/navigation_package_tourTracking"
+        android:name="robin.pe.turistea.ui.Package_tourTracking"
+        android:label="Package_tourTracking" >
+        <action
+            android:id="@+id/action_navigation_package_tourTracking_to_navigation_packageTour"
+            app:destination="@id/navigation_packageTour" />
+    </fragment>
 </navigation>

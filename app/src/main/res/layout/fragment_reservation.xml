@@ -1,0 +1,425 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".Reservation">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="350dp"
+            android:layout_height="644dp"
+            android:layout_marginLeft="28dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/fd_btn_azul_bordes">
+
+            <!-- ScrollView para permitir scroll si hay muchos campos -->
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="564dp"
+                android:layout_marginTop="80dp"
+                android:fillViewport="true">
+
+                <!-- Caja blanca con bordes redondeados -->
+                <LinearLayout
+                    android:layout_width="335dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginHorizontal="10dp"
+                    android:background="@drawable/fd_blanco_bordes"
+                    android:orientation="vertical"
+                    android:padding="20dp">
+
+                    <!-- Correo -->
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="0dp">
+
+                        <TextView
+                            android:layout_width="72dp"
+                            android:layout_height="14dp"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginTop="2dp"
+                            android:text="Nombres"
+                            android:textColor="@color/azul_oscuro"
+                            android:textSize="10dp" />
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/tilNombres"
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp"
+                            android:layout_marginTop="15dp"
+                            app:boxBackgroundMode="none"
+                            app:errorEnabled="true"
+                            app:hintEnabled="false">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/edtNombres"
+                                android:layout_width="match_parent"
+                                android:layout_height="40dp"
+                                android:background="@drawable/fd_contorno_azul"
+                                android:inputType="textPersonName"
+                                android:maxLength="50"
+                                android:padding="8dp"
+                                android:paddingTop="8dp" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                    </FrameLayout>
+
+                    <!-- Contraseña -->
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="0dp">
+
+                        <TextView
+                            android:layout_width="72dp"
+                            android:layout_height="14dp"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginTop="2dp"
+                            android:text="Apellidos"
+                            android:textColor="@color/azul_oscuro"
+                            android:textSize="10dp" />
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/tilApellidos"
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp"
+                            android:layout_marginTop="15dp"
+                            android:background="@drawable/fd_contorno_azul"
+                            app:boxBackgroundMode="none"
+                            app:errorEnabled="true"
+                            app:hintEnabled="false">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/edtApellidos"
+                                android:layout_width="match_parent"
+                                android:layout_height="40dp"
+                                android:background="@drawable/fd_contorno_azul"
+                                android:inputType="textPersonName"
+                                android:maxLength="50"
+                                android:padding="8dp"
+                                android:paddingTop="8dp" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+                    </FrameLayout>
+
+                    <!-- Fecha de Nacimiento -->
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="0dp">
+
+                        <TextView
+                            android:layout_width="102dp"
+                            android:layout_height="14dp"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginTop="2dp"
+                            android:text="Fecha de Nacimiento"
+                            android:textColor="@color/azul_oscuro"
+                            android:textSize="10dp" />
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/tilFechNaci"
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp"
+                            android:layout_marginTop="15dp"
+                            android:background="@drawable/fd_contorno_azul"
+                            app:boxBackgroundMode="none"
+                            app:errorEnabled="true"
+                            app:hintEnabled="false">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/edtFechNaci"
+                                android:layout_width="match_parent"
+                                android:layout_height="40dp"
+                                android:background="@drawable/fd_contorno_azul"
+                                android:inputType="textEmailAddress"
+                                android:maxLength="50"
+                                android:padding="8dp"
+                                android:paddingTop="8dp" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                    </FrameLayout>
+
+                    <!-- Fila con DNI y Celular -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="57dp"
+                        android:layout_marginTop="0dp"
+                        android:orientation="horizontal"
+                        android:weightSum="2">
+
+                        <!-- DNI -->
+                        <FrameLayout
+                            android:layout_width="120dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="0dp"
+                            android:layout_marginEnd="20dp">
+
+                            <TextView
+                                android:layout_width="102dp"
+                                android:layout_height="14dp"
+                                android:layout_marginLeft="5dp"
+                                android:layout_marginTop="2dp"
+                                android:text="DNI"
+                                android:textColor="@color/azul_oscuro"
+                                android:textSize="10dp" />
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                android:id="@+id/tilDni"
+                                android:layout_width="match_parent"
+                                android:layout_height="40dp"
+                                android:layout_marginTop="15dp"
+                                android:background="@drawable/fd_contorno_azul"
+                                app:boxBackgroundMode="none"
+                                app:errorEnabled="true"
+                                app:hintEnabled="false">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/edtDni"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="40dp"
+                                    android:background="@drawable/fd_contorno_azul"
+                                    android:inputType="textEmailAddress"
+                                    android:maxLength="50"
+                                    android:padding="8dp"
+                                    android:paddingTop="8dp" />
+
+                            </com.google.android.material.textfield.TextInputLayout>
+
+                        </FrameLayout>
+
+                        <!-- Celular -->
+                        <FrameLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="0dp">
+
+                            <TextView
+                                android:layout_width="102dp"
+                                android:layout_height="14dp"
+                                android:layout_marginLeft="5dp"
+                                android:layout_marginTop="2dp"
+                                android:text="Celular"
+                                android:textColor="@color/azul_oscuro"
+                                android:textSize="10dp" />
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                android:id="@+id/tilCelular"
+                                android:layout_width="match_parent"
+                                android:layout_height="40dp"
+                                android:layout_marginTop="15dp"
+                                android:background="@drawable/fd_contorno_azul"
+                                app:boxBackgroundMode="none"
+                                app:errorEnabled="true"
+                                app:hintEnabled="false">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/edtCelular"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="40dp"
+                                    android:background="@drawable/fd_contorno_azul"
+                                    android:inputType="textEmailAddress"
+                                    android:maxLength="50"
+                                    android:padding="8dp"
+                                    android:paddingTop="8dp" />
+
+                            </com.google.android.material.textfield.TextInputLayout>
+
+                        </FrameLayout>
+
+                    </LinearLayout>
+
+                    <!-- Sexo -->
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:layout_width="72dp"
+                            android:layout_height="14dp"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginTop="2dp"
+                            android:text="Sexo"
+                            android:textColor="@color/azul_oscuro"
+                            android:textSize="10dp" />
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/tilSexo"
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp"
+                            android:layout_marginTop="15dp"
+                            android:background="@drawable/fd_contorno_azul"
+                            app:boxBackgroundMode="none"
+                            app:errorEnabled="true"
+                            app:hintEnabled="false">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/edtSexo"
+                                android:layout_width="match_parent"
+                                android:layout_height="40dp"
+                                android:background="@drawable/fd_contorno_azul"
+                                android:clickable="true"
+                                android:focusable="false"
+                                android:hint="Seleccionar sexo"
+                                android:inputType="none"
+                                android:padding="8dp"
+                                android:paddingTop="8dp" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                    </FrameLayout>
+
+                    <!-- Correo -->
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="0dp">
+
+                        <TextView
+                            android:layout_width="72dp"
+                            android:layout_height="14dp"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginTop="2dp"
+                            android:text="Correo"
+                            android:textColor="@color/azul_oscuro"
+                            android:textSize="10dp" />
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/tilCorreo"
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp"
+                            android:layout_marginTop="15dp"
+                            android:background="@drawable/fd_contorno_azul"
+                            app:boxBackgroundMode="none"
+                            app:errorEnabled="true"
+                            app:hintEnabled="false">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/edtCorreo"
+                                android:layout_width="match_parent"
+                                android:layout_height="40dp"
+                                android:background="@drawable/fd_contorno_azul"
+                                android:inputType="textEmailAddress"
+                                android:maxLength="50"
+                                android:padding="8dp"
+                                android:paddingTop="8dp" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                    </FrameLayout>
+
+                    <!-- Contraseña -->
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="0dp">
+
+                        <TextView
+                            android:layout_width="72dp"
+                            android:layout_height="14dp"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginTop="2dp"
+                            android:text="Contraseña"
+                            android:textColor="@color/azul_oscuro"
+                            android:textSize="10dp" />
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/tilPasswordd"
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp"
+                            android:layout_marginTop="15dp"
+                            android:background="@drawable/fd_contorno_azul"
+                            app:boxBackgroundMode="none"
+                            app:errorEnabled="true"
+                            app:hintEnabled="false"
+                            app:passwordToggleEnabled="true">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/edtPasswordd"
+                                android:layout_width="match_parent"
+                                android:layout_height="40dp"
+                                android:background="@drawable/fd_contorno_azul"
+                                android:inputType="textPassword"
+                                android:maxLength="50"
+                                android:padding="8dp"
+                                android:paddingTop="8dp" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+                    </FrameLayout>
+
+                    <!--  Confirmar Contraseña -->
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="0dp">
+
+                        <TextView
+                            android:layout_width="172dp"
+                            android:layout_height="14dp"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginTop="2dp"
+                            android:text="Confirmar Contraseña"
+                            android:textColor="@color/azul_oscuro"
+                            android:textSize="10dp" />
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/tilConfirPasswordd"
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp"
+                            android:layout_marginTop="15dp"
+                            android:background="@drawable/fd_contorno_azul"
+                            app:boxBackgroundMode="none"
+                            app:errorEnabled="true"
+                            app:hintEnabled="false"
+                            app:passwordToggleEnabled="true">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/edtConfirPasswordd"
+                                android:layout_width="match_parent"
+                                android:layout_height="40dp"
+                                android:background="@drawable/fd_contorno_azul"
+                                android:inputType="textPassword"
+                                android:maxLength="50"
+                                android:padding="8dp"
+                                android:paddingTop="8dp" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+                    </FrameLayout>
+
+                    <Button
+                        android:id="@+id/btnRegistrar"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_marginTop="20dp"
+                        android:background="@drawable/fd_btn_azul_bordes"
+                        android:text="Registrar"
+                        android:textColor="@color/white" />
+
+                    <TextView
+                        android:id="@+id/tvIniciarSesion"
+                        android:layout_width="match_parent"
+                        android:layout_height="16dp"
+                        android:layout_marginTop="5dp"
+                        android:gravity="center"
+                        android:text="Ya tienes una cuenta, Inicia Sesion"
+                        android:textColor="@color/azul_oscuro"
+                        android:textSize="10dp" />
+
+                </LinearLayout>
+
+            </ScrollView>
+
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</FrameLayout>

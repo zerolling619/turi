@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import robin.pe.turistea.R;
+import robin.pe.turistea.Config;
 import android.os.AsyncTask;
 import android.widget.Button;
 import android.widget.TextView;
@@ -153,7 +154,7 @@ public class Verification_code extends Fragment {
         @Override
         protected String doInBackground(Void... voids) {
             try {
-                java.net.URL url = new java.net.URL("http://10.0.2.2:4001/api/active/verifycode");
+                java.net.URL url = new java.net.URL(Config.VERIFY_CODE_URL);
                 java.net.HttpURLConnection conn = (java.net.HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("POST");
                 conn.setDoOutput(true);

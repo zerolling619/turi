@@ -10,4 +10,5 @@
     <color name="azul_oscuro">#053755</color>
     <color name="gris">#A9A9A9</color>
     <color name="grisClaro">#c2c2c2</color>
+    <color name="grismuyclaro">#eaeaea</color>
 </resources>

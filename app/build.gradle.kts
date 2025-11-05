@@ -57,6 +57,12 @@ dependencies {
     // Facebook Login
     implementation("com.facebook.android:facebook-login:16.1.3")
     
+    // Glide para cargar imágenes desde URLs
+    implementation("com.github.bumptech.glide:glide:4.16.0")
+    
+    // Volley para peticiones HTTP
+    implementation("com.android.volley:volley:1.2.1")
+    
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)

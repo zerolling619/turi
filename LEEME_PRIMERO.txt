@@ -1,0 +1,93 @@
+================================================================
+    TURISTEA - SOLUCIÓN A ERRORES AL COPIAR PROYECTO
+================================================================
+
+Si estás viendo errores con MainActivity después de copiar 
+este proyecto a otra PC, sigue estos pasos EN ORDEN:
+
+================================================================
+OPCIÓN 1: SOLUCIÓN RÁPIDA (Android Studio)
+================================================================
+
+1. Abre Android Studio
+2. File → Open → Selecciona la carpeta "Turistea"
+3. ESPERA que sincronice (puede tardar 5-10 minutos)
+4. Si ves errores:
+   - Build → Clean Project
+   - Build → Rebuild Project
+   - Si persisten: File → Invalidate Caches → Restart
+
+¡LISTO! El proyecto debe funcionar.
+
+================================================================
+OPCIÓN 2: SOLUCIÓN DESDE TERMINAL
+================================================================
+
+Windows:
+--------
+Simplemente doble clic en: limpiar_y_reconstruir.bat
+
+Linux/Mac:
+----------
+Abre terminal y ejecuta:
+chmod +x limpiar_y_reconstruir.sh
+./limpiar_y_reconstruir.sh
+
+================================================================
+¿POR QUÉ OCURRE ESTO?
+================================================================
+
+Cuando copias un proyecto Android a otra PC, los archivos 
+generados (como ActivityMainBinding) contienen referencias 
+específicas de tu PC original. Android Studio necesita 
+regenerarlos en la nueva PC.
+
+NO es un error de tu código - es normal. Solo necesitas 
+"rebuild" el proyecto en la nueva PC.
+
+================================================================
+ARCHIVOS IMPORTANTES
+================================================================
+
+📄 README.md                    - Documentación completa
+📄 RESUMEN_INSTALACION.md      - ⚡ Instalar en celular (RÁPIDO)
+📄 INSTALAR_EN_CELULAR.md      - Instalar app en tu celular 📱
+📄 SOLUCION_RAPIDA.md          - Solución de 5 minutos
+📄 INSTRUCCIONES_COPIA_PROYECTO.md - Guía detallada
+📄 SOLUCION_GOOGLE_SIGNIN.md   - Si Google Sign-In no funciona ⚠️
+📄 SHA1_MULTIPLES_PCs.md       - SHA-1 para múltiples PCs 📁
+📄 SOLUCION_ERROR_CONEXION.md  - 🚨 Error de conexión al backend
+📄 ENTENDIENDO_LOGS_ANDROID.md - Cómo leer logs 📋
+🔧 obtener_sha1.bat/.sh         - Script para obtener SHA-1
+
+================================================================
+¿SIGUE SIN FUNCIONAR?
+================================================================
+
+1. Verifica versión de Android Studio (actualizada)
+2. Verifica que tengas JDK 11+ instalado
+3. Verifica conexión a internet
+4. Lee SOLUCION_RAPIDA.md para más opciones
+
+⚠️ ¿Google Sign-In no funciona en otra PC?
+→ Lee: SOLUCION_GOOGLE_SIGNIN.md
+→ Necesitas agregar el SHA-1 de la nueva PC a Firebase
+→ Script: obtener_sha1.bat o obtener_sha1.sh
+
+📁 ¿SHA-1 para múltiples PCs?
+→ Lee: SHA1_MULTIPLES_PCs.md
+→ Soluciones para equipos de desarrollo
+
+🚨 ¿Error "Failed to connect to /10.0.2.2:4001"?
+→ Lee: SOLUCION_ERROR_CONEXION.md
+→ Cambiar 10.0.2.2 por la IP de tu PC (celular real)
+
+================================================================
+CONTACTO
+================================================================
+
+Si después de seguir todos los pasos el proyecto no funciona,
+comunícate con el equipo de desarrollo.
+
+================================================================
+

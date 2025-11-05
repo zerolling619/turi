@@ -41,12 +41,6 @@
                     android:textSize="20dp"
                     android:textStyle="bold" />
 
-                <ImageView
-                    android:layout_width="45dp"
-                    android:layout_height="45dp"
-                    android:layout_marginLeft="65dp"
-                    android:layout_marginTop="40dp"
-                    android:background="@drawable/fd_blanco_circulo" />
 
             </LinearLayout>
 
@@ -71,14 +65,13 @@
 
                     <TextView
                         android:id="@+id/TvLocation"
-                        android:layout_width="161dp"
+                        android:layout_width="202dp"
                         android:layout_height="30dp"
                         android:layout_marginLeft="10dp"
                         android:text="Locacion"
                         android:textColor="@color/white"
                         android:textSize="12dp"
-                        android:textStyle="bold"
-                        />
+                        android:textStyle="bold" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -156,139 +149,28 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="229dp"
-                android:layout_marginTop="30dp">
+                android:layout_marginTop="30dp"
+                android:orientation="horizontal">
 
                 <!-- Carrusel Horizontal Desplazable -->
                 <HorizontalScrollView
-                    android:layout_width="384dp"
-                    android:layout_height="wrap_content"
-                    android:paddingLeft="20dp"
-                    android:scrollbars="none">
+                    android:layout_width="match_parent"
+                    android:layout_height="210dp"
+                    android:paddingLeft="24dp"
+                    android:paddingRight="24dp"
+                    android:scrollbars="none"
+                    android:overScrollMode="always">
 
+                    <!-- Lista de Paquetes (se cargan dinámicamente desde el backend) -->
                     <LinearLayout
+                        android:id="@+id/LinearListaPaquetes"
                         android:layout_width="wrap_content"
-                        android:layout_height="210dp"
-                        android:layout_marginTop="10dp"
+                        android:layout_height="match_parent"
                         android:orientation="horizontal">
 
-                        <!-- Lista de lugares turisticos -->
-                        <LinearLayout
-                            android:layout_width="150dp"
-                            android:layout_height="match_parent"
-                            android:orientation="vertical">
-
-                            <!-- Contenedor de los lugares turisticos -->
-                            <FrameLayout
-                                android:id="@+id/cardPlace1"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:layout_marginRight="10dp"
-                                android:background="@drawable/fd_contorno_azul_fd_transparentel"
-                                android:clickable="true"
-                                android:focusable="true">
-                                <!-- Imagen de fondo -->
-                                <ImageView
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:adjustViewBounds="false"
-                                    android:cropToPadding="false"
-                                    android:padding="0dp"
-                                    android:scaleType="centerCrop"
-                                    android:src="@mipmap/ic_tarapoto_foreground" />
-                                <!-- Texto de fondo -->
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_gravity="bottom|start"
-                                    android:layout_margin="8dp"
-                                    android:text="Cusco"
-                                    android:textColor="@color/white"
-                                    android:textSize="14sp"
-                                    android:textStyle="bold" />
-
-                            </FrameLayout>
-
-                        </LinearLayout>
-
-                        <!-- Lista de lugares turisticos -->
-                        <LinearLayout
-                            android:layout_width="150dp"
-                            android:layout_height="match_parent"
-                            android:orientation="vertical">
-
-                            <!-- Contenedor de los lugares turisticos -->
-                            <FrameLayout
-                                android:id="@+id/cardPlace2"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:layout_marginRight="20dp"
-                                android:background="@drawable/fd_contorno_azul_fd_transparentel"
-                                android:clickable="true"
-                                android:focusable="true">
-                                <!-- Imagen de fondo -->
-                                <ImageView
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:adjustViewBounds="false"
-                                    android:cropToPadding="false"
-                                    android:padding="0dp"
-                                    android:scaleType="centerCrop"
-                                    android:src="@mipmap/ic_tarapoto_foreground" />
-                                <!-- Texto de fondo -->
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_gravity="bottom|start"
-                                    android:layout_margin="8dp"
-                                    android:text="Tarapoto"
-                                    android:textColor="@color/white"
-                                    android:textSize="14sp"
-                                    android:textStyle="bold" />
-
-                            </FrameLayout>
-
-                        </LinearLayout>
-
-                        <!-- Lista de lugares turisticos -->
-                        <LinearLayout
-                            android:layout_width="150dp"
-                            android:layout_height="match_parent"
-                            android:orientation="vertical">
-
-                            <!-- Contenedor de los lugares turisticos -->
-                            <FrameLayout
-                                android:id="@+id/cardPlace3"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:layout_marginLeft="-20dp"
-
-                                android:background="@drawable/fd_contorno_azul_fd_transparentel">
-                                <!-- Imagen de fondo -->
-                                <ImageView
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:adjustViewBounds="false"
-                                    android:cropToPadding="false"
-                                    android:padding="0dp"
-                                    android:scaleType="centerCrop"
-                                    android:src="@mipmap/ic_tarapoto_foreground" />
-                                <!-- Texto de fondo -->
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_gravity="bottom|start"
-                                    android:layout_margin="8dp"
-                                    android:text="Arequipa"
-                                    android:textColor="@color/white"
-                                    android:textSize="14sp"
-                                    android:textStyle="bold" />
-
-                            </FrameLayout>
-
-                        </LinearLayout>
+                        <!-- Los paquetes se cargan dinámicamente desde Inicio.java -->
 
                     </LinearLayout>
-
                 </HorizontalScrollView>
 
             </LinearLayout>
@@ -299,11 +181,13 @@
                 android:orientation="vertical">
 
                 <LinearLayout
+                    android:id="@+id/LinearFiltro"
                     android:layout_width="match_parent"
                     android:layout_height="30dp"
                     android:orientation="horizontal">
 
                     <TextView
+                        android:id="@+id/tvFiltro"
                         android:layout_width="75dp"
                         android:layout_height="30dp"
                         android:layout_marginLeft="30dp"
@@ -341,10 +225,12 @@
                         android:layout_height="161dp"
                         android:scrollbars="none">
 
+                        <!-- Lista de Paquetes -->
                         <LinearLayout
                             android:layout_width="330dp"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="40dp"
+                            android:layout_marginTop="10dp"
                             android:orientation="vertical">
 
                             <FrameLayout

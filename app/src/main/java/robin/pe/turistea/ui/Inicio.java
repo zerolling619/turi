@@ -41,18 +41,22 @@ import com.google.android.gms.location.LocationServices;
 
 import robin.pe.turistea.MainActivity;
 import robin.pe.turistea.R;
+import robin.pe.turistea.Config;
+import robin.pe.turistea.models.TourPackage;
 
 public class Inicio extends Fragment {
 
     private ImageView icMenuLateral;
     private ImageView icLocation;
     private TextView tvLocationText;
+    private android.widget.LinearLayout linearListaPaquetes;
     
     private FusedLocationProviderClient fusedLocationClient;
     private ActivityResultLauncher<String[]> locationPermissionLauncher;
     private NavController navController;
     private Geocoder geocoder;
     private String selectedLocation = "";
+    private java.util.ArrayList<TourPackage> packageList = new java.util.ArrayList<>();
 
     public Inicio() {
         // Required empty public constructor
@@ -115,35 +119,14 @@ public class Inicio extends Fragment {
         
         icLocation.setOnClickListener(v -> handleLocationClick());
         
-        // Configurar clicks en los carruseles
-        setupCarouselClicks(view);
+        // Obtener referencia al contenedor de paquetes
+        linearListaPaquetes = view.findViewById(R.id.LinearListaPaquetes);
         
         // Cargar ubicación guardada si existe
         loadSavedLocation();
-    }
-    
-    private void setupCarouselClicks(View view) {
-        // Carrusel horizontal
-        view.findViewById(R.id.cardPlace1).setOnClickListener(v -> 
-            showPlaceInfo("Tarapoto", "La ciudad de las palmeras, conocida por sus paisajes tropicales y cataratas"));
-        view.findViewById(R.id.cardPlace2).setOnClickListener(v -> 
-            showPlaceInfo("Cusco", "Ciudad imperial, puerta de entrada a Machu Picchu"));
-        view.findViewById(R.id.cardPlace3).setOnClickListener(v -> 
-            showPlaceInfo("Arequipa", "La ciudad blanca, conocida por su arquitectura colonial"));
         
-        // Carrusel vertical (Popular)
-        view.findViewById(R.id.cardPopular1).setOnClickListener(v -> 
-            showPlaceInfo("Tarapoto", "Destino turístico popular en la selva peruana"));
-        view.findViewById(R.id.cardPopular2).setOnClickListener(v -> 
-            showPlaceInfo("Huaraz", "Capital del andinismo peruano, puerta a la Cordillera Blanca"));
-        view.findViewById(R.id.cardPopular4).setOnClickListener(v -> 
-            showPlaceInfo("Piura", "Tierra del sol eterno y hermosas playas del norte"));
-        view.findViewById(R.id.cardPopular5).setOnClickListener(v -> 
-            showPlaceInfo("Iquitos", "Capital de la Amazonía peruana, rodeada de naturaleza"));
-    }
-    
-    private void showPlaceInfo(String placeName, String description) {
-        Toast.makeText(getContext(), placeName + ": " + description, Toast.LENGTH_LONG).show();
+        // Cargar paquetes desde el backend (se mostrarán solo los paquetes de la DB)
+        loadPackagesFromBackend();
     }
     
     @Override
@@ -381,5 +364,250 @@ public class Inicio extends Fragment {
         if (!selectedLocation.isEmpty() && tvLocationText != null) {
             updateLocationDisplay(selectedLocation);
         }
+    }
+    
+    private void loadPackagesFromBackend() {
+        new Thread(() -> {
+            try {
+                android.util.Log.d("Inicio", "=== CARGANDO PAQUETES DESDE BACKEND ===");
+                
+                java.net.URL url = new java.net.URL(Config.PACKAGES_URL);
+                java.net.HttpURLConnection conn = (java.net.HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("GET");
+                conn.setRequestProperty("Accept", "application/json");
+                conn.setRequestProperty("Content-Type", "application/json");
+                
+                // Obtener JWT del usuario autenticado
+                SharedPreferences prefs = requireContext().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
+                String jwt = prefs.getString("jwt", "");
+                
+                android.util.Log.d("Inicio", "JWT encontrado: " + (!jwt.isEmpty() ? "SÍ (longitud: " + jwt.length() + ")" : "NO"));
+                
+                if (!jwt.isEmpty()) {
+                    conn.setRequestProperty("Authorization", "Bearer " + jwt);
+                    android.util.Log.d("Inicio", "Header Authorization agregado: Bearer " + jwt.substring(0, Math.min(20, jwt.length())) + "...");
+                } else {
+                    android.util.Log.w("Inicio", "⚠️ No hay JWT - El usuario no ha iniciado sesión");
+                }
+                
+                int responseCode = conn.getResponseCode();
+                android.util.Log.d("Inicio", "Código de respuesta del servidor: " + responseCode);
+                
+                if (responseCode == java.net.HttpURLConnection.HTTP_OK) {
+                    java.io.InputStream inputStream = conn.getInputStream();
+                    java.io.BufferedReader reader = new java.io.BufferedReader(new java.io.InputStreamReader(inputStream));
+                    StringBuilder response = new StringBuilder();
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        response.append(line);
+                    }
+                    reader.close();
+                    
+                    String jsonResponse = response.toString();
+                    android.util.Log.d("Inicio", "✅ Respuesta exitosa del servidor");
+                    android.util.Log.d("Inicio", "JSON recibido: " + jsonResponse.substring(0, Math.min(200, jsonResponse.length())) + "...");
+                    
+                    // Parsear JSON
+                    parsePackagesJson(jsonResponse);
+                } else {
+                    // Leer mensaje de error del servidor
+                    java.io.InputStream errorStream = conn.getErrorStream();
+                    if (errorStream != null) {
+                        java.io.BufferedReader errorReader = new java.io.BufferedReader(new java.io.InputStreamReader(errorStream));
+                        StringBuilder errorResponse = new StringBuilder();
+                        String line;
+                        while ((line = errorReader.readLine()) != null) {
+                            errorResponse.append(line);
+                        }
+                        errorReader.close();
+                        android.util.Log.e("Inicio", "❌ Error " + responseCode + " - Respuesta del servidor: " + errorResponse.toString());
+                    } else {
+                        android.util.Log.e("Inicio", "❌ Error al cargar paquetes - Código: " + responseCode);
+                    }
+                    
+                    // Si falla, usar datos de ejemplo
+                    android.util.Log.d("Inicio", "Cargando paquetes de ejemplo como fallback...");
+                    requireActivity().runOnUiThread(() -> loadExamplePackages());
+                }
+                
+            } catch (Exception e) {
+                android.util.Log.e("Inicio", "Error al cargar paquetes: " + e.getMessage(), e);
+                // Si hay error, usar datos de ejemplo
+                requireActivity().runOnUiThread(() -> loadExamplePackages());
+            }
+        }).start();
+    }
+    
+    private void parsePackagesJson(String jsonResponse) {
+        try {
+            org.json.JSONArray packagesArray;
+            
+            // El backend devuelve un array directamente
+            try {
+                packagesArray = new org.json.JSONArray(jsonResponse);
+            } catch (org.json.JSONException e) {
+                // Si no es un array, intentar como objeto con "packages" o "data"
+                org.json.JSONObject jsonObject = new org.json.JSONObject(jsonResponse);
+                if (jsonObject.has("packages")) {
+                    packagesArray = jsonObject.getJSONArray("packages");
+                } else if (jsonObject.has("data")) {
+                    packagesArray = jsonObject.getJSONArray("data");
+                } else {
+                    throw new org.json.JSONException("No se encontró array de paquetes");
+                }
+            }
+            
+            packageList.clear();
+            
+            for (int i = 0; i < packagesArray.length(); i++) {
+                org.json.JSONObject packageJson = packagesArray.getJSONObject(i);
+                
+                TourPackage pkg = new TourPackage();
+                
+                // Mapear campos del backend
+                pkg.setId(packageJson.optInt("id", 0));
+                pkg.setName(packageJson.optString("title", "Paquete"));  // "title" en el backend
+                pkg.setDescription(packageJson.optString("description", "Sin descripción"));
+                pkg.setImage(packageJson.optString("path_bg", ""));  // "path_bg" para la imagen
+                
+                // Construir ubicación desde name_district, name_province, name_region
+                String district = packageJson.optString("name_district", "");
+                String province = packageJson.optString("name_province", "");
+                String region = packageJson.optString("name_region", "");
+                
+                String location = district;
+                if (!province.isEmpty() && !province.equals(district)) {
+                    location = district + ", " + province;
+                }
+                if (!region.isEmpty() && !region.equals(province) && !region.equals(district)) {
+                    location = district + ", " + region;
+                }
+                if (location.isEmpty()) {
+                    location = "Perú";
+                }
+                
+                pkg.setLocation(location);
+                
+                // Valores por defecto para campos que no están en el backend
+                pkg.setPrice(0.0);  // No hay precio en el backend
+                pkg.setDuration(3);  // Duración por defecto: 3 días
+                
+                packageList.add(pkg);
+                
+                android.util.Log.d("Inicio", "Paquete parseado: " + pkg.getName() + " - " + location);
+            }
+            
+            android.util.Log.d("Inicio", "✅ Total paquetes cargados: " + packageList.size());
+            
+            // Actualizar UI en el hilo principal
+            requireActivity().runOnUiThread(() -> displayPackages());
+            
+        } catch (org.json.JSONException e) {
+            android.util.Log.e("Inicio", "❌ Error al parsear JSON de paquetes: " + e.getMessage(), e);
+            android.util.Log.e("Inicio", "JSON recibido: " + jsonResponse);
+            requireActivity().runOnUiThread(() -> loadExamplePackages());
+        }
+    }
+    
+    private void loadExamplePackages() {
+        android.util.Log.d("Inicio", "Cargando paquetes de ejemplo...");
+        packageList.clear();
+        
+        packageList.add(new TourPackage(1, "Tarapoto", "La ciudad de las palmeras", "", 350.0, "Tarapoto", 3));
+        packageList.add(new TourPackage(2, "Cusco", "Ciudad imperial", "", 450.0, "Cusco", 4));
+        packageList.add(new TourPackage(3, "Arequipa", "La ciudad blanca", "", 380.0, "Arequipa", 3));
+        packageList.add(new TourPackage(4, "Huaraz", "Capital del andinismo", "", 420.0, "Huaraz", 4));
+        packageList.add(new TourPackage(5, "Piura", "Tierra del sol eterno", "", 310.0, "Piura", 2));
+        
+        displayPackages();
+    }
+    
+    private void displayPackages() {
+        if (linearListaPaquetes == null) {
+            android.util.Log.e("Inicio", "linearListaPaquetes es null");
+            return;
+        }
+        
+        // Limpiar el contenedor (excepto los elementos fijos si los hay)
+        linearListaPaquetes.removeAllViews();
+        
+        android.util.Log.d("Inicio", "Mostrando " + packageList.size() + " paquetes");
+        
+        for (TourPackage pkg : packageList) {
+            // Crear un FrameLayout para cada paquete
+            android.widget.FrameLayout cardView = new android.widget.FrameLayout(requireContext());
+            android.widget.FrameLayout.LayoutParams params = new android.widget.FrameLayout.LayoutParams(
+                convertDpToPx(127),
+                android.widget.FrameLayout.LayoutParams.MATCH_PARENT
+            );
+            params.setMarginEnd(convertDpToPx(24));
+            cardView.setLayoutParams(params);
+            cardView.setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.fd_contorno_azul_fd_transparentel));
+            cardView.setClickable(true);
+            cardView.setFocusable(true);
+            
+            // ImageView para la imagen del paquete
+            ImageView imageView = new ImageView(requireContext());
+            imageView.setLayoutParams(new android.widget.FrameLayout.LayoutParams(
+                android.widget.FrameLayout.LayoutParams.MATCH_PARENT,
+                android.widget.FrameLayout.LayoutParams.MATCH_PARENT
+            ));
+            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            
+            // Cargar imagen con Glide
+            if (!pkg.getImage().isEmpty()) {
+                com.bumptech.glide.Glide.with(this)
+                    .load(pkg.getImage())
+                    .placeholder(R.mipmap.ic_tarapoto_foreground)
+                    .error(R.mipmap.ic_tarapoto_foreground)
+                    .into(imageView);
+            } else {
+                imageView.setImageResource(R.mipmap.ic_tarapoto_foreground);
+            }
+            
+            // TextView para el nombre del paquete
+            TextView textView = new TextView(requireContext());
+            android.widget.FrameLayout.LayoutParams textParams = new android.widget.FrameLayout.LayoutParams(
+                android.widget.FrameLayout.LayoutParams.WRAP_CONTENT,
+                android.widget.FrameLayout.LayoutParams.WRAP_CONTENT
+            );
+            textParams.gravity = android.view.Gravity.BOTTOM | android.view.Gravity.START;
+            textParams.setMarginStart(convertDpToPx(20));
+            textParams.bottomMargin = convertDpToPx(10);
+            textView.setLayoutParams(textParams);
+            textView.setText(pkg.getName());
+            textView.setTextColor(getResources().getColor(R.color.white, null));
+            textView.setTextSize(14);
+            textView.setTypeface(null, android.graphics.Typeface.BOLD);
+            
+            // Agregar vistas al card
+            cardView.addView(imageView);
+            cardView.addView(textView);
+            
+            // Click listener
+            cardView.setOnClickListener(v -> showPackageDetails(pkg));
+            
+            // Agregar card al contenedor
+            linearListaPaquetes.addView(cardView);
+        }
+    }
+    
+    private void showPackageDetails(TourPackage pkg) {
+        // Navegar a fragment_package_tour con los datos del paquete
+        Bundle bundle = new Bundle();
+        bundle.putInt("package_id", pkg.getId());
+        bundle.putString("package_name", pkg.getName());
+        bundle.putString("package_description", pkg.getDescription());
+        bundle.putString("package_image", pkg.getImage());
+        bundle.putDouble("package_price", pkg.getPrice());
+        bundle.putString("package_location", pkg.getLocation());
+        bundle.putInt("package_duration", pkg.getDuration());
+        
+        navController.navigate(R.id.action_navigation_inicio_to_navigation_packageTour, bundle);
+    }
+    
+    private int convertDpToPx(int dp) {
+        float density = getResources().getDisplayMetrics().density;
+        return Math.round((float) dp * density);
     }
 }

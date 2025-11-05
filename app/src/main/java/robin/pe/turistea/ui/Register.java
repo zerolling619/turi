@@ -41,6 +41,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 
 import robin.pe.turistea.R;
+import robin.pe.turistea.Config;
 
 public class Register extends Fragment {
 
@@ -298,9 +299,9 @@ public class Register extends Fragment {
         @Override
         protected String doInBackground(Void... voids) {
             try {
-                android.util.Log.d("RegisterTask", "Iniciando petición a: http://10.0.2.2:4001/api/signup");
+                android.util.Log.d("RegisterTask", "Iniciando petición a: " + Config.REGISTER_URL);
 
-                java.net.URL url = new java.net.URL("http://10.0.2.2:4001/api/signup");
+                java.net.URL url = new java.net.URL(Config.REGISTER_URL);
                 java.net.HttpURLConnection conn = (java.net.HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("POST");
                 conn.setDoOutput(true);
