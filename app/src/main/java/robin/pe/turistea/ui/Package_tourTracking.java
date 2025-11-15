@@ -64,9 +64,14 @@ public class Package_tourTracking extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_package_tour_tracking, container, false);
+
+        // 1. Inflar la vista
+        View view = inflater.inflate(R.layout.fragment_package_tour_tracking, container, false);
+
+        // 4. Retornar la vista
+        return view;
     }
+
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -112,10 +117,40 @@ public class Package_tourTracking extends Fragment {
         
         // Configurar botón de reservar
         if (btnReservar != null) {
+            android.util.Log.d("Package_tourTracking", "Botón reservar encontrado, configurando listener");
             btnReservar.setOnClickListener(v -> {
-                Toast.makeText(getContext(), "Reservando " + packageName + "...", Toast.LENGTH_LONG).show();
-                // TODO: Implementar lógica de reserva
+                try {
+                    android.util.Log.d("Package_tourTracking", "Botón reservar presionado");
+                    
+                    if (navController == null) {
+                        android.util.Log.e("Package_tourTracking", "navController es null");
+                        Toast.makeText(getContext(), "Error de navegación", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    
+                    // Crear bundle con los datos del paquete para pasar a Reservation
+                    Bundle bundle = new Bundle();
+                    bundle.putInt("package_id", packageId);
+                    bundle.putString("package_name", packageName != null ? packageName : "");
+                    bundle.putString("package_description", packageDescription != null ? packageDescription : "");
+                    bundle.putString("package_image", packageImage != null ? packageImage : "");
+                    bundle.putFloat("package_price", (float) packagePrice);
+                    bundle.putString("package_location", packageLocation != null ? packageLocation : "");
+                    bundle.putInt("package_duration", packageDuration);
+                    bundle.putInt("package_max_personas", 10); // Máximo por defecto, ajustar según tu lógica
+                    
+                    android.util.Log.d("Package_tourTracking", "Navegando a reserva con datos: " + packageName);
+                    navController.navigate(R.id.action_navigation_package_tourTracking_to_navigation_reservation, bundle);
+                } catch (Exception e) {
+                    android.util.Log.e("Package_tourTracking", "Error al navegar a reserva: " + e.getMessage(), e);
+                    e.printStackTrace();
+                    if (getContext() != null) {
+                        Toast.makeText(getContext(), "Error al abrir el formulario de reserva", Toast.LENGTH_SHORT).show();
+                    }
+                }
             });
+        } else {
+            android.util.Log.e("Package_tourTracking", "btnReservar es null - el botón no se encontró en el layout");
         }
         
         // Cargar datos del paquete

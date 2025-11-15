@@ -29,6 +29,9 @@ public class Config {
     public static final String ROUTER_PACKAGES_URL = BASE_URL + "/api/user-account/router-packages/";
     public static final String GOOGLE_SIGNIN_URL = BASE_URL + "/api/signin-google";
     public static final String SOCIAL_REGISTER_URL = BASE_URL + "/api/singup-social-network-user";
+    public static final String CHANGE_PASSWORD_URL = BASE_URL + "/api/user-account/updatepassword";
+    public static final String FORM_RESERVE_URL = BASE_URL + "/api/user-account/form_reserves";
+    public static final String FORM_RESERVES_LIST_URL = BASE_URL + "/api/user-account/form_reserves"; // GET para listar reservas
     
     /**
      * Detectar automáticamente si está en emulador o celular real

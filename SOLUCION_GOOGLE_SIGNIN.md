@@ -23,6 +23,12 @@ Cada instalación de Android Studio genera un **certificado de depuración únic
 ```
 
 **Opción B: Desde Terminal/CMD**
+```
+Usa el comando "./gradlew signingReport"
+para obtener el Sha-1
+
+```
+
 
 **Windows:**
 ```cmd

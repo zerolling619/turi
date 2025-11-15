@@ -33,6 +33,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -65,18 +67,18 @@ public class Inicio extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        
+
         // Inicializar el cliente de ubicación y geocoder
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity());
         geocoder = new Geocoder(requireContext(), Locale.getDefault());
-        
+
         // Registrar el launcher para solicitar permisos
         locationPermissionLauncher = registerForActivityResult(
             new ActivityResultContracts.RequestMultiplePermissions(),
             result -> {
                 Boolean fineLocationGranted = result.get(Manifest.permission.ACCESS_FINE_LOCATION);
                 Boolean coarseLocationGranted = result.get(Manifest.permission.ACCESS_COARSE_LOCATION);
-                
+
                 if (fineLocationGranted != null && fineLocationGranted) {
                     // Permiso concedido, obtener ubicación
                     getCurrentLocation();
@@ -92,6 +94,8 @@ public class Inicio extends Fragment {
         );
     }
 
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -104,6 +108,26 @@ public class Inicio extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         
         navController = Navigation.findNavController(view);
+
+        // Referencias a las vistas del layout
+        LinearLayout filtroMenu = view.findViewById(R.id.linearFiltroMenu);
+        TextView tvFiltro = view.findViewById(R.id.tvFiltro);
+
+        // Acción al presionar el texto o la flecha
+        filtroMenu.setOnClickListener(v -> {
+            PopupMenu popup = new PopupMenu(requireContext(), v);
+            //Agregar filtros
+            popup.getMenu().add("Popular");
+            popup.getMenu().add("Económico");
+
+            popup.setOnMenuItemClickListener(item -> {
+                String opcion = item.getTitle().toString();
+                tvFiltro.setText(opcion);
+                return true;
+            });
+
+            popup.show();
+        });
         
         // Configurar el botón del menú lateral
         icMenuLateral = view.findViewById(R.id.IcMenuLateral);
@@ -121,6 +145,21 @@ public class Inicio extends Fragment {
         
         // Obtener referencia al contenedor de paquetes
         linearListaPaquetes = view.findViewById(R.id.LinearListaPaquetes);
+        
+        // Referencias nuevas: búsqueda
+        EditText edtSearch = view.findViewById(R.id.edtSearch);
+        ImageView btnSearch = view.findViewById(R.id.btnSearch);
+        ImageView btnClean = view.findViewById(R.id.btnClean);
+        
+        btnSearch.setOnClickListener(v -> {
+            String texto = edtSearch.getText().toString().trim().toLowerCase();
+            filtrarYMostrarPaquetes(texto);
+        });
+
+        btnClean.setOnClickListener(v -> {
+            edtSearch.setText("");
+            displayPackages();
+        });
         
         // Cargar ubicación guardada si existe
         loadSavedLocation();
@@ -230,7 +269,7 @@ public class Inicio extends Fragment {
     }
     
     private void showLocationSelectionDialog() {
-        // Crear lista de ciudades turísticas comunes en Perú
+        // Lista de paquetes de muestra, si es que no carga la db
         String[] ciudades = {
             "Lima", "Cusco", "Arequipa", "Trujillo", "Chiclayo",
             "Piura", "Iquitos", "Huancayo", "Tacna", "Puno",
@@ -509,6 +548,7 @@ public class Inicio extends Fragment {
         }
     }
     
+    // Carga los paquetes de ejemplo para probar la aplicación
     private void loadExamplePackages() {
         android.util.Log.d("Inicio", "Cargando paquetes de ejemplo...");
         packageList.clear();
@@ -593,6 +633,7 @@ public class Inicio extends Fragment {
     }
     
     private void showPackageDetails(TourPackage pkg) {
+        // Obtine los datos del paquete y los manda a la actividad PackageTour
         // Navegar a fragment_package_tour con los datos del paquete
         Bundle bundle = new Bundle();
         bundle.putInt("package_id", pkg.getId());
@@ -609,5 +650,80 @@ public class Inicio extends Fragment {
     private int convertDpToPx(int dp) {
         float density = getResources().getDisplayMetrics().density;
         return Math.round((float) dp * density);
+    }
+
+    // Filtra los paquetes por nombre (ignora mayúsculas/minúsculas) y los muestra en el carrusel
+    private void filtrarYMostrarPaquetes(String filtro) {
+        if (linearListaPaquetes == null) return;
+        if (filtro.isEmpty()) {
+            displayPackages();
+            return;
+        }
+
+        java.util.ArrayList<TourPackage> paquetesFiltrados = new java.util.ArrayList<>();
+        for (TourPackage pkg : packageList) {
+            if (pkg.getName() != null && pkg.getName().toLowerCase().contains(filtro)) {
+                paquetesFiltrados.add(pkg);
+            }
+        }
+
+        // Muestra sólo los paquetes filtrados
+        linearListaPaquetes.removeAllViews();
+        for (TourPackage pkg : paquetesFiltrados) {
+            // Crear un FrameLayout para cada paquete (igual que en displayPackages)
+            android.widget.FrameLayout cardView = new android.widget.FrameLayout(requireContext());
+            android.widget.FrameLayout.LayoutParams params = new android.widget.FrameLayout.LayoutParams(
+                convertDpToPx(127),
+                android.widget.FrameLayout.LayoutParams.MATCH_PARENT
+            );
+            params.setMarginEnd(convertDpToPx(24));
+            cardView.setLayoutParams(params);
+            cardView.setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.fd_contorno_azul_fd_transparentel));
+            cardView.setClickable(true);
+            cardView.setFocusable(true);
+
+            // ImageView para la imagen del paquete
+            ImageView imageView = new ImageView(requireContext());
+            imageView.setLayoutParams(new android.widget.FrameLayout.LayoutParams(
+                android.widget.FrameLayout.LayoutParams.MATCH_PARENT,
+                android.widget.FrameLayout.LayoutParams.MATCH_PARENT
+            ));
+            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+
+            // Cargar imagen con Glide
+            if (!pkg.getImage().isEmpty()) {
+                com.bumptech.glide.Glide.with(this)
+                        .load(pkg.getImage())
+                        .placeholder(R.mipmap.ic_tarapoto_foreground)
+                        .error(R.mipmap.ic_tarapoto_foreground)
+                        .into(imageView);
+            } else {
+                imageView.setImageResource(R.mipmap.ic_tarapoto_foreground);
+            }
+
+            // TextView para el nombre del paquete
+            TextView textView = new TextView(requireContext());
+            android.widget.FrameLayout.LayoutParams textParams = new android.widget.FrameLayout.LayoutParams(
+                    android.widget.FrameLayout.LayoutParams.WRAP_CONTENT,
+                    android.widget.FrameLayout.LayoutParams.WRAP_CONTENT
+            );
+            textParams.gravity = android.view.Gravity.BOTTOM | android.view.Gravity.START;
+            textParams.setMarginStart(convertDpToPx(20));
+            textParams.bottomMargin = convertDpToPx(10);
+            textView.setLayoutParams(textParams);
+            textView.setText(pkg.getName());
+            textView.setTextColor(getResources().getColor(R.color.white, null));
+            textView.setTextSize(14);
+            textView.setTypeface(null, android.graphics.Typeface.BOLD);
+
+            // Agregar vistas al card
+            cardView.addView(imageView);
+            cardView.addView(textView);
+
+            // Click para ver detalles
+            cardView.setOnClickListener(v -> showPackageDetails(pkg));
+
+            linearListaPaquetes.addView(cardView);
+        }
     }
 }

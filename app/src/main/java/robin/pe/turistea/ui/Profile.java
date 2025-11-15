@@ -65,6 +65,7 @@ public class Profile extends Fragment {
         String userEmail = prefs.getString("user_email", "");
         String userCellphone = prefs.getString("user_cellphone", "");
         String userImagePath = prefs.getString("user_image_path", "");
+        String userRole = prefs.getString("user_role", "user");
 
         Log.d("Profile", "Datos cargados desde SharedPreferences:");
         Log.d("Profile", "user_name: '" + userName + "'");
@@ -123,6 +124,35 @@ public class Profile extends Fragment {
             });
         } else {
             Log.e("Profile", "No se encontró el botón btnCerrarSesion");
+        }
+
+        // Mostrar / ocultar opción de cambiar contraseña según rol, y manejar navegación
+        View rowChangePassword = view.findViewById(R.id.rowChangePassword);
+        if (rowChangePassword != null) {
+            boolean canChangePassword = "driver".equals(userRole) || "guide".equals(userRole);
+            rowChangePassword.setVisibility(canChangePassword ? View.VISIBLE : View.GONE);
+            if (canChangePassword) {
+                rowChangePassword.setOnClickListener(v -> {
+                    if (navController != null) {
+                        navController.navigate(R.id.action_navigation_profile_to_navigation_change_passwordd);
+                    }
+                });
+            }
+        }
+
+        // Conectar LinearChangePass al fragmento de cambio de contraseña
+        View linearChangePass = view.findViewById(R.id.LinearChangePass);
+        if (linearChangePass != null) {
+            boolean canChangePassword = "driver".equals(userRole) || "guide".equals(userRole);
+            linearChangePass.setVisibility(canChangePassword ? View.VISIBLE : View.GONE);
+            if (canChangePassword) {
+                linearChangePass.setOnClickListener(v -> {
+                    Log.d("Profile", "LinearChangePass clickeado - Navegando a cambio de contraseña");
+                    if (navController != null) {
+                        navController.navigate(R.id.action_navigation_profile_to_navigation_change_passwordd);
+                    }
+                });
+            }
         }
     }
 

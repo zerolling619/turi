@@ -214,13 +214,16 @@
             </LinearLayout>
         </LinearLayout>
 
-        <!-- Facebook -->
+        <!-- Cambiar contraseña (visible solo para driver/guide) -->
         <LinearLayout
+            android:id="@+id/rowChangePassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
             android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:clickable="true"
+            android:focusable="true">
 
             <ImageView
                 android:layout_width="24dp"
@@ -250,7 +253,44 @@
             </LinearLayout>
         </LinearLayout>
 
+        <!-- Cambiar contraseña -->
+        <LinearLayout
+            android:id="@+id/LinearChangePass"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:clickable="true"
+            android:focusable="true">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="30dp"
+                android:layout_marginLeft="30dp"
+                android:src="@drawable/ic_changepassword" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:orientation="vertical">
+
+
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="Cambiar contraseña"
+                    android:textColor="@color/azul_oscuro"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+        </LinearLayout>
+
     </LinearLayout>
+
+
 
     <LinearLayout
         android:layout_width="match_parent"

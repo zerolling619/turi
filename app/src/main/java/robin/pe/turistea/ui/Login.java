@@ -312,7 +312,7 @@ public class Login extends Fragment {
         }
     }
 
-    // Método para obtener los datos del usuario usando el JWT
+    // Metodo para obtener los datos del usuario usando el JWT
     private void fetchUserProfile(Context context, String jwt, android.content.SharedPreferences.Editor editor, String email) {
         new Thread(() -> {
             try {

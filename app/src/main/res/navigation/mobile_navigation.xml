@@ -38,11 +38,7 @@
         android:id="@+id/navigation_forget_password"
         android:name="robin.pe.turistea.ui.Forget_password"
         android:label="fragment_forget_password"
-        tools:layout="@layout/fragment_forget_password" >
-        <action
-            android:id="@+id/action_navigation_forget_password_to_navigation_change_passwordd"
-            app:destination="@id/navigation_change_passwordd" />
-    </fragment>
+        tools:layout="@layout/fragment_forget_password" />
     <fragment
         android:id="@+id/navigation_register"
         android:name="robin.pe.turistea.ui.Register"
@@ -74,7 +70,11 @@
         android:id="@+id/navigation_profile"
         android:name="robin.pe.turistea.ui.Profile"
         android:label="fragment_profile"
-        tools:layout="@layout/fragment_profile" />
+        tools:layout="@layout/fragment_profile" >
+        <action
+            android:id="@+id/action_navigation_profile_to_navigation_change_passwordd"
+            app:destination="@id/navigation_change_passwordd" />
+    </fragment>
     <fragment
         android:id="@+id/navigation_splash"
         android:name="robin.pe.turistea.ui.Splash"
@@ -132,13 +132,92 @@
         <action
             android:id="@+id/action_navigation_packageTour_to_navigation_package_tourTracking"
             app:destination="@id/navigation_package_tourTracking" />
+        <action
+            android:id="@+id/action_navigation_packageTour_to_navigation_reservation"
+            app:destination="@id/navigation_reservation" />
     </fragment>
     <fragment
         android:id="@+id/navigation_package_tourTracking"
         android:name="robin.pe.turistea.ui.Package_tourTracking"
-        android:label="Package_tourTracking" >
+        android:label="Package_tourTracking"
+        tools:layout="@layout/fragment_package_tour_tracking" >
         <action
             android:id="@+id/action_navigation_package_tourTracking_to_navigation_packageTour"
             app:destination="@id/navigation_packageTour" />
+        <action
+            android:id="@+id/action_navigation_package_tourTracking_to_routeDetail"
+            app:destination="@id/navigation_routeDetail" />
+        <action
+            android:id="@+id/action_navigation_package_tourTracking_to_navigation_reservation"
+            app:destination="@id/navigation_reservation" />
     </fragment>
+    <fragment
+        android:id="@+id/navigation_routeDetail"
+        android:name="robin.pe.turistea.ui.RouteDetail"
+        android:label="fragment_route_detail"
+        tools:layout="@layout/fragment_route_detail" >
+        <action
+            android:id="@+id/action_navigation_routeDetail_to_navigation_reservation"
+            app:destination="@id/navigation_reservation" />
+    </fragment>
+    <fragment
+        android:id="@+id/navigation_registered_reservation"
+        android:name="robin.pe.turistea.ui.Registered_reservation"
+        android:label="fragment_registered_reservation"
+        tools:layout="@layout/fragment_registered_reservation" >
+        <action
+            android:id="@+id/action_navigation_registered_reservation_to_navigation_signing_process"
+            app:destination="@id/navigation_signing_process" />
+    </fragment>
+    <fragment
+        android:id="@+id/navigation_reservation"
+        android:name="robin.pe.turistea.ui.Reservation"
+        android:label="fragment_reservation"
+        tools:layout="@layout/fragment_reservation" >
+        <action
+            android:id="@+id/action_navigation_reservation_to_navigation_registered_reservation"
+            app:destination="@id/navigation_registered_reservation" />
+        <argument
+            android:name="package_id"
+            app:argType="integer"
+            android:defaultValue="0" />
+        <argument
+            android:name="package_name"
+            app:argType="string"
+            app:nullable="true"
+            android:defaultValue="" />
+        <argument
+            android:name="package_description"
+            app:argType="string"
+            app:nullable="true"
+            android:defaultValue="" />
+        <argument
+            android:name="package_image"
+            app:argType="string"
+            app:nullable="true"
+            android:defaultValue="" />
+        <argument
+            android:name="package_price"
+            app:argType="float"
+            android:defaultValue="0.0"
+            app:nullable="false" />
+        <argument
+            android:name="package_location"
+            app:argType="string"
+            app:nullable="true"
+            android:defaultValue="" />
+        <argument
+            android:name="package_duration"
+            app:argType="integer"
+            android:defaultValue="0" />
+        <argument
+            android:name="package_max_personas"
+            app:argType="integer"
+            android:defaultValue="0" />
+    </fragment>
+    <fragment
+        android:id="@+id/navigation_signing_process"
+        android:name="robin.pe.turistea.ui.Signing_process"
+        android:label="fragment_signing_process"
+        tools:layout="@layout/fragment_signing_process" />
 </navigation>
