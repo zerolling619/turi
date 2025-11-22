@@ -2,7 +2,6 @@ package robin.pe.turistea.ui;
 
 import android.Manifest;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -15,6 +14,7 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,7 +50,6 @@ public class Location extends Fragment implements OnMapReadyCallback {
     
     private LatLng selectedLatLng;
     private String selectedAddress = "";
-    // Centro de Lima, Perú (Plaza Mayor)
     private static final LatLng DEFAULT_LOCATION = new LatLng(-12.0464, -77.0428);
 
     public Location() {
@@ -60,7 +59,6 @@ public class Location extends Fragment implements OnMapReadyCallback {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_location, container, false);
     }
 
@@ -72,22 +70,15 @@ public class Location extends Fragment implements OnMapReadyCallback {
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity());
         geocoder = new Geocoder(requireContext(), Locale.getDefault());
         
-        // Inicializar vistas
         icBack = view.findViewById(R.id.IcBack);
         btnCurrentLocation = view.findViewById(R.id.btnCurrentLocation);
         btnConfirmLocation = view.findViewById(R.id.btnConfirmLocation);
         tvSelectedLocation = view.findViewById(R.id.TvSelectedLocation);
         
-        // Configurar el botón de volver
         icBack.setOnClickListener(v -> navController.navigateUp());
-        
-        // Configurar el botón de ubicación actual
         btnCurrentLocation.setOnClickListener(v -> moveToCurrentLocation());
-        
-        // Configurar el botón de confirmar
         btnConfirmLocation.setOnClickListener(v -> confirmLocation());
         
-        // Inicializar el mapa de forma programática
         SupportMapFragment mapFragment = SupportMapFragment.newInstance();
         getChildFragmentManager().beginTransaction()
                 .replace(R.id.ImMapa, mapFragment)
@@ -99,145 +90,117 @@ public class Location extends Fragment implements OnMapReadyCallback {
     public void onMapReady(@NonNull GoogleMap googleMap) {
         mMap = googleMap;
         
-        // Configurar el mapa
-        mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         mMap.getUiSettings().setZoomControlsEnabled(true);
-        mMap.getUiSettings().setCompassEnabled(true);
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(DEFAULT_LOCATION, 14));
+        getAddressFromLocation(DEFAULT_LOCATION);
         
-        // Establecer ubicación inicial (Centro de Lima)
-        selectedLatLng = DEFAULT_LOCATION;
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(selectedLatLng, 14));
-        
-        // Obtener dirección inicial
-        getAddressFromLocation(selectedLatLng);
-        
-        // Escuchar cuando el usuario mueva el mapa
         mMap.setOnCameraIdleListener(() -> {
             selectedLatLng = mMap.getCameraPosition().target;
             getAddressFromLocation(selectedLatLng);
         });
         
-        // Intentar obtener ubicación actual si hay permisos
         if (checkLocationPermissions()) {
             try {
                 mMap.setMyLocationEnabled(true);
-                moveToCurrentLocation();
             } catch (SecurityException e) {
-                Toast.makeText(getContext(), "Error al acceder a la ubicación", Toast.LENGTH_SHORT).show();
+                Log.e("Location", "Error de seguridad al habilitar la ubicación.", e);
             }
         }
     }
     
     private boolean checkLocationPermissions() {
         return ContextCompat.checkSelfPermission(requireContext(), 
-                Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED ||
-               ContextCompat.checkSelfPermission(requireContext(), 
-                Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+                Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
     }
     
     private void moveToCurrentLocation() {
-        // Mover al centro de Lima
-        if (mMap != null) {
-            selectedLatLng = DEFAULT_LOCATION;
-            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(selectedLatLng, 15));
-            getAddressFromLocation(selectedLatLng);
-            Toast.makeText(getContext(), "Ubicación establecida en Lima Centro", Toast.LENGTH_SHORT).show();
+         if (mMap != null && checkLocationPermissions()) {
+            fusedLocationClient.getLastLocation().addOnSuccessListener(requireActivity(), location -> {
+                if (location != null) {
+                    LatLng currentLocation = new LatLng(location.getLatitude(), location.getLongitude());
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 15));
+                    getAddressFromLocation(currentLocation);
+                } else {
+                    Toast.makeText(getContext(), "No se pudo obtener la ubicación actual.", Toast.LENGTH_SHORT).show();
+                }
+            });
+        } else {
+            Toast.makeText(getContext(), "Permiso de ubicación no concedido.", Toast.LENGTH_SHORT).show();
         }
     }
     
     private void getAddressFromLocation(LatLng latLng) {
-        // Ejecutar en un hilo separado para no bloquear la UI
         new Thread(() -> {
             try {
                 List<Address> addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
-                
                 if (addresses != null && !addresses.isEmpty()) {
                     Address address = addresses.get(0);
                     
-                    // Construir dirección completa
-                    StringBuilder fullAddress = new StringBuilder();
-                    
-                    // Dirección de calle
-                    if (address.getThoroughfare() != null) {
-                        fullAddress.append(address.getThoroughfare());
+                    StringBuilder addressBuilder = new StringBuilder();
+
+                    // Obtener la avenida/calle
+                    String thoroughfare = address.getThoroughfare();
+                    if (thoroughfare != null && !thoroughfare.isEmpty()) {
+                        addressBuilder.append(thoroughfare);
                     }
-                    
-                    // Número de calle
-                    if (address.getSubThoroughfare() != null) {
-                        if (fullAddress.length() > 0) fullAddress.append(" ");
-                        fullAddress.append(address.getSubThoroughfare());
+
+                    // **NUEVO**: Obtener el número de la calle
+                    String subThoroughfare = address.getSubThoroughfare();
+                    if (subThoroughfare != null && !subThoroughfare.isEmpty()) {
+                        if (addressBuilder.length() > 0) {
+                            addressBuilder.append(" ");
+                        }
+                        addressBuilder.append(subThoroughfare);
                     }
-                    
-                    // Localidad/Ciudad
-                    if (address.getLocality() != null) {
-                        if (fullAddress.length() > 0) fullAddress.append(", ");
-                        fullAddress.append(address.getLocality());
+
+                    // Obtener el distrito/localidad
+                    String locality = address.getLocality();
+                    if (locality != null && !locality.isEmpty()) {
+                        if (addressBuilder.length() > 0) {
+                            addressBuilder.append(", ");
+                        }
+                        addressBuilder.append(locality);
                     }
-                    
-                    // Departamento/Región
-                    if (address.getAdminArea() != null) {
-                        if (fullAddress.length() > 0) fullAddress.append(", ");
-                        fullAddress.append(address.getAdminArea());
+
+                    if (addressBuilder.length() > 0) {
+                        selectedAddress = addressBuilder.toString();
+                    } else {
+                        selectedAddress = address.getAddressLine(0);
                     }
-                    
-                    // País
-                    if (address.getCountryName() != null) {
-                        if (fullAddress.length() > 0) fullAddress.append(", ");
-                        fullAddress.append(address.getCountryName());
-                    }
-                    
-                    selectedAddress = fullAddress.toString();
-                    
-                    // Si la dirección está vacía, mostrar coordenadas
-                    if (selectedAddress.isEmpty()) {
-                        selectedAddress = String.format("Lat: %.4f, Lng: %.4f", 
-                            latLng.latitude, latLng.longitude);
-                    }
+
                 } else {
-                    // Si no se encuentra dirección, usar coordenadas
-                    selectedAddress = String.format("Lat: %.4f, Lng: %.4f", 
-                        latLng.latitude, latLng.longitude);
+                    selectedAddress = String.format(Locale.getDefault(), "Lat: %.4f, Lng: %.4f", latLng.latitude, latLng.longitude);
                 }
                 
-                // Actualizar UI en el hilo principal
-                requireActivity().runOnUiThread(() -> {
-                    if (tvSelectedLocation != null) {
-                        tvSelectedLocation.setText(selectedAddress);
-                    }
-                });
-                
+                if (selectedAddress == null || selectedAddress.isEmpty()) {
+                     selectedAddress = String.format(Locale.getDefault(), "Lat: %.4f, Lng: %.4f", latLng.latitude, latLng.longitude);
+                }
+
+                if (getActivity() != null) {
+                    getActivity().runOnUiThread(() -> {
+                        if (tvSelectedLocation != null) {
+                            tvSelectedLocation.setText(selectedAddress);
+                        }
+                    });
+                }
             } catch (IOException e) {
-                // Error al obtener dirección, usar coordenadas
-                selectedAddress = String.format("Lat: %.4f, Lng: %.4f", 
-                    latLng.latitude, latLng.longitude);
-                
-                requireActivity().runOnUiThread(() -> {
-                    if (tvSelectedLocation != null) {
-                        tvSelectedLocation.setText(selectedAddress);
-                    }
-                    Toast.makeText(getContext(), "Error al obtener dirección", Toast.LENGTH_SHORT).show();
-                });
+                Log.e("Location", "Error al obtener la dirección", e);
             }
         }).start();
     }
     
     private void confirmLocation() {
-        if (selectedLatLng != null) {
-            // Guardar la ubicación seleccionada con la dirección
-            SharedPreferences prefs = requireContext().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
-            prefs.edit()
-                .putString("selected_location", selectedAddress.isEmpty() ? 
-                    String.format("Lat: %.4f, Lng: %.4f", selectedLatLng.latitude, selectedLatLng.longitude) : 
-                    selectedAddress)
-                .putFloat("latitude", (float) selectedLatLng.latitude)
-                .putFloat("longitude", (float) selectedLatLng.longitude)
-                .apply();
+        if (selectedAddress != null && !selectedAddress.isEmpty()) {
+            Bundle result = new Bundle();
+            result.putString("selected_location", selectedAddress);
+            getParentFragmentManager().setFragmentResult("location_request", result);
             
-            Toast.makeText(getContext(), "Ubicación guardada", Toast.LENGTH_SHORT).show();
+            Log.d("Location", "Enviando ubicación: " + selectedAddress);
+            Toast.makeText(getContext(), "Ubicación confirmada", Toast.LENGTH_SHORT).show();
             
-            // Volver al fragment anterior
-            navController.navigateUp();
+            navController.popBackStack();
+        } else {
+            Toast.makeText(getContext(), "No se ha seleccionado una ubicación válida", Toast.LENGTH_SHORT).show();
         }
     }
 }
-

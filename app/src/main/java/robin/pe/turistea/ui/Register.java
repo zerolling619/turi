@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -163,6 +164,16 @@ public class Register extends Fragment {
 
         // Botón iniciar sesión
         view.findViewById(R.id.tvIniciarSesion).setOnClickListener(v -> navController.navigate(R.id.navigation_login));
+
+        ImageView icBack = view.findViewById(R.id.IcBack);
+        icBack.setOnClickListener(v -> {
+            if (navController != null) {
+                navController.navigateUp();          // intenta navegación hacia arriba (NavController)
+            } else if (getActivity() != null) {
+                getActivity().onBackPressed();       // fallback: simula botón atrás del sistema
+            }
+        });
+
     }
 
     private void btnRegister() {

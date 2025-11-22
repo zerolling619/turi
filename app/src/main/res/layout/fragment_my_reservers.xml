@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".ui.ReservationDetail">
+    tools:context=".ui.My_reservers">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -72,15 +72,14 @@
 
             <LinearLayout
                 android:layout_width="350dp"
-                android:layout_height="534dp"
+                android:layout_height="529dp"
                 android:layout_marginLeft="29dp"
                 android:layout_marginTop="20dp"
                 android:background="@drawable/fd_contorno_azu_fd_blancol"
                 android:orientation="vertical">
 
-                <!-- Nombre del User/Driver -->
                 <LinearLayout
-                    android:id="@+id/LinearName"
+                    android:id="@+id/LinearDriver"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:layout_alignParentTop="true"
@@ -93,7 +92,7 @@
                         android:layout_width="100dp"
                         android:layout_height="50dp"
                         android:layout_marginBottom="2dp"
-                        android:text="Nombres Completo"
+                        android:text="Conductor"
                         android:textColor="@color/black"
                         android:textSize="20sp"
                         android:textStyle="bold" />
@@ -107,11 +106,11 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
-                        android:id="@+id/tvDetailUserName"
+                        android:id="@+id/NombreDriver"
                         android:layout_width="160dp"
                         android:layout_height="match_parent"
                         android:layout_marginLeft="5dp"
-                        android:text="Nombre"
+                        android:text="Nombre del conductor"
                         android:textSize="20sp"
                         android:textStyle="bold" />
 
@@ -124,16 +123,16 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <ImageView
-                        android:id="@+id/IcDetailName"
+                        android:id="@+id/IcDetailDriver"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentStart="true"
-                        android:layout_alignParentLeft="true"
                         android:layout_centerVertical="true"
                         android:layout_gravity="center"
                         android:paddingLeft="14dp"
                         android:paddingRight="14dp"
-                        app:srcCompat="@drawable/ic_contact" />
+                        app:srcCompat="@drawable/ic_contact"
+                        android:layout_alignParentLeft="true"/>
 
                 </LinearLayout>
 
@@ -173,7 +172,7 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
-                        android:id="@+id/tvDetailPackageTitle"
+                        android:id="@+id/NombrePquete"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_marginLeft="5dp"
@@ -317,11 +316,20 @@
                         android:orientation="vertical">
 
                         <TextView
-                            android:id="@+id/tvDetailReserveDate"
+                            android:id="@+id/NombreFecharReserva"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
+                            android:layout_height="25dp"
                             android:layout_marginLeft="5dp"
                             android:text="09/sep/2025"
+                            android:textSize="20sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/NombreHoraReserva"
+                            android:layout_width="match_parent"
+                            android:layout_height="25dp"
+                            android:layout_marginLeft="5dp"
+                            android:text="07:30:00"
                             android:textSize="20sp"
                             android:textStyle="bold" />
 
@@ -415,7 +423,7 @@
                         android:layout_width="160dp"
                         android:layout_height="match_parent"
                         android:layout_marginLeft="5dp"
-                        android:text="Nombre del guia"
+                        android:text="Nombre guia"
                         android:textSize="20sp"
                         android:textStyle="bold" />
 
@@ -432,12 +440,12 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentStart="true"
-                        android:layout_alignParentLeft="true"
                         android:layout_centerVertical="true"
                         android:layout_gravity="center"
                         android:paddingLeft="14dp"
                         android:paddingRight="14dp"
-                        app:srcCompat="@drawable/ic_contact" />
+                        app:srcCompat="@drawable/ic_contact"
+                        android:layout_alignParentLeft="true"/>
 
                 </LinearLayout>
 
@@ -481,7 +489,7 @@
                         android:layout_width="160dp"
                         android:layout_height="match_parent"
                         android:layout_marginLeft="5dp"
-                        android:text="Nombre del guia"
+                        android:text="Nombre terramoza"
                         android:textSize="20sp"
                         android:textStyle="bold" />
 
@@ -498,12 +506,12 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentStart="true"
-                        android:layout_alignParentLeft="true"
                         android:layout_centerVertical="true"
                         android:layout_gravity="center"
                         android:paddingLeft="14dp"
                         android:paddingRight="14dp"
-                        app:srcCompat="@drawable/ic_contact" />
+                        app:srcCompat="@drawable/ic_contact"
+                        android:layout_alignParentLeft="true"/>
 
                 </LinearLayout>
 
@@ -514,6 +522,7 @@
                     android:background="@color/azul_oscuro"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
+
 
 
                 <LinearLayout
@@ -551,7 +560,7 @@
                             app:layout_constraintTop_toTopOf="parent" />
 
                         <TextView
-                            android:id="@+id/tvDetailPeopleCount"
+                            android:id="@+id/NombreCantidadPeronas"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_marginLeft="5dp"
@@ -586,5 +595,6 @@
         </LinearLayout>
 
     </LinearLayout>
+
 
 </FrameLayout>

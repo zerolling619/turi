@@ -129,7 +129,7 @@ public class Profile extends Fragment {
         // Mostrar / ocultar opción de cambiar contraseña según rol, y manejar navegación
         View rowChangePassword = view.findViewById(R.id.rowChangePassword);
         if (rowChangePassword != null) {
-            boolean canChangePassword = "driver".equals(userRole) || "guide".equals(userRole);
+            boolean canChangePassword = "driver".equals(userRole) || "guide".equals(userRole) || "terrace".equals(userRole);
             rowChangePassword.setVisibility(canChangePassword ? View.VISIBLE : View.GONE);
             if (canChangePassword) {
                 rowChangePassword.setOnClickListener(v -> {
@@ -143,7 +143,7 @@ public class Profile extends Fragment {
         // Conectar LinearChangePass al fragmento de cambio de contraseña
         View linearChangePass = view.findViewById(R.id.LinearChangePass);
         if (linearChangePass != null) {
-            boolean canChangePassword = "driver".equals(userRole) || "guide".equals(userRole);
+            boolean canChangePassword = "driver".equals(userRole) || "guide".equals(userRole) || "terrace".equals(userRole);
             linearChangePass.setVisibility(canChangePassword ? View.VISIBLE : View.GONE);
             if (canChangePassword) {
                 linearChangePass.setOnClickListener(v -> {
@@ -193,8 +193,8 @@ public class Profile extends Fragment {
         android.util.Log.d("Profile", "=== NAVEGACIÓN BASADA EN ROL (DESDE PERFIL) ===");
         android.util.Log.d("Profile", "Rol obtenido de SharedPreferences: '" + userRole + "'");
         
-        if (userRole.equals("driver") || userRole.equals("guide")) {
-            android.util.Log.d("Profile", "Navegando a vista de reservas (driver/guide)");
+        if (userRole.equals("driver") || userRole.equals("guide") || userRole.equals("terrace")) {
+            android.util.Log.d("Profile", "Navegando a vista de reservas (driver/guide/terrace)");
             navController.navigate(R.id.navigation_inicio_VistaReservas);
         } else {
             android.util.Log.d("Profile", "Navegando a vista normal de inicio (user/admin)");

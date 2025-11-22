@@ -183,7 +183,7 @@
 
                 <LinearLayout
                     android:id="@+id/LinearLisRoute"
-                    android:layout_width="wrap_content"
+                    android:layout_width="140dp"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
@@ -196,11 +196,20 @@
                         android:textColor="@color/white"
                         android:textSize="10dp" />
 
-                    <TextView
-                        android:id="@+id/TvLisRoute"
-                        android:layout_width="140dp"
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/layoutRuta"
+                        android:layout_width="match_parent"
                         android:layout_height="40dp"
-                        android:background="@drawable/fd_btn_gris_bordes"/>
+                        android:hint="Selecciona ruta">
+
+                        <Spinner
+                            android:id="@+id/spinnerRutas"
+                            android:layout_width="140dp"
+                            android:layout_height="40dp"
+                            android:padding="0dp" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
 
                 </LinearLayout>
 
@@ -224,6 +233,7 @@
                         android:id="@+id/TvFechaHora"
                         android:layout_width="match_parent"
                         android:layout_height="40dp"
+                        android:padding="8dp"
                         android:background="@drawable/fd_btn_gris_bordes" />
 
                 </LinearLayout>
@@ -277,6 +287,65 @@
 
             </LinearLayout>
 
+            <!-- Ubicacion de encuentro -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="112dp"
+                    android:layout_height="14dp"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginTop="2dp"
+                    android:text="Lugar de encuentro"
+                    android:textColor="@color/white"
+                    android:textSize="10dp" />
+
+                <LinearLayout
+                    android:layout_width="266dp"
+                    android:layout_height="40dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="0dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:background="@drawable/fd_contorno_azu_fd_blancol">
+
+                    <!-- Campo de texto de locacion -->
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/edtUbiEncuentro"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background="@android:color/transparent"
+                        android:hint="Escoge tu ubicacion"
+                        android:inputType="text"
+                        android:maxLength="40"
+                        android:paddingStart="20dp"
+                        android:paddingEnd="8dp"
+                        android:textColor="@color/azul_oscuro"
+                        android:textColorHint="@color/azul_oscuro"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <!-- Icono de Locacion -->
+                    <ImageView
+                        android:id="@+id/ImLocation"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/ic_location_blue"
+                        android:contentDescription="Buscar" />
+
+                    <!-- Separador -->
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginHorizontal="8dp"
+                        android:background="@color/white" />
+
+                </LinearLayout>
+
+            </LinearLayout>
 
             <!-- Ubicacion de Recojo
             <LinearLayout
@@ -375,7 +444,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="80dp"/>
+                android:layout_height="40dp"/>
 
             <!-- Cantidad de Personas -->
             <LinearLayout
@@ -402,6 +471,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="40dp"
                         android:layout_marginTop="15dp"
+                        android:layout_marginLeft="5dp"
                         android:background="@drawable/fd_contorno_azul"
                         app:boxBackgroundMode="none"
                         app:errorEnabled="true"
@@ -412,9 +482,10 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:background="@drawable/fd_contorno_azu_fd_blancol"
-                            android:inputType="textEmailAddress"
-                            android:maxLength="50"
+                            android:inputType="number"
+                            android:maxLength="2"
                             android:padding="8dp"
+                            android:textAlignment="center"
                             android:paddingTop="8dp" />
 
                     </com.google.android.material.textfield.TextInputLayout>

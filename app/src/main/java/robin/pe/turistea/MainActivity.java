@@ -152,8 +152,8 @@ public class MainActivity extends AppCompatActivity {
         android.util.Log.d("MainActivity", "=== NAVEGACIÓN BASADA EN ROL (MENÚ LATERAL) ===");
         android.util.Log.d("MainActivity", "Rol obtenido de SharedPreferences: '" + userRole + "'");
         
-        if (userRole.equals("driver") || userRole.equals("guide")) {
-            android.util.Log.d("MainActivity", "Navegando a vista de reservas (driver/guide)");
+        if (userRole.equals("driver") || userRole.equals("guide") || userRole.equals("terrace")) {
+            android.util.Log.d("MainActivity", "Navegando a vista de reservas (driver/guide/terrace)");
             navController.navigate(R.id.navigation_inicio_VistaReservas);
         } else {
             android.util.Log.d("MainActivity", "Navegando a vista normal de inicio (user/admin)");

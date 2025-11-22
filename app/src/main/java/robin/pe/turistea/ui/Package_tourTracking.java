@@ -197,7 +197,7 @@ public class Package_tourTracking extends Fragment {
                 android.util.Log.d("Package_tourTracking", "=== CARGANDO RUTAS DESDE BACKEND ===");
                 android.util.Log.d("Package_tourTracking", "Package ID: " + packageId);
                 
-                java.net.URL url = new java.net.URL(Config.ROUTER_PACKAGES_URL + packageId);
+                java.net.URL url = new java.net.URL(Config.ROUTER_PACKAGES_URL(packageId) );
                 java.net.HttpURLConnection conn = (java.net.HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("GET");
                 conn.setRequestProperty("Accept", "application/json");

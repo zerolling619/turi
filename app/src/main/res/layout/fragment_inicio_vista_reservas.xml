@@ -52,88 +52,14 @@
             android:layout_height="match_parent"
             android:background="@drawable/fd_celeste_degrade">
 
-                <LinearLayout
-                    android:layout_width="350dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="29dp"
-                    android:orientation="vertical">
-
-                    <RelativeLayout
-                        android:id="@+id/RvReservar"
-                        android:layout_width="match_parent"
-                        android:layout_height="100dp"
-                        android:layout_marginTop="10dp"
-                        android:background="@drawable/fd_contorno_azu_fd_blancol">
-
-                        <ImageView
-                            android:id="@+id/IconImagenView"
-                            android:layout_width="70dp"
-                            android:layout_height="70dp"
-                            android:layout_alignParentStart="true"
-                            android:layout_alignParentLeft="true"
-                            android:layout_centerVertical="true"
-                            android:layout_gravity="center"
-                            android:paddingLeft="14dp"
-                            android:paddingRight="14dp"
-                            app:srcCompat="@drawable/ic_contact" />
-
-                        <LinearLayout
-                            android:id="@+id/LinearLayoyt"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentTop="true"
-                            android:layout_marginStart="4dp"
-                            android:layout_marginLeft="4dp"
-                            android:layout_marginTop="2dp"
-                            android:layout_toEndOf="@+id/IconImagenView"
-                            android:layout_toRightOf="@+id/IconImagenView"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:id="@+id/NombrePaquete"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="5dp"
-                                android:layout_marginBottom="2dp"
-                                android:text="Nombre del paquete "
-                                android:textColor="@color/black"
-                                android:textSize="20sp"
-                                android:textStyle="bold" />
-
-                            <TextView
-                                android:id="@+id/NombreUsuario"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="Nombre del usuario"
-                                android:textSize="20sp"
-                                android:textStyle="bold" />
-
-                            <TextView
-                                android:id="@+id/tvLugarEncuentro"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="Lugar de encuentro"
-                                android:textSize="20sp"
-                                android:textStyle="bold" />
-
-                        </LinearLayout>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentEnd="true"
-                            android:layout_alignParentRight="true"
-                            android:layout_centerVertical="true"
-                            android:layout_marginEnd="15dp"
-                            android:layout_marginRight="6dp"
-                            android:text="Activo"
-                            android:textColor="@color/black"
-                            android:textSize="20sp"
-                            android:textStyle="bold" />
-
-                    </RelativeLayout>
-
-                </LinearLayout>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerViewReservas"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="8dp"
+                android:clipToPadding="false"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:listitem="@layout/item_reserva" />
 
         </LinearLayout>
 

@@ -126,6 +126,7 @@ public class PackageTour extends Fragment {
                     }
                     
                     // Crear bundle con los datos del paquete para pasar a Reservation
+                    // Se obtiene del Inicio.java
                     Bundle bundle = new Bundle();
                     bundle.putInt("package_id", packageId);
                     bundle.putString("package_name", packageName != null ? packageName : "");
