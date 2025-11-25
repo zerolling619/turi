@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="330dp"
+    android:layout_height="120dp"
+    android:layout_marginTop="0dp"
+    android:layout_marginBottom="20dp"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?attr/selectableItemBackground">
+
+    <!-- Imagen de fondo con esquinas redondeadas -->
+    <ImageView
+        android:id="@+id/imgPaqueteVertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@mipmap/ic_tarapoto_foreground"
+        android:background="@drawable/rounded_card"
+        android:adjustViewBounds="false"
+        android:clipToOutline="true" />
+
+    <!-- Overlay oscuro degradado para texto legible -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/gradient_overlay_dark"
+        android:alpha="0.9" />
+
+    <!-- Texto inferior izquierdo -->
+    <TextView
+        android:id="@+id/tvTituloPaqueteVertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|start"
+        android:layout_marginLeft="20dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginBottom="12dp"
+        android:text="Paquete Lunahuaná"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:shadowColor="#80000000"
+        android:shadowDx="0"
+        android:shadowDy="1"
+        android:shadowRadius="2" />
+
+</FrameLayout>

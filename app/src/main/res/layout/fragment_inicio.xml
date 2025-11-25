@@ -181,10 +181,6 @@
                         android:orientation="horizontal">
 
                         <!-- Los paquetes se cargan dinámicamente desde Inicio.java -->
-                        <!-- Ejemplos estáticos para mostrar estilo del carrusel: -->
-                        <include layout="@layout/item_paquete" />
-                        <include layout="@layout/item_paquete" />
-                        <include layout="@layout/item_paquete" />
 
                     </LinearLayout>
                 </HorizontalScrollView>
@@ -240,7 +236,7 @@
                     <!-- Carrusel Vertical Desplazable -->
                     <ScrollView
                         android:layout_width="match_parent"
-                        android:layout_height="161dp"
+                        android:layout_height="wrap_content"
                         android:scrollbars="none">
 
                         <!-- Lista de Paquetes -->
@@ -251,126 +247,19 @@
                             android:layout_marginTop="10dp"
                             android:orientation="vertical">
 
-                            <FrameLayout
+                            <!-- Include vertical package items to match the screenshot layout -->
+                            <include
                                 android:id="@+id/cardPopular1"
-                                android:layout_width="330dp"
-                                android:layout_height="80dp"
-                                android:layout_marginTop="0dp"
-                                android:background="@drawable/fd_contorno_azul_fd_transparentel"
-                                android:clickable="true"
-                                android:focusable="true">
-                                <!-- Imagen de fondo -->
-                                <ImageView
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:adjustViewBounds="false"
-                                    android:cropToPadding="false"
-                                    android:padding="0dp"
-                                    android:scaleType="centerCrop"
-                                    android:src="@mipmap/ic_tarapoto_foreground" />
-                                <!-- Texto de fondo -->
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_gravity="bottom|start"
-                                    android:layout_marginLeft="20dp"
-                                    android:text="Tarapoto"
-                                    android:textColor="@color/white"
-                                    android:textSize="14sp"
-                                    android:textStyle="bold" />
-
-                            </FrameLayout>
-
-                            <FrameLayout
+                                layout="@layout/item_paquete_vertical" />
+                            <include
                                 android:id="@+id/cardPopular2"
-                                android:layout_width="330dp"
-                                android:layout_height="80dp"
-                                android:layout_marginTop="20dp"
-                                android:background="@drawable/fd_contorno_azul_fd_transparentel"
-                                android:clickable="true"
-                                android:focusable="true">
-                                <!-- Imagen de fondo -->
-                                <ImageView
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:adjustViewBounds="false"
-                                    android:cropToPadding="false"
-                                    android:padding="0dp"
-                                    android:scaleType="centerCrop"
-                                    android:src="@mipmap/ic_tarapoto_foreground" />
-                                <!-- Texto de fondo -->
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_gravity="bottom|start"
-                                    android:layout_marginLeft="20dp"
-                                    android:text="Huaraz"
-                                    android:textColor="@color/white"
-                                    android:textSize="14sp"
-                                    android:textStyle="bold" />
-
-                            </FrameLayout>
-
-                            <FrameLayout
+                                layout="@layout/item_paquete_vertical" />
+                            <include
+                                android:id="@+id/cardPopular3"
+                                layout="@layout/item_paquete_vertical" />
+                            <include
                                 android:id="@+id/cardPopular4"
-                                android:layout_width="330dp"
-                                android:layout_height="80dp"
-                                android:layout_marginTop="20dp"
-                                android:background="@drawable/fd_contorno_azul_fd_transparentel"
-                                android:clickable="true"
-                                android:focusable="true">
-                                <!-- Imagen de fondo -->
-                                <ImageView
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:adjustViewBounds="false"
-                                    android:cropToPadding="false"
-                                    android:padding="0dp"
-                                    android:scaleType="centerCrop"
-                                    android:src="@mipmap/ic_tarapoto_foreground" />
-                                <!-- Texto de fondo -->
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_gravity="bottom|start"
-                                    android:layout_marginLeft="20dp"
-                                    android:text="Piura"
-                                    android:textColor="@color/white"
-                                    android:textSize="14sp"
-                                    android:textStyle="bold" />
-
-                            </FrameLayout>
-
-                            <FrameLayout
-                                android:id="@+id/cardPopular5"
-                                android:layout_width="330dp"
-                                android:layout_height="80dp"
-                                android:layout_marginTop="20dp"
-                                android:layout_marginBottom="20dp"
-                                android:background="@drawable/fd_contorno_azul_fd_transparentel"
-                                android:clickable="true"
-                                android:focusable="true">
-                                <!-- Imagen de fondo -->
-                                <ImageView
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:adjustViewBounds="false"
-                                    android:cropToPadding="false"
-                                    android:padding="0dp"
-                                    android:scaleType="centerCrop"
-                                    android:src="@mipmap/ic_tarapoto_foreground" />
-                                <!-- Texto de fondo -->
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_gravity="bottom|start"
-                                    android:layout_marginLeft="20dp"
-                                    android:text="Iquitos"
-                                    android:textColor="@color/white"
-                                    android:textSize="14sp"
-                                    android:textStyle="bold" />
-
-                            </FrameLayout>
+                                layout="@layout/item_paquete_vertical" />
 
                         </LinearLayout>
 

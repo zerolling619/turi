@@ -166,6 +166,49 @@ public class Inicio extends Fragment {
         
         // Cargar paquetes desde el backend (se mostrarán solo los paquetes de la DB)
         loadPackagesFromBackend();
+
+        // Setup click listeners for the static vertical popular items (include ids)
+        View cardPopular1 = view.findViewById(R.id.cardPopular1);
+        View cardPopular2 = view.findViewById(R.id.cardPopular2);
+        View cardPopular3 = view.findViewById(R.id.cardPopular3);
+        View cardPopular4 = view.findViewById(R.id.cardPopular4);
+
+        if (cardPopular1 != null) {
+            cardPopular1.setOnClickListener(v -> {
+                showPackageDetails(new TourPackage(0, "Paquete Lunahuaná", "Aventura en río", "", 350.0, "Lunahuaná", 3));
+            });
+            ImageView iv = cardPopular1.findViewById(R.id.imgPaqueteVertical);
+            TextView tv = cardPopular1.findViewById(R.id.tvTituloPaqueteVertical);
+            if (tv != null) tv.setText("Paquete Lunahuaná");
+            if (iv != null) iv.setImageResource(R.mipmap.ic_tarapoto_foreground);
+        }
+        if (cardPopular2 != null) {
+            cardPopular2.setOnClickListener(v -> {
+                showPackageDetails(new TourPackage(0, "Paquete Huacachina", "Dunas y sandboarding", "", 300.0, "Huacachina", 2));
+            });
+            ImageView iv = cardPopular2.findViewById(R.id.imgPaqueteVertical);
+            TextView tv = cardPopular2.findViewById(R.id.tvTituloPaqueteVertical);
+            if (tv != null) tv.setText("Paquete Huacachina");
+            if (iv != null) iv.setImageResource(R.mipmap.ic_tarapoto_foreground);
+        }
+        if (cardPopular3 != null) {
+            cardPopular3.setOnClickListener(v -> {
+                showPackageDetails(new TourPackage(0, "Paquete Máncora", "Sol y playa", "", 260.0, "Máncora", 3));
+            });
+            ImageView iv = cardPopular3.findViewById(R.id.imgPaqueteVertical);
+            TextView tv = cardPopular3.findViewById(R.id.tvTituloPaqueteVertical);
+            if (tv != null) tv.setText("Paquete Máncora");
+            if (iv != null) iv.setImageResource(R.mipmap.ic_tarapoto_foreground);
+        }
+        if (cardPopular4 != null) {
+            cardPopular4.setOnClickListener(v -> {
+                showPackageDetails(new TourPackage(0, "Paquete Paracas", "Islas y naturaleza", "", 280.0, "Paracas", 2));
+            });
+            ImageView iv = cardPopular4.findViewById(R.id.imgPaqueteVertical);
+            TextView tv = cardPopular4.findViewById(R.id.tvTituloPaqueteVertical);
+            if (tv != null) tv.setText("Paquete Paracas");
+            if (iv != null) iv.setImageResource(R.mipmap.ic_tarapoto_foreground);
+        }
     }
     
     @Override
@@ -503,11 +546,10 @@ public class Inicio extends Fragment {
                 
                 TourPackage pkg = new TourPackage();
                 
-                // Mapear campos del backend
                 pkg.setId(packageJson.optInt("id", 0));
                 pkg.setName(packageJson.optString("title", "Paquete"));  // "title" en el backend
                 pkg.setDescription(packageJson.optString("description", "Sin descripción"));
-                pkg.setImage(packageJson.optString("path_bg", ""));  // "path_bg" para la imagen
+                pkg.setImage(packageJson.optString("path_bg", ""));
                 
                 // Construir ubicación desde name_district, name_province, name_region
                 String district = packageJson.optString("name_district", "");
