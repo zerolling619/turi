@@ -27,7 +27,7 @@ public class Config {
      * Ejemplo IP local:
      * http://192.168.100.9:4001
      */
-    public static final String BASE_URL = "http://192.168.100.9:4001";
+    public static final String BASE_URL = "https://turisteabe-production.up.railway.app";
 
     // Endpoints simples
     public static final String LOGIN_URL = BASE_URL + "/api/signin";
@@ -40,8 +40,7 @@ public class Config {
     public static final String CHANGE_PASSWORD_URL = BASE_URL + "/api/user-account/updatepassword";
 
     // Form reserves
-    public static final String FORM_RESERVE_URL = BASE_URL + "/api/user-account/form_reserves";  // POST
-    public static final String FORM_RESERVES_LIST_URL = BASE_URL + "/api/user-account/form_reserves"; // GET
+    public static final String FORM_RESERVE_URL = BASE_URL + "/api/user-account/form_reserves";
 
     /**
      * Rutas dinámicas

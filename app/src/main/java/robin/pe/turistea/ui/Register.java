@@ -78,7 +78,7 @@ public class Register extends Fragment {
         tilConfirPasswordd = view.findViewById(R.id.tilConfirPasswordd);
 
         tvPasswordRequisitos = new TextView(getContext());
-        tvPasswordRequisitos.setText("Se requiere al menos un número y un caracter especial");
+        //tvPasswordRequisitos.setText("Se requiere al menos un número y un caracter especial");
         tvPasswordRequisitos.setTextColor(getResources().getColor(R.color.azul_oscuro));
         tvPasswordRequisitos.setTextSize(10);
         ((ViewGroup) view.findViewById(R.id.tilPasswordd).getParent()).addView(tvPasswordRequisitos, ((ViewGroup) view.findViewById(R.id.tilPasswordd)).getLayoutParams());
