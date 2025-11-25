@@ -181,6 +181,10 @@
                         android:orientation="horizontal">
 
                         <!-- Los paquetes se cargan dinámicamente desde Inicio.java -->
+                        <!-- Ejemplos estáticos para mostrar estilo del carrusel: -->
+                        <include layout="@layout/item_paquete" />
+                        <include layout="@layout/item_paquete" />
+                        <include layout="@layout/item_paquete" />
 
                     </LinearLayout>
                 </HorizontalScrollView>

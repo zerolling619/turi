@@ -573,27 +573,21 @@ public class Inicio extends Fragment {
         
         android.util.Log.d("Inicio", "Mostrando " + packageList.size() + " paquetes");
         
+        LayoutInflater inflater = LayoutInflater.from(requireContext());
         for (TourPackage pkg : packageList) {
-            // Crear un FrameLayout para cada paquete
-            android.widget.FrameLayout cardView = new android.widget.FrameLayout(requireContext());
-            android.widget.FrameLayout.LayoutParams params = new android.widget.FrameLayout.LayoutParams(
-                convertDpToPx(127),
-                android.widget.FrameLayout.LayoutParams.MATCH_PARENT
-            );
-            params.setMarginEnd(convertDpToPx(24));
-            cardView.setLayoutParams(params);
-            cardView.setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.fd_contorno_azul_fd_transparentel));
-            cardView.setClickable(true);
-            cardView.setFocusable(true);
-            
-            // ImageView para la imagen del paquete
-            ImageView imageView = new ImageView(requireContext());
-            imageView.setLayoutParams(new android.widget.FrameLayout.LayoutParams(
-                android.widget.FrameLayout.LayoutParams.MATCH_PARENT,
-                android.widget.FrameLayout.LayoutParams.MATCH_PARENT
-            ));
-            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            
+            // Inflate custom item layout for each package
+            View itemView = inflater.inflate(R.layout.item_paquete, linearListaPaquetes, false);
+
+            // Set layout params for spacing
+            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(convertDpToPx(200), convertDpToPx(210));
+            lp.setMargins(0, 0, convertDpToPx(24), 0);
+            itemView.setLayoutParams(lp);
+
+            ImageView imageView = itemView.findViewById(R.id.imgPaquete);
+            TextView textView = itemView.findViewById(R.id.tvTituloPaquete);
+            ImageView ivHeart = itemView.findViewById(R.id.ivHeart);
+            View flHeart = itemView.findViewById(R.id.flHeart);
+
             // Cargar imagen con Glide
             if (!pkg.getImage().isEmpty()) {
                 com.bumptech.glide.Glide.with(this)
@@ -604,31 +598,19 @@ public class Inicio extends Fragment {
             } else {
                 imageView.setImageResource(R.mipmap.ic_tarapoto_foreground);
             }
-            
-            // TextView para el nombre del paquete
-            TextView textView = new TextView(requireContext());
-            android.widget.FrameLayout.LayoutParams textParams = new android.widget.FrameLayout.LayoutParams(
-                android.widget.FrameLayout.LayoutParams.WRAP_CONTENT,
-                android.widget.FrameLayout.LayoutParams.WRAP_CONTENT
-            );
-            textParams.gravity = android.view.Gravity.BOTTOM | android.view.Gravity.START;
-            textParams.setMarginStart(convertDpToPx(20));
-            textParams.bottomMargin = convertDpToPx(10);
-            textView.setLayoutParams(textParams);
+
+            // Set title
             textView.setText(pkg.getName());
-            textView.setTextColor(getResources().getColor(R.color.white, null));
-            textView.setTextSize(14);
-            textView.setTypeface(null, android.graphics.Typeface.BOLD);
-            
-            // Agregar vistas al card
-            cardView.addView(imageView);
-            cardView.addView(textView);
-            
-            // Click listener
-            cardView.setOnClickListener(v -> showPackageDetails(pkg));
-            
-            // Agregar card al contenedor
-            linearListaPaquetes.addView(cardView);
+
+            // Click events
+            itemView.setOnClickListener(v -> showPackageDetails(pkg));
+            flHeart.setOnClickListener(v -> {
+                // Toggle visual feedback for favorite (simple example)
+                // TODO: persist favorite state in data model
+                ivHeart.setAlpha(ivHeart.getAlpha() == 1f ? 0.6f : 1f);
+            });
+
+            linearListaPaquetes.addView(itemView);
         }
     }
     
@@ -670,27 +652,16 @@ public class Inicio extends Fragment {
         // Muestra sólo los paquetes filtrados
         linearListaPaquetes.removeAllViews();
         for (TourPackage pkg : paquetesFiltrados) {
-            // Crear un FrameLayout para cada paquete (igual que en displayPackages)
-            android.widget.FrameLayout cardView = new android.widget.FrameLayout(requireContext());
-            android.widget.FrameLayout.LayoutParams params = new android.widget.FrameLayout.LayoutParams(
-                convertDpToPx(127),
-                android.widget.FrameLayout.LayoutParams.MATCH_PARENT
-            );
-            params.setMarginEnd(convertDpToPx(24));
-            cardView.setLayoutParams(params);
-            cardView.setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.fd_contorno_azul_fd_transparentel));
-            cardView.setClickable(true);
-            cardView.setFocusable(true);
+            // Inflate our item layout and set data
+            View itemView = LayoutInflater.from(requireContext()).inflate(R.layout.item_paquete, linearListaPaquetes, false);
+            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(convertDpToPx(200), convertDpToPx(210));
+            lp.setMargins(0, 0, convertDpToPx(24), 0);
+            itemView.setLayoutParams(lp);
 
-            // ImageView para la imagen del paquete
-            ImageView imageView = new ImageView(requireContext());
-            imageView.setLayoutParams(new android.widget.FrameLayout.LayoutParams(
-                android.widget.FrameLayout.LayoutParams.MATCH_PARENT,
-                android.widget.FrameLayout.LayoutParams.MATCH_PARENT
-            ));
-            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            ImageView imageView = itemView.findViewById(R.id.imgPaquete);
+            TextView textView = itemView.findViewById(R.id.tvTituloPaquete);
+            View flHeart = itemView.findViewById(R.id.flHeart);
 
-            // Cargar imagen con Glide
             if (!pkg.getImage().isEmpty()) {
                 com.bumptech.glide.Glide.with(this)
                         .load(pkg.getImage())
@@ -701,29 +672,9 @@ public class Inicio extends Fragment {
                 imageView.setImageResource(R.mipmap.ic_tarapoto_foreground);
             }
 
-            // TextView para el nombre del paquete
-            TextView textView = new TextView(requireContext());
-            android.widget.FrameLayout.LayoutParams textParams = new android.widget.FrameLayout.LayoutParams(
-                    android.widget.FrameLayout.LayoutParams.WRAP_CONTENT,
-                    android.widget.FrameLayout.LayoutParams.WRAP_CONTENT
-            );
-            textParams.gravity = android.view.Gravity.BOTTOM | android.view.Gravity.START;
-            textParams.setMarginStart(convertDpToPx(20));
-            textParams.bottomMargin = convertDpToPx(10);
-            textView.setLayoutParams(textParams);
             textView.setText(pkg.getName());
-            textView.setTextColor(getResources().getColor(R.color.white, null));
-            textView.setTextSize(14);
-            textView.setTypeface(null, android.graphics.Typeface.BOLD);
-
-            // Agregar vistas al card
-            cardView.addView(imageView);
-            cardView.addView(textView);
-
-            // Click para ver detalles
-            cardView.setOnClickListener(v -> showPackageDetails(pkg));
-
-            linearListaPaquetes.addView(cardView);
+            itemView.setOnClickListener(v -> showPackageDetails(pkg));
+            linearListaPaquetes.addView(itemView);
         }
     }
 }

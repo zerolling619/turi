@@ -22,7 +22,7 @@ Este archivo centraliza TODAS las URLs del backend en un solo lugar.
 2. CAMBIAR LA IP:
    
    Busca esta línea:
-   public static final String BASE_URL = "http://192.168.100.9:4001";
+   public static final String BASE_URL = "https://turisteabe-production.up.railway.app";
    
    Cambia "192.168.100.9" por tu IP actual:
    
@@ -33,7 +33,7 @@ Este archivo centraliza TODAS las URLs del backend en un solo lugar.
    public static final String BASE_URL = "http://TU_IP:4001";
    
    Ejemplo con tu IP:
-   public static final String BASE_URL = "http://192.168.100.9:4001";
+   public static final String BASE_URL = "https://turisteabe-production.up.railway.app";
 
 3. COMPILAR Y EJECUTAR
    
@@ -76,7 +76,7 @@ java.net.URL url = new java.net.URL(Config.REGISTER_URL);
 📝 CONSTANTES DISPONIBLES
 ==================================================================
 
-Config.BASE_URL                    → http://192.168.100.9:4001
+Config.BASE_URL                    → https://turisteabe-production.up.railway.app
 Config.LOGIN_URL                   → BASE_URL + /api/signin
 Config.REGISTER_URL                → BASE_URL + /api/signup
 Config.VERIFY_CODE_URL             → BASE_URL + /api/active/verifycode

@@ -10,7 +10,7 @@ package robin.pe.turistea;
  *
  * - Para EMULADOR: "http://10.0.2.2:4001"
  * - Para CELULAR REAL: "http://TU_IP_LOCAL:4001"
- *   Ejemplo: "http://192.168.100.9:4001"
+ *   Ejemplo: "https://turisteabe-production.up.railway.app"
  *
  * COMO OBTENER TU IP LOCAL:
  * Windows: ipconfig (buscar "IPv4")
@@ -25,9 +25,9 @@ public class Config {
      * - Celular real: "http://TU_IP_LOCAL:4001"
      *
      * Ejemplo IP local:
-     * http://192.168.100.9:4001
+     * https://turisteabe-production.up.railway.app
      */
-    public static final String BASE_URL = "http://192.168.100.9:4001";
+    public static final String BASE_URL = "https://turisteabe-production.up.railway.app";
 
     // Endpoints simples
     public static final String LOGIN_URL = BASE_URL + "/api/signin";
