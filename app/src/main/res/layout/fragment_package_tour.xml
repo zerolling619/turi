@@ -6,10 +6,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="ui.PackageTour">
 
+    <!-- Background image loaded dynamically with Glide (path_bg) -->
+    <ImageView
+        android:id="@+id/imgBgPath"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:contentDescription="@string/bg_image" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/fd_celeste_degrade"
         android:orientation="vertical">
 
         <LinearLayout
@@ -28,262 +35,242 @@
 
         </LinearLayout>
 
-
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="260dp">
 
-            <ImageView
-                android:layout_width="280dp"
-                android:layout_height="200dp"
-                android:background="@color/white"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                tools:ignore="MissingConstraints" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+            <LinearLayout
+                android:layout_width="300dp"
+                android:layout_height="320dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="55dp"
+                android:background="@drawable/fd_btn_azul_bordes_transparente"
+                android:orientation="vertical">
 
                 <LinearLayout
-                    android:layout_width="300dp"
-                    android:layout_height="320dp"
-                    android:background="@drawable/fd_btn_azul_bordes_transparente"
-                    android:orientation="vertical"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:ignore="MissingConstraints">
+                    android:layout_width="match_parent"
+                    android:layout_height="26dp"
+                    android:background="@drawable/fd_btn_gris_bordes_superior">
+
+                    <!-- Boton de desplazar -->
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="3dp">
+
+                        <TextView
+                            android:id="@+id/tvDetallesDestino"
+                            android:layout_width="100dp"
+                            android:layout_height="20dp"
+                            android:layout_marginStart="40dp"
+                            android:background="@drawable/fd_btn_gris_oscuro_bordes"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:text="Detalles"
+                            android:textAlignment="center"
+                            android:textColor="@color/black"
+                            android:textSize="15sp"
+                            android:textStyle="bold"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/tvDetallesTracking"
+                            android:layout_width="100dp"
+                            android:layout_height="20dp"
+                            android:layout_marginEnd="36dp"
+                            android:clickable="true"
+                            android:elevation="5dp"
+                            android:focusable="true"
+                            android:text="Tracking"
+                            android:textAlignment="center"
+                            android:textColor="@color/black"
+                            android:textSize="15sp"
+                            android:textStyle="bold"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                </LinearLayout>
+
+                <!-- Datos del Destino -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="70dp">
 
                     <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="26dp"
-                        android:background="@drawable/fd_btn_gris_bordes_superior">
+                        android:layout_width="40dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="20dp">
 
-                        <!-- Boton de desplazar -->
-                        <androidx.constraintlayout.widget.ConstraintLayout
+                        <ImageView
+                            android:id="@+id/ImLocation"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginTop="20dp"
+                            android:src="@drawable/ic_location" />
+
+                    </LinearLayout>
+
+                    <!-- Destino -->
+                    <LinearLayout
+                        android:id="@+id/destinoLayout"
+                        android:layout_width="200dp"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+                        <!-- Destino -->
+                        <TextView
+                            android:id="@+id/tvDestinoNombre"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="3dp">
-
-                            <TextView
-                                android:id="@+id/tvDetallesDestino"
-                                android:layout_width="100dp"
-                                android:layout_height="20dp"
-                                android:layout_marginStart="40dp"
-                                android:background="@drawable/fd_btn_gris_oscuro_bordes"
-                                android:clickable="true"
-                                android:focusable="true"
-                                android:text="Detalles"
-                                android:textAlignment="center"
-                                android:textColor="@color/black"
-                                android:textSize="15sp"
-                                android:textStyle="bold"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="parent" />
-
-                            <TextView
-                                android:id="@+id/tvDetallesTracking"
-                                android:layout_width="100dp"
-                                android:layout_height="20dp"
-                                android:layout_marginEnd="36dp"
-                                android:clickable="true"
-                                android:elevation="5dp"
-                                android:focusable="true"
-                                android:text="Tracking"
-                                android:textAlignment="center"
-                                android:textColor="@color/black"
-                                android:textSize="15sp"
-                                android:textStyle="bold"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintTop_toTopOf="parent" />
-
-                        </androidx.constraintlayout.widget.ConstraintLayout>
-
-                    </LinearLayout>
-
-                    <!-- Datos del Destino -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="70dp">
-
-                        <LinearLayout
-                            android:layout_width="40dp"
-                            android:layout_height="match_parent"
-                            android:layout_marginLeft="20dp">
-
-                            <ImageView
-                                android:id="@+id/ImLocation"
-                                android:layout_width="20dp"
-                                android:layout_height="20dp"
-                                android:layout_marginLeft="10dp"
-                                android:layout_marginTop="20dp"
-                                android:src="@drawable/ic_location" />
-
-                        </LinearLayout>
-
-                        <!-- Destino -->
-                        <LinearLayout
-                            android:id="@+id/destinoLayout"
-                            android:layout_width="200dp"
-                            android:layout_height="match_parent"
-                            android:orientation="vertical">
-                            <!-- Destino -->
-                            <TextView
-                                android:id="@+id/tvDestinoNombre"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="15dp"
-                                android:text="Destino"
-                                android:textColor="@color/white"
-                                android:textSize="15sp" />
-                            <!-- Ciudad y pais -->
-                            <TextView
-                                android:id="@+id/tvCiudadPais"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="ciudad, pais"
-                                android:textColor="@color/white" />
-
-                        </LinearLayout>
-
-                    </LinearLayout>
-
-                    <View
-                        android:layout_width="250dp"
-                        android:layout_height="1dp"
-                        android:layout_marginLeft="24dp"
-                        android:background="@color/white"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <!-- imagens -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="30dp"
-                        android:orientation="horizontal">
-                        <!-- Puntuacion -->
-                        <LinearLayout
-                            android:layout_width="70dp"
-                            android:layout_height="match_parent"
-                            android:layout_marginLeft="30dp"
-                            android:layout_marginTop="5dp">
-
-                            <ImageView
-                                android:layout_width="20dp"
-                                android:layout_height="20dp"
-                                android:src="@drawable/ic_star" />
-
-                            <TextView
-                                android:id="@+id/TvCalificacion"
-                                android:layout_width="match_parent"
-                                android:layout_height="20dp"
-                                android:layout_marginLeft="2dp"
-                                android:layout_marginTop="1dp"
-                                android:text="4.5"
-                                android:textColor="@color/white" />
-
-                        </LinearLayout>
-                        <!-- Temperatura -->
-                        <LinearLayout
-                            android:layout_width="70dp"
-                            android:layout_height="match_parent"
-                            android:layout_marginLeft="10dp"
-                            android:layout_marginTop="5dp">
-
-                            <ImageView
-                                android:layout_width="20dp"
-                                android:layout_height="20dp"
-                                android:src="@drawable/ic_thermometer" />
-
-                            <TextView
-                                android:id="@+id/TvTemperatura"
-                                android:layout_width="match_parent"
-                                android:layout_height="20dp"
-                                android:layout_marginLeft="2dp"
-                                android:layout_marginTop="1dp"
-                                android:text="25ºC"
-                                android:textColor="@color/white" />
-
-                        </LinearLayout>
-                        <!-- Dias -->
-                        <LinearLayout
-                            android:layout_width="70dp"
-                            android:layout_height="match_parent"
-                            android:layout_marginLeft="10dp"
-                            android:layout_marginTop="5dp">
-
-                            <ImageView
-                                android:layout_width="20dp"
-                                android:layout_height="20dp"
-                                android:src="@drawable/ic_calendar" />
-
-                            <TextView
-                                android:id="@+id/TvDias"
-                                android:layout_width="match_parent"
-                                android:layout_height="20dp"
-                                android:layout_marginLeft="2dp"
-                                android:layout_marginTop="1dp"
-                                android:text="4 Dias"
-                                android:textColor="@color/white" />
-
-                        </LinearLayout>
-
-                    </LinearLayout>
-
-                    <!-- Descripcion -->
-
-                    <LinearLayout
-                        android:id="@+id/descripcionLayout"
-                        android:layout_width="250dp"
-                        android:layout_height="144dp"
-                        android:layout_marginLeft="24dp"
-                        android:orientation="vertical">
-
+                            android:layout_marginTop="15dp"
+                            android:text="Destino"
+                            android:textColor="@color/white"
+                            android:textSize="15sp" />
+                        <!-- Ciudad y pais -->
                         <TextView
-                            android:layout_width="125dp"
+                            android:id="@+id/tvCiudadPais"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="10dp"
-                            android:text="Descripcion"
+                            android:text="ciudad, pais"
                             android:textColor="@color/white" />
-
-                        <TextView
-                            android:id="@+id/tvDescripcionContent"
-                            android:layout_width="228dp"
-                            android:layout_height="match_parent"
-                            android:layout_marginLeft="10dp"
-                            android:text="Detalles de la Descripcion"
-                            android:textColor="@color/white" />
-
-                    </LinearLayout>
-
-                    <!-- Boton de reserva -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-
-                        <Button
-                            android:id="@+id/btnReservar"
-                            android:layout_width="150dp"
-                            android:layout_height="30dp"
-                            android:layout_marginLeft="80dp"
-                            android:layout_marginTop="5dp"
-                            android:background="@drawable/fd_btn_gris_oscuro_bordes"
-                            android:text="Reservar"
-                            android:textColor="@color/azul_oscuro"
-                            android:textStyle="bold" />
 
                     </LinearLayout>
 
                 </LinearLayout>
-            </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <View
+                    android:layout_width="250dp"
+                    android:layout_height="1dp"
+                    android:background="@color/white"
+                    android:layout_marginLeft="24dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <!-- imagens -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:orientation="horizontal">
+                    <!-- Puntuacion -->
+                    <LinearLayout
+                        android:layout_width="70dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginLeft="30dp">
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/ic_star"/>
+                        <TextView
+                            android:id="@+id/TvCalificacion"
+                            android:layout_width="match_parent"
+                            android:layout_height="20dp"
+                            android:layout_marginLeft="2dp"
+                            android:layout_marginTop="1dp"
+                            android:textColor="@color/white"
+                            android:text="4.5"/>
+
+                    </LinearLayout>
+                    <!-- Temperatura -->
+                    <LinearLayout
+                        android:layout_width="70dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginLeft="10dp">
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/ic_thermometer"/>
+                        <TextView
+                            android:id="@+id/TvTemperatura"
+                            android:layout_width="match_parent"
+                            android:layout_height="20dp"
+                            android:layout_marginLeft="2dp"
+                            android:layout_marginTop="1dp"
+                            android:textColor="@color/white"
+                            android:text="25ºC"/>
+
+                    </LinearLayout>
+                    <!-- Dias -->
+                    <LinearLayout
+                        android:layout_width="70dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginLeft="10dp">
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/ic_calendar"/>
+                        <TextView
+                            android:id="@+id/TvDias"
+                            android:layout_width="match_parent"
+                            android:layout_height="20dp"
+                            android:layout_marginLeft="2dp"
+                            android:layout_marginTop="1dp"
+                            android:textColor="@color/white"
+                            android:text="4 Dias"/>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <!-- Descripcion -->
+
+                <LinearLayout
+                    android:id="@+id/descripcionLayout"
+                    android:layout_width="250dp"
+                    android:layout_height="144dp"
+                    android:layout_marginLeft="24dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="125dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:text="Descripcion"
+                        android:textColor="@color/white" />
+
+                    <TextView
+                        android:id="@+id/tvDescripcionContent"
+                        android:layout_width="228dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="10dp"
+                        android:text="Detalles de la Descripcion"
+                        android:textColor="@color/white" />
+
+                </LinearLayout>
+
+                <!-- Boton de reserva -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <Button
+                        android:id="@+id/btnReservar"
+                        android:layout_width="150dp"
+                        android:layout_height="30dp"
+                        android:background="@drawable/fd_btn_gris_oscuro_bordes"
+                        android:layout_marginLeft="80dp"
+                        android:layout_marginTop="5dp"
+                        android:text="Reservar"
+                        android:textStyle="bold"
+                        android:textColor="@color/azul_oscuro"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
 
         </LinearLayout>
 

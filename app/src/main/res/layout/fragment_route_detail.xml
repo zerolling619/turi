@@ -11,6 +11,8 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
+
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="310dp"
@@ -26,127 +28,98 @@
                 android:src="@drawable/ic_back_arrow"
                 />
 
+
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:background="@drawable/fd_btn_gris_bordes"
+            android:orientation="vertical">
 
-
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="72dp">
+
+                <ImageView
+                    android:id="@+id/ImgProfile"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginLeft="65dp"
+                    android:background="@drawable/fd_blanco_circulo"
+                    android:src="@drawable/ic_user"
+                    android:padding="15dp"
+                    android:contentDescription="Foto de perfil"/>
 
                 <LinearLayout
-                    android:layout_width="350dp"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/fd_btn_gris_bordes"
-                    android:orientation="vertical"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:ignore="MissingConstraints">
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="72dp">
+                    <TextView
+                        android:id="@+id/tvNombreApellido"
+                        android:layout_width="230dp"
+                        android:layout_height="30dp"
+                        android:textColor="@color/black"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginLeft="10dp"
+                        android:text="Nombre Completo"
+                        android:textStyle="bold"
+                        android:textSize="18sp"/>
 
-                        <ImageView
-                            android:id="@+id/ImgProfile"
-                            android:layout_width="60dp"
-                            android:layout_height="60dp"
-                            android:layout_marginLeft="35dp"
-                            android:layout_marginTop="5dp"
-                            android:background="@drawable/fd_blanco_circulo"
-                            android:contentDescription="Foto de perfil"
-                            android:padding="15dp"
-                            android:src="@drawable/ic_user" />
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:id="@+id/tvNombreApellido"
-                                android:layout_width="230dp"
-                                android:layout_height="30dp"
-                                android:layout_marginLeft="10dp"
-                                android:layout_marginTop="10dp"
-                                android:text="Nombre Completo"
-                                android:textColor="@color/black"
-                                android:textSize="18sp"
-                                android:textStyle="bold" />
-
-                            <TextView
-                                android:id="@+id/TvDescripcionAuto"
-                                android:layout_width="230dp"
-                                android:layout_height="30dp"
-                                android:layout_marginLeft="10dp"
-                                android:text="Modelo y placa del auto"
-                                android:textColor="@color/black"
-                                android:textSize="18sp"
-                                android:textStyle="bold" />
-
-                        </LinearLayout>
-
-                    </LinearLayout>
-
-                    <View
-                        android:layout_width="300dp"
-                        android:layout_height="2dp"
-                        android:layout_marginLeft="24dp"
-                        android:background="@color/azul_oscuro"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical">
-
-                        <androidx.constraintlayout.widget.ConstraintLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent">
-
-                            <LinearLayout
-                                android:id="@+id/DescripcionRuta"
-                                android:layout_width="320dp"
-                                android:layout_height="260dp"
-                                android:background="@color/white"
-                                android:orientation="vertical"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintStart_toStartOf="parent"
-                                tools:layout_editor_absoluteY="20dp">
-
-                            </LinearLayout>
-                        </androidx.constraintlayout.widget.ConstraintLayout>
-
-                        <androidx.constraintlayout.widget.ConstraintLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent">
-
-                            <Button
-                                android:layout_width="170dp"
-                                android:layout_height="40dp"
-                                android:background="@drawable/fd_btn_azul_bordes"
-                                android:text="Cerrar"
-                                android:textColor="@color/white"
-                                android:textSize="20sp"
-                                android:textStyle="bold"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintStart_toStartOf="parent" />
-                        </androidx.constraintlayout.widget.ConstraintLayout>
-
-                    </LinearLayout>
+                    <TextView
+                        android:id="@+id/TvDescripcionAuto"
+                        android:layout_width="230dp"
+                        android:layout_height="30dp"
+                        android:textColor="@color/black"
+                        android:layout_marginLeft="10dp"
+                        android:text="Modelo y placa del auto"
+                        android:textStyle="bold"
+                        android:textSize="18sp"/>
 
                 </LinearLayout>
 
+            </LinearLayout>
 
+            <View
+                android:layout_width="350dp"
+                android:layout_height="2dp"
+                android:layout_marginLeft="24dp"
+                android:background="@color/azul_oscuro"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@+id/DescripcionRuta"
+                    android:layout_width="320dp"
+                    android:layout_height="260dp"
+                    android:layout_marginLeft="43dp"
+                    android:layout_marginTop="20dp"
+                    android:background="@color/white"
+                    android:orientation="vertical">
+
+                </LinearLayout>
+
+                <Button
+                    android:layout_width="170dp"
+                    android:layout_height="40dp"
+                    android:layout_marginLeft="115dp"
+                    android:background="@drawable/fd_btn_azul_bordes"
+                    android:text="Cerrar"
+                    android:textColor="@color/white"
+                    android:textSize="20sp"
+                    android:textStyle="bold"/>
+
+            </LinearLayout>
+
         </LinearLayout>
+
 
     </LinearLayout>
 

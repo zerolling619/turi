@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -28,130 +27,122 @@
                 android:layout_marginTop="20dp"
                 android:src="@drawable/ic_menu_lateral" />
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="119dp"
+                android:orientation="vertical">
 
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    tools:layout_editor_absoluteY="0dp">
+                <TextView
+                    android:layout_width="80dp"
+                    android:layout_height="40dp"
+                    android:layout_marginLeft="165dp"
+                    android:layout_marginTop="0dp"
+                    android:text="Perfil"
+                    android:textColor="@color/white"
+                    android:textSize="30dp"
+                    android:textStyle="bold" />
 
-                    <TextView
-                        android:layout_width="80dp"
-                        android:layout_height="40dp"
-                        android:layout_marginTop="0dp"
-                        android:text="Perfil"
-                        android:layout_marginLeft="65dp"
-                        android:textColor="@color/white"
-                        android:textSize="30dp"
-                        android:textStyle="bold" />
+                <ImageView
+                    android:id="@+id/ImgProfile"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:layout_marginLeft="170dp"
+                    android:layout_marginTop="5dp"
+                    android:background="@drawable/fd_blanco_circulo"
+                    android:src="@drawable/ic_user" />
 
-                    <ImageView
-                        android:id="@+id/ImgProfile"
-                        android:layout_width="70dp"
-                        android:layout_height="70dp"
-                        android:layout_marginLeft="70dp"
-                        android:layout_marginTop="5dp"
-                        android:background="@drawable/fd_blanco_circulo"
-                        android:src="@drawable/ic_user" />
-
-                    <TextView
-                        android:id="@+id/tvNombreApellido"
-                        android:layout_width="200dp"
-                        android:layout_height="40dp"
-                        android:gravity="center"
-                        android:text="Nombre y apellido"
-                        android:textColor="@color/white"
-                        android:textSize="18dp"
-                        android:textStyle="bold" />
-
-                </LinearLayout>
-            </androidx.constraintlayout.widget.ConstraintLayout>
+            </LinearLayout>
 
 
         </LinearLayout>
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="40dp"
+            android:layout_marginTop="0dp"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/tvNombreApellido"
+                android:layout_width="200dp"
+                android:layout_height="40dp"
+                android:gravity="center"
+                android:text="Nombre y apellido"
+                android:textColor="@color/white"
+                android:textSize="18dp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="77dp"
+            android:orientation="horizontal">
 
             <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:orientation="horizontal"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                tools:ignore="MissingConstraints">
+                android:layout_width="205dp"
+                android:layout_height="74dp"
+                android:orientation="horizontal">
 
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="74dp"
-                    android:orientation="horizontal">
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginLeft="50dp"
+                    android:layout_marginTop="15dp"
+                    android:src="@drawable/ic_corona" />
 
-                    <ImageView
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:layout_marginLeft="50dp"
-                        android:layout_marginTop="15dp"
-                        android:src="@drawable/ic_corona" />
+                <TextView
+                    android:layout_width="50dp"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="12dp"
+                    android:gravity="center"
+                    android:text="VIP"
+                    android:textColor="@color/white"
+                    android:textSize="18dp" />
 
-                    <TextView
-                        android:layout_width="50dp"
-                        android:layout_height="40dp"
-                        android:layout_marginTop="12dp"
-                        android:gravity="center"
-                        android:text="VIP"
-                        android:textColor="@color/white"
-                        android:textSize="18dp" />
-
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="74dp"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:layout_marginLeft="50dp"
-                        android:layout_marginTop="11dp"
-                        android:src="@drawable/ic_carro" />
-
-                    <TextView
-                        android:layout_width="50dp"
-                        android:layout_height="40dp"
-                        android:layout_marginTop="12dp"
-                        android:gravity="center"
-                        android:text="3000"
-                        android:textColor="@color/white"
-                        android:textSize="18dp" />
-
-                </LinearLayout>
 
             </LinearLayout>
-        </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <LinearLayout
+                android:layout_width="205dp"
+                android:layout_height="74dp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginLeft="50dp"
+                    android:layout_marginTop="11dp"
+                    android:src="@drawable/ic_carro" />
+
+                <TextView
+                    android:layout_width="50dp"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="12dp"
+                    android:gravity="center"
+                    android:text="3000"
+                    android:textColor="@color/white"
+                    android:textSize="18dp" />
+
+            </LinearLayout>
+
+        </LinearLayout>
 
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="240dp"
+        android:layout_height="295dp"
         android:orientation="vertical">
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="16dp"
+            android:layout_height="50dp"
             android:layout_weight="0" />
 
         <!-- Email -->
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
             android:gravity="center_vertical"
@@ -188,7 +179,7 @@
 
         <!-- Teléfono -->
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
             android:gravity="center_vertical"
@@ -226,13 +217,13 @@
         <!-- Cambiar contraseña (visible solo para driver/guide) -->
         <LinearLayout
             android:id="@+id/rowChangePassword"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
-            android:clickable="true"
-            android:focusable="true"
             android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:clickable="true"
+            android:focusable="true">
 
             <ImageView
                 android:layout_width="24dp"
@@ -265,13 +256,13 @@
         <!-- Cambiar contraseña -->
         <LinearLayout
             android:id="@+id/LinearChangePass"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
-            android:clickable="true"
-            android:focusable="true"
             android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:clickable="true"
+            android:focusable="true">
 
             <ImageView
                 android:layout_width="24dp"
@@ -284,6 +275,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:orientation="vertical">
+
 
 
                 <TextView
@@ -304,23 +296,15 @@
         android:layout_width="match_parent"
         android:layout_height="166dp">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <Button
-                android:id="@+id/btnCerrarSesion"
-                android:layout_width="200dp"
-                android:layout_height="60dp"
-                android:background="@drawable/fd_contorno_rojo_fd_blancol"
-                android:text="Cerrar Sesion"
-                android:textColor="#f5060a"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
+        <Button
+            android:id="@+id/btnCerrarSesion"
+            android:layout_width="200dp"
+            android:layout_height="60dp"
+            android:layout_marginLeft="105dp"
+            android:layout_marginTop="80dp"
+            android:background="@drawable/fd_contorno_rojo_fd_blancol"
+            android:text="Cerrar Sesion"
+            android:textColor="#f5060a" />
     </LinearLayout>
 
 </LinearLayout>

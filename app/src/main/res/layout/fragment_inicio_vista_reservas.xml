@@ -31,112 +31,21 @@
                     android:src="@drawable/ic_menu_lateral" />
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="Reservas Asignadas"
+                    android:layout_width="99dp"
+                    android:layout_height="53dp"
+                    android:layout_centerInParent="true"
+                    android:layout_marginLeft="110dp"
+                    android:layout_marginTop="30dp"
+                    android:text=" Reservas Asignadas"
                     android:textColor="@color/white"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
+                    android:textSize="20dp"
+                    android:textStyle="bold"
+                    android:visibility="visible" />
+
 
             </LinearLayout>
 
         </LinearLayout>
-
-        <!-- Carrusel horizontal para los botones de estado -->
-        <HorizontalScrollView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:scrollbars="none" >
-            <!-- Filtros -->
-            <LinearLayout
-                android:id="@+id/LinearStatusForm"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:paddingTop="8dp"
-                android:paddingBottom="8dp"
-                android:paddingStart="16dp"
-                android:paddingEnd="16dp">
-
-                <Button
-                    android:id="@+id/btnStatusPending"
-                    android:layout_width="wrap_content"
-                    android:layout_height="40dp"
-                    android:layout_marginEnd="8dp"
-                    android:text="Pendientes"
-                    android:textSize="12sp"/>
-                <Button
-                    android:id="@+id/btnStatusPendingSing"
-                    android:layout_width="wrap_content"
-                    android:layout_height="40dp"
-                    android:layout_marginEnd="8dp"
-                    android:text="Pendiente de firma"
-                    android:textSize="12sp"/>
-                <Button
-                    android:id="@+id/btnStatusPendingPay"
-                    android:layout_width="wrap_content"
-                    android:layout_height="40dp"
-                    android:layout_marginEnd="8dp"
-                    android:text="Pendiente de pago"
-                    android:textSize="12sp"/>
-                <Button
-                    android:id="@+id/btnStatusPendingPayinProcess"
-                    android:layout_width="wrap_content"
-                    android:layout_height="40dp"
-                    android:text="Pago en proceso"
-                    android:textSize="12sp"/>
-                <Button
-                    android:id="@+id/btnStatusReserve"
-                    android:layout_width="wrap_content"
-                    android:layout_height="40dp"
-                    android:layout_marginEnd="8dp"
-                    android:text="Reservado"
-                    android:textSize="12sp"/>
-                <Button
-                    android:id="@+id/btnStatusInProcessTravel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="40dp"
-                    android:layout_marginEnd="8dp"
-                    android:text="En proceso de viaje"
-                    android:textSize="12sp"/>
-                <Button
-                    android:id="@+id/btnStatusDone"
-                    android:layout_width="wrap_content"
-                    android:layout_height="40dp"
-                    android:text="Completado"
-                    android:textSize="12sp"/>
-                <Button
-                    android:id="@+id/btnStatusRejected"
-                    android:layout_width="wrap_content"
-                    android:layout_height="40dp"
-                    android:layout_marginEnd="8dp"
-                    android:text="Rechazado"
-                    android:textSize="12sp"/>
-                <Button
-                    android:id="@+id/btnStatusConfirmed"
-                    android:layout_width="wrap_content"
-                    android:layout_height="40dp"
-                    android:layout_marginEnd="8dp"
-                    android:text="Confirmado"
-                    android:textSize="12sp"/>
-                <Button
-                    android:id="@+id/btnStatusCancelled"
-                    android:layout_width="wrap_content"
-                    android:layout_height="40dp"
-                    android:text="Cancelado "
-                    android:textSize="12sp"/>
-                <Button
-                    android:id="@+id/btnStatusCompleted"
-                    android:layout_width="wrap_content"
-                    android:layout_height="40dp"
-                    android:text="Completado"
-                    android:textSize="12sp"/>
-
-            </LinearLayout>
-        </HorizontalScrollView>
 
         <LinearLayout
             android:layout_width="match_parent"

@@ -66,7 +66,7 @@ public class TourPackage {
     public void setImage(String image) {
         this.image = image;
     }
-    
+ 
     public void setPrice(double price) {
         this.price = price;
     }

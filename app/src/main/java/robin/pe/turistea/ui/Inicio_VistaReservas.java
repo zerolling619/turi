@@ -36,7 +36,6 @@ public class Inicio_VistaReservas extends Fragment implements ReservasAdapter.On
     private RecyclerView recyclerViewReservas;
     private ReservasAdapter adapter;
     private List<JSONObject> listaReservas = new ArrayList<>();
-    private List<JSONObject> listaReservasFiltradas = new ArrayList<>(); // Nueva lista filtrada
 
     public Inicio_VistaReservas() {
 
@@ -60,48 +59,11 @@ public class Inicio_VistaReservas extends Fragment implements ReservasAdapter.On
 
         recyclerViewReservas = view.findViewById(R.id.recyclerViewReservas);
         recyclerViewReservas.setLayoutManager(new LinearLayoutManager(getContext()));
-        adapter = new ReservasAdapter(listaReservasFiltradas, this);
+
+        adapter = new ReservasAdapter(listaReservas, this);
         recyclerViewReservas.setAdapter(adapter);
 
-        // Inicialmente, lista vacía hasta que cargue
-        listaReservasFiltradas.clear();
-        adapter.notifyDataSetChanged();
-
-        View btnTodos = view.findViewById(R.id.btnStatusPending); // Ejemplo con btnStatusPending, repetir por cada botón
-        View btnPendienteFirma = view.findViewById(R.id.btnStatusPendingSing);
-        View btnPendientePago = view.findViewById(R.id.btnStatusPendingPay);
-        View btnPagoProceso = view.findViewById(R.id.btnStatusPendingPayinProcess);
-        View btnReservado = view.findViewById(R.id.btnStatusReserve);
-        View btnEnProcesoViaje = view.findViewById(R.id.btnStatusInProcessTravel);
-        View btnCompletado = view.findViewById(R.id.btnStatusCompleted);
-        View btnRechazado = view.findViewById(R.id.btnStatusRejected);
-        View btnConfirmado = view.findViewById(R.id.btnStatusConfirmed);
-        View btnCancelado = view.findViewById(R.id.btnStatusCancelled);
-        // Puedes agregar más referencias según tus botones
-
-        btnTodos.setOnClickListener(v -> aplicarFiltroStatusForm("pending"));
-        btnPendienteFirma.setOnClickListener(v -> aplicarFiltroStatusForm("pending_sign"));
-        btnPendientePago.setOnClickListener(v -> aplicarFiltroStatusForm("pending_payment"));
-        btnPagoProceso.setOnClickListener(v -> aplicarFiltroStatusForm("payment_in_process"));
-        btnReservado.setOnClickListener(v -> aplicarFiltroStatusForm("reserved"));
-        btnEnProcesoViaje.setOnClickListener(v -> aplicarFiltroStatusForm("travel_in_process"));
-        btnCompletado.setOnClickListener(v -> aplicarFiltroStatusForm("completed"));
-        btnRechazado.setOnClickListener(v -> aplicarFiltroStatusForm("rejected"));
-        btnConfirmado.setOnClickListener(v -> aplicarFiltroStatusForm("confirmed"));
-        btnCancelado.setOnClickListener(v -> aplicarFiltroStatusForm("cancelled"));
-
         loadReservesFromBackend();
-    }
-
-    private void aplicarFiltroStatusForm(String status) {
-        listaReservasFiltradas.clear();
-        for (JSONObject reserva : listaReservas) {
-            String statusForm = reserva.optString("status_", "");
-            if (statusForm.equalsIgnoreCase(status)) {
-                listaReservasFiltradas.add(reserva);
-            }
-        }
-        adapter.notifyDataSetChanged();
     }
 
     private void loadReservesFromBackend() {
@@ -109,11 +71,14 @@ public class Inicio_VistaReservas extends Fragment implements ReservasAdapter.On
             try {
                 SharedPreferences prefs = requireContext().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
                 String jwt = prefs.getString("jwt", "");
+
                 String urlString = Config.BASE_URL + "/api/user-account/form_reserves";
+
                 URL url = new URL(urlString);
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("GET");
                 conn.setRequestProperty("Authorization", "Bearer " + jwt);
+
                 int responseCode = conn.getResponseCode();
                 if (responseCode == HttpURLConnection.HTTP_OK) {
                     BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
@@ -123,20 +88,22 @@ public class Inicio_VistaReservas extends Fragment implements ReservasAdapter.On
                         response.append(line);
                     }
                     reader.close();
+
                     String responseData = response.toString();
                     Log.d("Inicio_VistaReservas", "Respuesta del backend: " + responseData);
+
+                    // **CORRECCIÓN**: Navegar a través del objeto para encontrar el array "rows"
                     JSONObject responseObject = new JSONObject(responseData);
                     JSONObject dataObject = responseObject.getJSONObject("data");
                     JSONArray reservesArray = dataObject.getJSONArray("rows");
+
                     listaReservas.clear();
                     for (int i = 0; i < reservesArray.length(); i++) {
                         listaReservas.add(reservesArray.getJSONObject(i));
                     }
+
                     if (getActivity() != null) {
                         getActivity().runOnUiThread(() -> {
-                            // Al cargar, mostrará todas las reservas inicialmente:
-                            listaReservasFiltradas.clear();
-                            listaReservasFiltradas.addAll(listaReservas);
                             adapter.notifyDataSetChanged();
                             if (listaReservas.isEmpty()) {
                                 Toast.makeText(getContext(), "No hay reservas disponibles", Toast.LENGTH_SHORT).show();

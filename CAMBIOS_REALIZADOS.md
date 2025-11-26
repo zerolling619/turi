@@ -17,7 +17,7 @@ He creado un sistema centralizado de configuración que hace el cambio de IP aut
 
 **Función:** Centraliza todas las URLs del backend en un solo lugar.
 
-**Tu IP configurada:** `http://192.168.100.9:4001`
+**Tu IP configurada:** `https://turisteabe-production.up.railway.app`
 
 ## 🔄 Archivos Actualizados
 
@@ -51,7 +51,7 @@ Ahora es MUY fácil cambiar la IP para emulador o celular:
 2. Cambiar la línea 22:
    ```java
    // Para celular real (tu IP actual):
-   public static final String BASE_URL = "http://192.168.100.9:4001";
+   public static final String BASE_URL = "https://turisteabe-production.up.railway.app";
    
    // Para emulador:
    public static final String BASE_URL = "http://10.0.2.2:4001";
@@ -122,7 +122,7 @@ Si cambias de red WiFi, tu IP puede cambiar:
 Todas las URLs están ahora centralizadas:
 
 ```java
-Config.BASE_URL              // http://192.168.100.9:4001
+Config.BASE_URL              // https://turisteabe-production.up.railway.app
 Config.LOGIN_URL             // .../api/signin
 Config.REGISTER_URL          // .../api/signup
 Config.VERIFY_CODE_URL       // .../api/active/verifycode

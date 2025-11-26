@@ -166,6 +166,49 @@ public class Inicio extends Fragment {
         
         // Cargar paquetes desde el backend (se mostrarán solo los paquetes de la DB)
         loadPackagesFromBackend();
+
+        // Setup click listeners for the static vertical popular items (include ids)
+        View cardPopular1 = view.findViewById(R.id.cardPopular1);
+        View cardPopular2 = view.findViewById(R.id.cardPopular2);
+        View cardPopular3 = view.findViewById(R.id.cardPopular3);
+        View cardPopular4 = view.findViewById(R.id.cardPopular4);
+
+        if (cardPopular1 != null) {
+            cardPopular1.setOnClickListener(v -> {
+                showPackageDetails(new TourPackage(0, "Paquete Lunahuaná", "Aventura en río", "", 350.0, "Lunahuaná", 3));
+            });
+            ImageView iv = cardPopular1.findViewById(R.id.imgPaqueteVertical);
+            TextView tv = cardPopular1.findViewById(R.id.tvTituloPaqueteVertical);
+            if (tv != null) tv.setText("Paquete Lunahuaná");
+            if (iv != null) iv.setImageResource(R.mipmap.ic_tarapoto_foreground);
+        }
+        if (cardPopular2 != null) {
+            cardPopular2.setOnClickListener(v -> {
+                showPackageDetails(new TourPackage(0, "Paquete Huacachina", "Dunas y sandboarding", "", 300.0, "Huacachina", 2));
+            });
+            ImageView iv = cardPopular2.findViewById(R.id.imgPaqueteVertical);
+            TextView tv = cardPopular2.findViewById(R.id.tvTituloPaqueteVertical);
+            if (tv != null) tv.setText("Paquete Huacachina");
+            if (iv != null) iv.setImageResource(R.mipmap.ic_tarapoto_foreground);
+        }
+        if (cardPopular3 != null) {
+            cardPopular3.setOnClickListener(v -> {
+                showPackageDetails(new TourPackage(0, "Paquete Máncora", "Sol y playa", "", 260.0, "Máncora", 3));
+            });
+            ImageView iv = cardPopular3.findViewById(R.id.imgPaqueteVertical);
+            TextView tv = cardPopular3.findViewById(R.id.tvTituloPaqueteVertical);
+            if (tv != null) tv.setText("Paquete Máncora");
+            if (iv != null) iv.setImageResource(R.mipmap.ic_tarapoto_foreground);
+        }
+        if (cardPopular4 != null) {
+            cardPopular4.setOnClickListener(v -> {
+                showPackageDetails(new TourPackage(0, "Paquete Paracas", "Islas y naturaleza", "", 280.0, "Paracas", 2));
+            });
+            ImageView iv = cardPopular4.findViewById(R.id.imgPaqueteVertical);
+            TextView tv = cardPopular4.findViewById(R.id.tvTituloPaqueteVertical);
+            if (tv != null) tv.setText("Paquete Paracas");
+            if (iv != null) iv.setImageResource(R.mipmap.ic_tarapoto_foreground);
+        }
     }
     
     @Override
@@ -503,27 +546,17 @@ public class Inicio extends Fragment {
                 
                 TourPackage pkg = new TourPackage();
                 
-                // Mapear campos del backend
                 pkg.setId(packageJson.optInt("id", 0));
                 pkg.setName(packageJson.optString("title", "Paquete"));  // "title" en el backend
                 pkg.setDescription(packageJson.optString("description", "Sin descripción"));
-                pkg.setImage(packageJson.optString("path_bg", ""));  // "path_bg" para la imagen
-                
+                pkg.setImage(packageJson.optString("path_bg", ""));
                 // Construir ubicación desde name_district, name_province, name_region
                 String district = packageJson.optString("name_district", "");
                 String province = packageJson.optString("name_province", "");
                 String region = packageJson.optString("name_region", "");
                 
-                String location = district;
-                if (!province.isEmpty() && !province.equals(district)) {
-                    location = district + ", " + province;
-                }
-                if (!region.isEmpty() && !region.equals(province) && !region.equals(district)) {
-                    location = district + ", " + region;
-                }
-                if (location.isEmpty()) {
-                    location = "Perú";
-                }
+                String location = region + ", " + province + ", " + district;
+                
                 
                 pkg.setLocation(location);
                 
@@ -573,27 +606,21 @@ public class Inicio extends Fragment {
         
         android.util.Log.d("Inicio", "Mostrando " + packageList.size() + " paquetes");
         
+        LayoutInflater inflater = LayoutInflater.from(requireContext());
         for (TourPackage pkg : packageList) {
-            // Crear un FrameLayout para cada paquete
-            android.widget.FrameLayout cardView = new android.widget.FrameLayout(requireContext());
-            android.widget.FrameLayout.LayoutParams params = new android.widget.FrameLayout.LayoutParams(
-                convertDpToPx(127),
-                android.widget.FrameLayout.LayoutParams.MATCH_PARENT
-            );
-            params.setMarginEnd(convertDpToPx(24));
-            cardView.setLayoutParams(params);
-            cardView.setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.fd_contorno_azul_fd_transparentel));
-            cardView.setClickable(true);
-            cardView.setFocusable(true);
-            
-            // ImageView para la imagen del paquete
-            ImageView imageView = new ImageView(requireContext());
-            imageView.setLayoutParams(new android.widget.FrameLayout.LayoutParams(
-                android.widget.FrameLayout.LayoutParams.MATCH_PARENT,
-                android.widget.FrameLayout.LayoutParams.MATCH_PARENT
-            ));
-            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            
+            // Inflate custom item layout for each package
+            View itemView = inflater.inflate(R.layout.item_paquete, linearListaPaquetes, false);
+
+            // Set layout params for spacing
+            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(convertDpToPx(200), convertDpToPx(210));
+            lp.setMargins(0, 0, convertDpToPx(24), 0);
+            itemView.setLayoutParams(lp);
+
+            ImageView imageView = itemView.findViewById(R.id.imgPaquete);
+            TextView textView = itemView.findViewById(R.id.tvTituloPaquete);
+            ImageView ivHeart = itemView.findViewById(R.id.ivHeart);
+            View flHeart = itemView.findViewById(R.id.flHeart);
+
             // Cargar imagen con Glide
             if (!pkg.getImage().isEmpty()) {
                 com.bumptech.glide.Glide.with(this)
@@ -604,31 +631,19 @@ public class Inicio extends Fragment {
             } else {
                 imageView.setImageResource(R.mipmap.ic_tarapoto_foreground);
             }
-            
-            // TextView para el nombre del paquete
-            TextView textView = new TextView(requireContext());
-            android.widget.FrameLayout.LayoutParams textParams = new android.widget.FrameLayout.LayoutParams(
-                android.widget.FrameLayout.LayoutParams.WRAP_CONTENT,
-                android.widget.FrameLayout.LayoutParams.WRAP_CONTENT
-            );
-            textParams.gravity = android.view.Gravity.BOTTOM | android.view.Gravity.START;
-            textParams.setMarginStart(convertDpToPx(20));
-            textParams.bottomMargin = convertDpToPx(10);
-            textView.setLayoutParams(textParams);
+
+            // Set title
             textView.setText(pkg.getName());
-            textView.setTextColor(getResources().getColor(R.color.white, null));
-            textView.setTextSize(14);
-            textView.setTypeface(null, android.graphics.Typeface.BOLD);
-            
-            // Agregar vistas al card
-            cardView.addView(imageView);
-            cardView.addView(textView);
-            
-            // Click listener
-            cardView.setOnClickListener(v -> showPackageDetails(pkg));
-            
-            // Agregar card al contenedor
-            linearListaPaquetes.addView(cardView);
+
+            // Click events
+            itemView.setOnClickListener(v -> showPackageDetails(pkg));
+            flHeart.setOnClickListener(v -> {
+                // Toggle visual feedback for favorite (simple example)
+                // TODO: persist favorite state in data model
+                ivHeart.setAlpha(ivHeart.getAlpha() == 1f ? 0.6f : 1f);
+            });
+
+            linearListaPaquetes.addView(itemView);
         }
     }
     
@@ -670,27 +685,16 @@ public class Inicio extends Fragment {
         // Muestra sólo los paquetes filtrados
         linearListaPaquetes.removeAllViews();
         for (TourPackage pkg : paquetesFiltrados) {
-            // Crear un FrameLayout para cada paquete (igual que en displayPackages)
-            android.widget.FrameLayout cardView = new android.widget.FrameLayout(requireContext());
-            android.widget.FrameLayout.LayoutParams params = new android.widget.FrameLayout.LayoutParams(
-                convertDpToPx(127),
-                android.widget.FrameLayout.LayoutParams.MATCH_PARENT
-            );
-            params.setMarginEnd(convertDpToPx(24));
-            cardView.setLayoutParams(params);
-            cardView.setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.fd_contorno_azul_fd_transparentel));
-            cardView.setClickable(true);
-            cardView.setFocusable(true);
+            // Inflate our item layout and set data
+            View itemView = LayoutInflater.from(requireContext()).inflate(R.layout.item_paquete, linearListaPaquetes, false);
+            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(convertDpToPx(200), convertDpToPx(210));
+            lp.setMargins(0, 0, convertDpToPx(24), 0);
+            itemView.setLayoutParams(lp);
 
-            // ImageView para la imagen del paquete
-            ImageView imageView = new ImageView(requireContext());
-            imageView.setLayoutParams(new android.widget.FrameLayout.LayoutParams(
-                android.widget.FrameLayout.LayoutParams.MATCH_PARENT,
-                android.widget.FrameLayout.LayoutParams.MATCH_PARENT
-            ));
-            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            ImageView imageView = itemView.findViewById(R.id.imgPaquete);
+            TextView textView = itemView.findViewById(R.id.tvTituloPaquete);
+            View flHeart = itemView.findViewById(R.id.flHeart);
 
-            // Cargar imagen con Glide
             if (!pkg.getImage().isEmpty()) {
                 com.bumptech.glide.Glide.with(this)
                         .load(pkg.getImage())
@@ -701,29 +705,9 @@ public class Inicio extends Fragment {
                 imageView.setImageResource(R.mipmap.ic_tarapoto_foreground);
             }
 
-            // TextView para el nombre del paquete
-            TextView textView = new TextView(requireContext());
-            android.widget.FrameLayout.LayoutParams textParams = new android.widget.FrameLayout.LayoutParams(
-                    android.widget.FrameLayout.LayoutParams.WRAP_CONTENT,
-                    android.widget.FrameLayout.LayoutParams.WRAP_CONTENT
-            );
-            textParams.gravity = android.view.Gravity.BOTTOM | android.view.Gravity.START;
-            textParams.setMarginStart(convertDpToPx(20));
-            textParams.bottomMargin = convertDpToPx(10);
-            textView.setLayoutParams(textParams);
             textView.setText(pkg.getName());
-            textView.setTextColor(getResources().getColor(R.color.white, null));
-            textView.setTextSize(14);
-            textView.setTypeface(null, android.graphics.Typeface.BOLD);
-
-            // Agregar vistas al card
-            cardView.addView(imageView);
-            cardView.addView(textView);
-
-            // Click para ver detalles
-            cardView.setOnClickListener(v -> showPackageDetails(pkg));
-
-            linearListaPaquetes.addView(cardView);
+            itemView.setOnClickListener(v -> showPackageDetails(pkg));
+            linearListaPaquetes.addView(itemView);
         }
     }
 }
