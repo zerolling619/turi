@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -9,12 +8,15 @@
     tools:context=".ui.Login">
 
     <!-- Título -->
+
+    <!-- Contenedor del formulario -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="100dp"
         android:text="Inicio de Sesión"
+        android:textColor="@color/white"
         android:textSize="30sp"
         android:textColor="@color/white" />
 
@@ -27,8 +29,10 @@
         android:layout_marginTop="250dp"
         android:layout_gravity="center_horizontal"
         android:background="@drawable/fd_blanco_bordes"
-        android:orientation="vertical"
-        android:padding="20dp">
+        android:padding="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/title_text">
 
         <!-- Correo -->
         <FrameLayout
@@ -44,33 +48,27 @@
                 android:textColor="@color/azul_oscuro"
                 android:textSize="10sp" />
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/tilCorreo"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilCorreo"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/labelCorreo">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edtCorreo"
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:layout_marginTop="15dp"
+                android:layout_height="wrap_content"
                 android:inputType="textEmailAddress"
-                app:boxBackgroundMode="none"
-                app:errorEnabled="true"
-                app:hintEnabled="false">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/edtCorreo"
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:layout_marginTop="15dp"
-                    android:background="@drawable/fd_contorno_azul"
-                    android:inputType="textEmailAddress"
-                    android:maxLength="30"
-                    android:padding="8dp"
-                    android:paddingTop="8dp" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-        </FrameLayout>
+                android:background="@drawable/fd_contorno_azul"/>
+        </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Contraseña -->
-        <FrameLayout
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/labelPasswordd"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="0dp">
 
@@ -83,60 +81,59 @@
                 android:textColor="@color/azul_oscuro"
                 android:textSize="10sp" />
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/tilPasswordd"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilPasswordd"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:passwordToggleEnabled="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/labelPasswordd">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edtPasswordd"
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_marginTop="15dp"
+                android:layout_height="wrap_content"
                 android:inputType="textPassword"
-                app:boxBackgroundMode="none"
-                app:errorEnabled="true"
-                app:hintEnabled="false"
-                app:passwordToggleEnabled="true">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/edtPasswordd"
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:background="@drawable/fd_contorno_azul"
-                    android:inputType="textPassword"
-                    android:maxLength="15"
-                    android:padding="8dp"
-                    android:paddingTop="8dp" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-        </FrameLayout>
+                android:background="@drawable/fd_contorno_azul"/>
+        </com.google.android.material.textfield.TextInputLayout>
 
         <Button
             android:id="@+id/btnIniciarSesion"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_marginTop="20dp"
-            android:background="@drawable/fd_btn_azul_bordes"
-            android:text="Iniciar Sesion"
-            android:textColor="@color/white" />
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="Iniciar Sesión"
+            android:textColor="@color/white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tilPasswordd"
+            android:background="@drawable/fd_btn_azul_bordes" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="19dp"
-            android:layout_marginTop="20dp">
+        <!-- Divisor "O inicia con" -->
+        <View
+            android:id="@+id/divider_start"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:background="@color/azul_oscuro"
+            app:layout_constraintBottom_toBottomOf="@+id/or_text"
+            app:layout_constraintEnd_toStartOf="@+id/or_text"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/or_text" />
 
-            <View
-                android:layout_width="100dp"
-                android:layout_height="2dp"
-                android:layout_marginTop="5dp"
-                android:background="@color/azul_oscuro"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="48dp"
-                android:layout_marginTop="-5dp"
-                android:text=" O inicia con "
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+        <TextView
+            android:id="@+id/or_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:text="O inicia con"
+            android:textColor="@color/azul_oscuro"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/btnIniciarSesion" />
 
             <View
                 android:layout_width="100dp"
@@ -176,17 +173,20 @@
                 android:textColor="@color/azul_oscuro"
                 android:textSize="10sp" />
 
-            <TextView
-                android:id="@+id/tvRegistrate"
-                android:layout_width="match_parent"
-                android:layout_height="16dp"
-                android:gravity="center"
-                android:text="Aun no tienes una cuenta Registrate"
-                android:textColor="@color/azul_oscuro"
-                android:textSize="10sp" />
+        <TextView
+            android:id="@+id/tvRegistrate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="16dp"
+            android:text="¿Aún no tienes una cuenta? Regístrate"
+            android:textColor="@color/azul_oscuro"
+            android:textAlignment="center"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvOlvidastePasswordd" />
 
-        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </LinearLayout>
-
-</FrameLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
