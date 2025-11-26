@@ -11,4 +11,5 @@
     <color name="gris">#A9A9A9</color>
     <color name="grisClaro">#c2c2c2</color>
     <color name="grismuyclaro">#eaeaea</color>
+    <color name="transparente">#00000000</color>
 </resources>

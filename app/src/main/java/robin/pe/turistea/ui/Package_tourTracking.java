@@ -181,7 +181,7 @@ public class Package_tourTracking extends Fragment {
             
             TextView tvCiudadPais = rootView.findViewById(R.id.tvCiudadPais);
             if (tvCiudadPais != null) {
-                tvCiudadPais.setText(packageLocation + ", Perú");
+                tvCiudadPais.setText(packageLocation);
             }
         }
         
@@ -212,7 +212,8 @@ public class Package_tourTracking extends Fragment {
                 if (!jwt.isEmpty()) {
                     conn.setRequestProperty("Authorization", "Bearer " + jwt);
                 }
-                
+       
+
                 int responseCode = conn.getResponseCode();
                 android.util.Log.d("Package_tourTracking", "Código de respuesta: " + responseCode);
                 

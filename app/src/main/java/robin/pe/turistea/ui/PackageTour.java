@@ -21,6 +21,7 @@ public class PackageTour extends Fragment {
 
     private NavController navController;
     private ImageView icBack;
+    private ImageView imgBgPath;
     private TextView tvDetallesDestino;
     private TextView tvDetallesTracking;
     private TextView tvCalificacion;
@@ -75,6 +76,7 @@ public class PackageTour extends Fragment {
         
         // Inicializar vistas
         icBack = view.findViewById(R.id.IcBack);
+        imgBgPath = view.findViewById(R.id.imgBgPath);
         tvDetallesDestino = view.findViewById(R.id.tvDetallesDestino);
         tvDetallesTracking = view.findViewById(R.id.tvDetallesTracking);
         tvCalificacion = view.findViewById(R.id.TvCalificacion);
@@ -183,7 +185,7 @@ public class PackageTour extends Fragment {
             // Actualizar ciudad y país
             TextView tvCiudadPais = rootView.findViewById(R.id.tvCiudadPais);
             if (tvCiudadPais != null) {
-                tvCiudadPais.setText(packageLocation + ", Perú");
+                tvCiudadPais.setText(packageLocation);
             }
             
             // Actualizar descripción
@@ -194,5 +196,19 @@ public class PackageTour extends Fragment {
         }
         
         android.util.Log.d("PackageTour", "Datos cargados: " + packageName + " - " + packageLocation + " - " + packageDuration + " días");
+
+        // Cargar la imagen de fondo (path_bg) con Glide si está disponible
+        if (imgBgPath != null) {
+            try {
+                if (packageImage != null && !packageImage.isEmpty()) {
+                    com.bumptech.glide.Glide.with(this).load(packageImage).centerCrop().into(imgBgPath);
+                } else {
+                    // Fallback a un drawable local si no hay imagen en el paquete
+                    com.bumptech.glide.Glide.with(this).load(R.drawable.fd_celeste_degrade).centerCrop().into(imgBgPath);
+                }
+            } catch (Exception e) {
+                android.util.Log.e("PackageTour", "Error loading background image: " + e.getMessage(), e);
+            }
+        }
     }
 }

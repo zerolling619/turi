@@ -550,22 +550,13 @@ public class Inicio extends Fragment {
                 pkg.setName(packageJson.optString("title", "Paquete"));  // "title" en el backend
                 pkg.setDescription(packageJson.optString("description", "Sin descripción"));
                 pkg.setImage(packageJson.optString("path_bg", ""));
-                
                 // Construir ubicación desde name_district, name_province, name_region
                 String district = packageJson.optString("name_district", "");
                 String province = packageJson.optString("name_province", "");
                 String region = packageJson.optString("name_region", "");
                 
-                String location = district;
-                if (!province.isEmpty() && !province.equals(district)) {
-                    location = district + ", " + province;
-                }
-                if (!region.isEmpty() && !region.equals(province) && !region.equals(district)) {
-                    location = district + ", " + region;
-                }
-                if (location.isEmpty()) {
-                    location = "Perú";
-                }
+                String location = region + ", " + province + ", " + district;
+                
                 
                 pkg.setLocation(location);
                 
