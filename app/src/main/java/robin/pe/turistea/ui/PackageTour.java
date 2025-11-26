@@ -181,9 +181,7 @@ public class PackageTour extends Fragment {
             if (tvDestinoNombre != null) {
                 tvDestinoNombre.setText(packageName);
             }
-            
-            // Actualizar ciudad y país
-            TextView tvCiudadPais = rootView.findViewById(R.id.tvCiudadPais);
+
             if (tvCiudadPais != null) {
                 tvCiudadPais.setText(packageLocation);
             }
