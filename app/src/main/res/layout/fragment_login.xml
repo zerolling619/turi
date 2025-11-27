@@ -11,23 +11,24 @@
 
     <!-- Contenedor del formulario -->
     <TextView
+        android:id="@+id/title_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="60dp"
         android:text="Inicio de Sesión"
         android:textColor="@color/white"
         android:textSize="30sp"
-        android:textColor="@color/white" />
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Caja blanca con bordes redondeados -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="355dp"
-        android:layout_marginStart="37dp"
-        android:layout_marginEnd="37dp"
-        android:layout_marginTop="250dp"
-        android:layout_gravity="center_horizontal"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="24dp"
         android:background="@drawable/fd_blanco_bordes"
         android:padding="20dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -35,18 +36,15 @@
         app:layout_constraintTop_toBottomOf="@+id/title_text">
 
         <!-- Correo -->
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:layout_width="72dp"
-                android:layout_height="11dp"
-                android:layout_marginStart="5dp"
-                android:layout_marginTop="2dp"
-                android:text="Correo"
-                android:textColor="@color/azul_oscuro"
-                android:textSize="10sp" />
+        <TextView
+            android:id="@+id/labelCorreo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Correo"
+            android:textColor="@color/azul_oscuro"
+            android:textSize="12sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tilCorreo"
@@ -70,16 +68,12 @@
             android:id="@+id/labelPasswordd"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="0dp">
-
-            <TextView
-                android:layout_width="72dp"
-                android:layout_height="14dp"
-                android:layout_marginStart="5dp"
-                android:layout_marginTop="2dp"
-                android:text="Contraseña"
-                android:textColor="@color/azul_oscuro"
-                android:textSize="10sp" />
+            android:layout_marginTop="16dp"
+            android:text="Contraseña"
+            android:textColor="@color/azul_oscuro"
+            android:textSize="12sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tilCorreo" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tilPasswordd"
@@ -135,43 +129,38 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/btnIniciarSesion" />
 
-            <View
-                android:layout_width="100dp"
-                android:layout_height="2dp"
-                android:layout_marginTop="5dp"
-                android:background="@color/azul_oscuro"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+        <View
+            android:id="@+id/divider_end"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:background="@color/azul_oscuro"
+            app:layout_constraintBottom_toBottomOf="@+id/or_text"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/or_text"
+            app:layout_constraintTop_toTopOf="@+id/or_text" />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        <!-- Botón de Google -->
+        <ImageView
+            android:id="@+id/IcGoogle"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="16dp"
+            android:src="@drawable/ic_google"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/or_text" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:orientation="horizontal"
-            android:padding="10dp">
-
-            <ImageView
-                android:id="@+id/IcGoogle"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-         android:layout_marginLeft="125dp"
-                android:src="@drawable/ic_google" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="43dp"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/tvOlvidastePasswordd"
-                android:layout_width="match_parent"
-                android:layout_height="16dp"
-                android:gravity="center"
-                android:text="¿Olvidaste tu contraseña?"
-                android:textColor="@color/azul_oscuro"
-                android:textSize="10sp" />
+        <!-- Links inferiores -->
+        <TextView
+            android:id="@+id/tvOlvidastePasswordd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="¿Olvidaste tu contraseña?"
+            android:textColor="@color/azul_oscuro"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/IcGoogle" />
 
         <TextView
             android:id="@+id/tvRegistrate"

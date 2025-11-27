@@ -36,10 +36,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         // TEMPORAL: Limpiar datos de SharedPreferences para resetear la app
-        /* SharedPreferences prefs = getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
+        /*SharedPreferences prefs = getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
         prefs.edit().clear().apply();
         android.util.Log.d("MainActivity", "SharedPreferences limpiado - Datos de usuario eliminados");
-        Toast.makeText(this, "Datos limpiados - Inicia sesión de nuevo", Toast.LENGTH_LONG).show(); */
+        Toast.makeText(this, "Datos limpiados - Inicia sesión de nuevo", Toast.LENGTH_LONG).show();*/
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 

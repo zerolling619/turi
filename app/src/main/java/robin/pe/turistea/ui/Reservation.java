@@ -41,7 +41,7 @@ import robin.pe.turistea.Config;
 public class Reservation extends Fragment {
 
     private NavController navController;
-    private RouteItem selectedRoute; 
+    private RouteItem selectedRoute;
     private int packageIdFromResponse = 0;
     private TextInputEditText edtUbiEncuentro;
 
@@ -52,7 +52,7 @@ public class Reservation extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        
+
         getParentFragmentManager().setFragmentResultListener("location_request", this, new FragmentResultListener() {
             @Override
             public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle bundle) {
@@ -71,7 +71,6 @@ public class Reservation extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_reservation, container, false);
 
-        // Referencias UI
         TextInputEditText edtCantPers = view.findViewById(R.id.edtCantPers);
         TextInputEditText edtDni = view.findViewById(R.id.edtDni);
         TextInputEditText edtNombresyApelli = view.findViewById(R.id.edtNombresyApelli);
@@ -89,8 +88,8 @@ public class Reservation extends Fragment {
 
         edtNombresyApelli.setHint("Ingrese su nombre completo");
         edtNombresyApelli.setEnabled(true);
-        
-imLocation.setOnClickListener(v -> {
+
+        imLocation.setOnClickListener(v -> {
             if (navController != null) {
                 navController.navigate(R.id.navigation_location);
             }
@@ -195,7 +194,7 @@ imLocation.setOnClickListener(v -> {
                         });
                         return;
                     }
-                    
+
                     JSONObject reservaJson = new JSONObject();
                     reservaJson.put("full_name", nombreCompletoForm);
                     reservaJson.put("type_document", esDni[0] ? "DNI" : "CARNET_EXT");
@@ -214,9 +213,9 @@ imLocation.setOnClickListener(v -> {
 
                     String userIdStr = prefs.getString("user_id", "");
                     if (!userIdStr.isEmpty()) {
-                         reservaJson.put("id_user", Integer.parseInt(userIdStr));
+                        reservaJson.put("id_user", Integer.parseInt(userIdStr));
                     }
-                    
+
                     Log.d("Reservation", "JSON a enviar: " + reservaJson.toString());
 
                     OutputStream os = conn.getOutputStream();
@@ -276,8 +275,9 @@ imLocation.setOnClickListener(v -> {
                     while ((line = reader.readLine()) != null) response.append(line);
                     reader.close();
 
+                    // **LA CORRECCIÓN ESTÁ AQUÍ**
                     parseRoutesJson(response.toString(), rutasList, spinnerRutas, tvPrecio, packagePrice);
-                } 
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -286,29 +286,29 @@ imLocation.setOnClickListener(v -> {
 
     private void parseRoutesJson(String jsonResponse, ArrayList<RouteItem> rutasList, Spinner spinnerRutas, TextView tvPrecio, double packagePrice) {
         try {
-            JSONObject packageJson = new JSONObject(jsonResponse);
-            if (packageJson.has("id")) {
-                packageIdFromResponse = packageJson.optInt("id", 0);
-            }
-            
-            double routePrice = packageJson.optDouble("price_route", packagePrice);
-            
-            String routeJsonString = packageJson.optString("route_json", "");
+            // La respuesta de la API es un array de paquetes.
+            JSONArray packagesArray = new JSONArray(jsonResponse);
             rutasList.clear();
 
-            if (!routeJsonString.isEmpty()) {
-                JSONArray routesArray = new JSONArray(routeJsonString);
-                for (int i = 0; i < routesArray.length(); i++) {
-                    JSONObject routeObj = routesArray.getJSONObject(i);
-                    int id = routeObj.optInt("id", 0);
-                    String title = routeObj.optString("title", "");
-                    if (!title.isEmpty()) {
-                        rutasList.add(new RouteItem(id, title, routePrice));
-                    }
+            // 1. Recorremos el array principal de paquetes.
+            for (int i = 0; i < packagesArray.length(); i++) {
+                JSONObject packageJson = packagesArray.getJSONObject(i);
+
+                int id = packageJson.optInt("id");
+                // 2. Obtenemos el TÍTULO PRINCIPAL de cada paquete.
+                String title = packageJson.optString("title", "Ruta sin nombre");
+                double price = packageJson.optDouble("price_route", packagePrice);
+
+                // 3. Añadimos el título principal a la lista del spinner.
+                if (id > 0 && !title.isEmpty()) {
+                    rutasList.add(new RouteItem(id, title, price));
                 }
             }
 
-            requireActivity().runOnUiThread(() -> {
+            if (getActivity() == null) return;
+
+            // 4. Actualizamos el Spinner en el hilo principal.
+            getActivity().runOnUiThread(() -> {
                 ArrayAdapter<RouteItem> adapter = new ArrayAdapter<RouteItem>(requireContext(),
                         android.R.layout.simple_spinner_item, rutasList) {
                     @Override
@@ -319,6 +319,7 @@ imLocation.setOnClickListener(v -> {
                         int paddingPx = (int) (8 * getResources().getDisplayMetrics().density);
                         view.setMinimumHeight(heightPx);
                         view.setPadding(paddingPx, paddingPx, paddingPx, paddingPx);
+                        ((TextView) view).setTextColor(getResources().getColor(android.R.color.black));
                         return view;
                     }
 
@@ -339,12 +340,13 @@ imLocation.setOnClickListener(v -> {
                 spinnerRutas.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                        selectedRoute = (RouteItem) parent.getItemAtPosition(position);
+                        selectedRoute = rutasList.get(position);
                         if (selectedRoute != null && tvPrecio != null) {
                             String precioTexto = "S/ " + String.format("%.2f", selectedRoute.price);
                             tvPrecio.setText(precioTexto);
                         }
                     }
+                    @Override
                     public void onNothingSelected(AdapterView<?> parent) {}
                 });
 
@@ -354,7 +356,7 @@ imLocation.setOnClickListener(v -> {
             });
 
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e("Reservation", "Error crítico al parsear las rutas", e);
         }
     }
 

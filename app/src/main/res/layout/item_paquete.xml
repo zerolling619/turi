@@ -16,7 +16,7 @@
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
         android:src="@mipmap/ic_tarapoto_foreground"
-        android:background="@drawable/rounded_card"
+        android:background="@drawable/none_tras"
         android:contentDescription="Imagen paquete"
         android:adjustViewBounds="true"
         android:clipToOutline="true" />
@@ -25,7 +25,6 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/gradient_overlay"
         android:alpha="0.9" />
 
     <!-- Title text at bottom-left -->

@@ -612,10 +612,10 @@ public class Login extends Fragment {
                 jsonParam.put("name", name);
                 jsonParam.put("lastname", lastname);
                 jsonParam.put("password", "google_" + googleId);
-                jsonParam.put("cellphone", "");
-                jsonParam.put("sexo", "");
-                jsonParam.put("dni", "");
-                jsonParam.put("date_of_birth", "");
+                jsonParam.put("cellphone", (String) null);
+                jsonParam.put("sexo", (String) null);
+                jsonParam.put("dni", (String) null);
+                jsonParam.put("date_of_birth", (String) null);
                 jsonParam.put("origin", "google");
                 jsonParam.put("path", "https://ui-avatars.com/api/?name=" + name + "+" + lastname + "&background=random"); // Avatar por defecto
                 
@@ -794,10 +794,10 @@ public class Login extends Fragment {
                 jsonParam.put("name", name);
                 jsonParam.put("lastname", lastname);
                 jsonParam.put("password", "google_" + googleId);
-                jsonParam.put("cellphone", "");
-                jsonParam.put("sexo", "");
-                jsonParam.put("dni", "");
-                jsonParam.put("date_of_birth", "");
+                jsonParam.put("cellphone", (String) null);
+                jsonParam.put("sexo", (String) null);
+                jsonParam.put("dni", (String) null);
+                jsonParam.put("date_of_birth", (String) null);
                 jsonParam.put("origin", "google");
                 jsonParam.put("path", "https://ui-avatars.com/api/?name=" + name + "+" + lastname + "&background=random"); // Avatar por defecto
 
@@ -846,10 +846,6 @@ public class Login extends Fragment {
                         android.widget.Toast.makeText(context, msg, android.widget.Toast.LENGTH_LONG).show();
                         return;
                     }
-                    // Si se obtiene respuesta con usuario creado, puedes parsear datos aquí si tu backend devuelve el usuario
-                    // Por ejemplo:
-                    // String jwt = obj.optString("jwt", null);
-                    // if (jwt != null) { ... guardar en SharedPreferences ... }
                 }
                 // Si llega aquí y no hubo error, podrías volver a intentar login automático
                 new GoogleSignInBackendTask(email, name, lastname, googleId, null, navController, context).execute();
@@ -859,58 +855,6 @@ public class Login extends Fragment {
             }
         }
     }
-    // TODO: Facebook Login desactivado, para futuro sólo descomentar todo este bloque:
-    /*
-    private void signInWithFacebook() {
-        LoginManager.getInstance().logInWithReadPermissions(this, java.util.Arrays.asList("email", "public_profile"));
-        LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
-            @Override
-            public void onSuccess(LoginResult loginResult) {
-                AccessToken accessToken = loginResult.getAccessToken();
-                android.util.Log.d("FacebookLogin", "Inicio de sesión exitoso");
-                com.facebook.GraphRequest request = com.facebook.GraphRequest.newMeRequest(accessToken, (object, response) -> {
-                    try {
-                        String email = object.optString("email", "");
-                        String name = object.optString("name", "Usuario");
-                        String id = object.optString("id", "");
-                        android.util.Log.d("FacebookLogin", "Usuario: " + name + ", Email: " + email);
-                        android.content.SharedPreferences prefs = requireActivity().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
-                        android.content.SharedPreferences.Editor editor = prefs.edit();
-                        editor.putString("user_name", name);
-                        editor.putString("user_email", email);
-                        editor.putString("jwt", "facebook_token_" + id); // Token temporal
-                        editor.apply();
-                        android.widget.Toast.makeText(context, "Inicio de sesión exitoso con Facebook", android.widget.Toast.LENGTH_SHORT).show();
-                        navController.navigate(R.id.navigation_profile);
-                    } catch (Exception e) {
-                        android.util.Log.e("FacebookLogin", "Error al obtener datos del usuario", e);
-                    }
-                });
-                android.os.Bundle parameters = new android.os.Bundle();
-                parameters.putString("fields", "id,name,email");
-                request.setParameters(parameters);
-                request.executeAsync();
-            }
-            @Override
-            public void onCancel() {
-                android.util.Log.d("FacebookLogin", "Login cancelado");
-                android.widget.Toast.makeText(context, "Login cancelado", android.widget.Toast.LENGTH_SHORT).show();
-            }
-            @Override
-            public void onError(FacebookException error) {
-                android.util.Log.e("FacebookLogin", "Error al iniciar sesión", error);
-                android.widget.Toast.makeText(context, "Error al iniciar sesión con Facebook", android.widget.Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (callbackManager != null) {
-            callbackManager.onActivityResult(requestCode, resultCode, data);
-        }
-    }
-    */
 }
 
 

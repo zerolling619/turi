@@ -54,130 +54,150 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <!-- **INICIO DE LA CORRECCIÓN** -->
-                <!-- Se reemplaza el LinearLayout interno por un ConstraintLayout más robusto -->
-                <androidx.constraintlayout.widget.ConstraintLayout
+                <LinearLayout
                     android:layout_width="300dp"
                     android:layout_height="320dp"
                     android:background="@drawable/fd_btn_azul_bordes_transparente"
-                    android:paddingBottom="16dp"
+                    android:orientation="vertical"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
 
-                    <LinearLayout
-                        android:id="@+id/tabs_container"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/fd_btn_gris_bordes_superior"
-                        android:gravity="center"
-                        android:orientation="horizontal"
-                        android:paddingTop="4dp"
-                        android:paddingBottom="4dp"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent">
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="300dp"
+                        android:layout_height="320dp"
+                        android:paddingBottom="16dp">
+
+                        <LinearLayout
+                            android:id="@+id/tabs_container"
+                            android:layout_width="0dp"
+                            android:layout_height="26dp"
+                            android:background="@drawable/fd_btn_gris_bordes_superior"
+                            android:gravity="center"
+                            android:orientation="horizontal"
+                            android:paddingTop="4dp"
+                            android:paddingBottom="4dp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent">
+
+                            <androidx.constraintlayout.widget.ConstraintLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="26dp"
+                                android:layout_weight="3">
+
+                                <TextView
+                                    android:id="@+id/tvDetallesDestino"
+                                    android:layout_width="100dp"
+                                    android:layout_height="20dp"
+                                    android:layout_marginStart="40dp"
+                                    android:clickable="true"
+                                    android:focusable="true"
+                                    android:text="Detalles"
+                                    android:textAlignment="center"
+                                    android:textColor="@color/black"
+                                    android:textSize="15sp"
+                                    android:textStyle="bold"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent" />
+
+                                <TextView
+                                    android:id="@+id/tvDetallesTracking"
+                                    android:layout_width="100dp"
+                                    android:layout_height="20dp"
+                                    android:layout_marginEnd="36dp"
+                                    android:background="@drawable/fd_btn_gris_oscuro_bordes"
+                                    android:clickable="true"
+                                    android:elevation="5dp"
+                                    android:focusable="true"
+                                    android:text="Tracking"
+                                    android:textAlignment="center"
+                                    android:textColor="@color/black"
+                                    android:textSize="15sp"
+                                    android:textStyle="bold"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent" />
+                            </androidx.constraintlayout.widget.ConstraintLayout>
+
+                        </LinearLayout>
 
                         <TextView
-                            android:id="@+id/tvDetallesDestino"
+                            android:id="@+id/tvDestinoNombre"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:gravity="center"
-                            android:padding="8dp"
-                            android:text="Detalles"
-                            android:textColor="@color/black"
-                            android:textSize="15sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:id="@+id/tvDetallesTracking"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:background="@drawable/fd_btn_gris_oscuro_bordes"
-                            android:elevation="5dp"
-                            android:gravity="center"
-                            android:padding="8dp"
-                            android:text="Tracking"
-                            android:textColor="@color/black"
-                            android:textSize="15sp"
-                            android:textStyle="bold" />
-                    </LinearLayout>
-
-                    <TextView
-                        android:id="@+id/tvDestinoNombre"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="24dp"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginEnd="24dp"
-                        android:textColor="@color/white"
-                        android:textSize="18sp"
-                        android:textStyle="bold"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/tabs_container"
-                        tools:text="Nombre del Destino" />
-
-                    <View
-                        android:id="@+id/divider"
-                        android:layout_width="0dp"
-                        android:layout_height="1dp"
-                        android:layout_marginTop="8dp"
-                        android:background="@color/white"
-                        app:layout_constraintEnd_toEndOf="@+id/tvDestinoNombre"
-                        app:layout_constraintStart_toStartOf="@+id/tvDestinoNombre"
-                        app:layout_constraintTop_toBottomOf="@+id/tvDestinoNombre" />
-                    
-                    <TextView
-                        android:id="@+id/label_ruta"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        android:text="Ruta"
-                        android:textColor="@color/white"
-                        android:textSize="16sp"
-                        android:textStyle="bold"
-                        app:layout_constraintStart_toStartOf="@+id/divider"
-                        app:layout_constraintTop_toBottomOf="@+id/divider" />
-
-                    <ScrollView
-                        android:id="@+id/scrollViewRuta"
-                        android:layout_width="0dp"
-                        android:layout_height="0dp"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginBottom="16dp"
-                        app:layout_constraintBottom_toTopOf="@+id/btnReservar"
-                        app:layout_constraintEnd_toEndOf="@+id/divider"
-                        app:layout_constraintStart_toStartOf="@+id/divider"
-                        app:layout_constraintTop_toBottomOf="@+id/label_ruta">
-
-                        <TextView
-                            android:id="@+id/tvRutaContent"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
+                            android:layout_marginStart="24dp"
+                            android:layout_marginTop="16dp"
+                            android:layout_marginEnd="24dp"
                             android:textColor="@color/white"
-                            android:textSize="14sp"
-                            tools:text="1. Visita a la plaza principal.\n\n2. Almuerzo en restaurante local.\n\n3. Tour por el mercado artesanal." />
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/tabs_container"
+                            tools:text="Nombre del Destino" />
 
-                    </ScrollView>
+                        <View
+                            android:id="@+id/divider"
+                            android:layout_width="0dp"
+                            android:layout_height="1dp"
+                            android:layout_marginTop="8dp"
+                            android:background="@color/white"
+                            app:layout_constraintEnd_toEndOf="@+id/tvDestinoNombre"
+                            app:layout_constraintStart_toStartOf="@+id/tvDestinoNombre"
+                            app:layout_constraintTop_toBottomOf="@+id/tvDestinoNombre" />
 
-                    <Button
-                        android:id="@+id/btnReservar"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/fd_btn_gris_oscuro_bordes"
-                        android:paddingHorizontal="32dp"
-                        android:text="Reservar"
-                        android:textColor="@color/azul_oscuro"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent" />
+                        <TextView
+                            android:id="@+id/label_ruta"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
+                            android:text="Ruta"
+                            android:textColor="@color/white"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            app:layout_constraintStart_toStartOf="@+id/divider"
+                            app:layout_constraintTop_toBottomOf="@+id/divider" />
 
-                </androidx.constraintlayout.widget.ConstraintLayout>
-                 <!-- **FIN DE LA CORRECCIÓN** -->
+                        <ScrollView
+                            android:id="@+id/scrollViewRuta"
+                            android:layout_width="0dp"
+                            android:layout_height="0dp"
+                            android:layout_marginTop="8dp"
+                            android:layout_marginBottom="16dp"
+                            app:layout_constraintBottom_toTopOf="@+id/btnReservar"
+                            app:layout_constraintEnd_toEndOf="@+id/divider"
+                            app:layout_constraintStart_toStartOf="@+id/divider"
+                            app:layout_constraintTop_toBottomOf="@+id/label_ruta">
+
+                            <TextView
+                                android:id="@+id/tvRutaContent"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/white"
+                                android:textSize="14sp"
+                                tools:text="1. Visita a la plaza principal.\n\n2. Almuerzo en restaurante local.\n\n3. Tour por el mercado artesanal." />
+
+                        </ScrollView>
+
+                        <Button
+                            android:id="@+id/btnReservar"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/fd_btn_gris_oscuro_bordes"
+                            android:paddingHorizontal="32dp"
+                            android:text="Reservar"
+                            android:textColor="@color/azul_oscuro"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </LinearLayout>
+
+                <!-- **FIN DE LA CORRECCIÓN** -->
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
