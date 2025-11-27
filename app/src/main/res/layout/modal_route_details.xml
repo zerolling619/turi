@@ -69,6 +69,29 @@
                                 android:text="Miniban Honda 2024 - T43K43"
                                 android:textSize="13sp"
                                 android:textColor="#666666" />
+
+                            <!-- Driver info -->
+                            <TextView
+                                android:id="@+id/tvDriverName"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Conductor: -"
+                                android:textSize="13sp"
+                                android:textColor="#666666" />
+                            <TextView
+                                android:id="@+id/tvDriverPlate"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Placa: -"
+                                android:textSize="13sp"
+                                android:textColor="#666666" />
+                            <TextView
+                                android:id="@+id/tvDriverCar"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Auto: -"
+                                android:textSize="13sp"
+                                android:textColor="#666666" />
                         </LinearLayout>
 
                         <ImageView

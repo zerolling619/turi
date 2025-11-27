@@ -22,19 +22,29 @@ import java.util.List;
 import robin.pe.turistea.R;
 import robin.pe.turistea.models.RouteItemDetail;
 
+
 public class RouteDetailsDialog extends DialogFragment {
 
     private static final String ARG_ROUTES = "routes";
     private static final String ARG_TITLE = "title";
+    private static final String ARG_DRIVER_NAME = "driver_name";
+    private static final String ARG_DRIVER_PLATE = "driver_plate";
+    private static final String ARG_DRIVER_CAR = "driver_car";
 
     private List<RouteItemDetail> routesList;
     private String modalTitle;
+    private String driverName;
+    private String driverPlate;
+    private String driverCar;
 
-    public static RouteDetailsDialog newInstance(ArrayList<RouteItemDetail> routes, String title) {
+    public static RouteDetailsDialog newInstance(ArrayList<RouteItemDetail> routes, String title, String driverName, String driverPlate, String driverCar) {
         RouteDetailsDialog dialog = new RouteDetailsDialog();
         Bundle args = new Bundle();
         args.putSerializable(ARG_ROUTES, routes);
         args.putString(ARG_TITLE, title);
+        args.putString(ARG_DRIVER_NAME, driverName);
+        args.putString(ARG_DRIVER_PLATE, driverPlate);
+        args.putString(ARG_DRIVER_CAR, driverCar);
         dialog.setArguments(args);
         return dialog;
     }
@@ -47,6 +57,9 @@ public class RouteDetailsDialog extends DialogFragment {
         if (getArguments() != null) {
             routesList = (List<RouteItemDetail>) getArguments().getSerializable(ARG_ROUTES);
             modalTitle = getArguments().getString(ARG_TITLE, "Detalles de Rutas");
+            driverName = getArguments().getString(ARG_DRIVER_NAME, "-");
+            driverPlate = getArguments().getString(ARG_DRIVER_PLATE, "-");
+            driverCar = getArguments().getString(ARG_DRIVER_CAR, "-");
         }
     }
 
@@ -62,12 +75,24 @@ public class RouteDetailsDialog extends DialogFragment {
 
         ImageView imgBackModal = view.findViewById(R.id.imgBackModal);
         TextView tvModalTitle = view.findViewById(R.id.tvModalTitle);
+        TextView tvDriverName = view.findViewById(R.id.tvDriverName);
+        TextView tvDriverPlate = view.findViewById(R.id.tvDriverPlate);
+        TextView tvDriverCar = view.findViewById(R.id.tvDriverCar);
         RecyclerView recyclerViewRoutes = view.findViewById(R.id.recyclerViewRoutes);
         Button btnCerrarModal = view.findViewById(R.id.btnCerrarModal);
 
         // Configurar el título del modal
         if (modalTitle != null) {
             tvModalTitle.setText(modalTitle);
+        }
+        if (tvDriverName != null) {
+            tvDriverName.setText("Conductor: " + driverName);
+        }
+        if (tvDriverPlate != null) {
+            tvDriverPlate.setText("Placa: " + driverPlate);
+        }
+        if (tvDriverCar != null) {
+            tvDriverCar.setText("Auto: " + driverCar);
         }
 
         // Configurar el RecyclerView

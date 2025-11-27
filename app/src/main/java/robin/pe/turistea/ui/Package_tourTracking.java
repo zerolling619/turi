@@ -344,10 +344,10 @@ public class Package_tourTracking extends Fragment {
         try {
             JSONArray routesArray = new JSONArray(routeJsonString);
             ArrayList<RouteItemDetail> routesList = new ArrayList<>();
-            
+
             for (int i = 0; i < routesArray.length(); i++) {
                 JSONObject routeObj = routesArray.getJSONObject(i);
-                
+
                 int id = routeObj.optInt("id", 0);
                 int index = routeObj.optInt("index", i);
                 String title = routeObj.optString("title", "Sin título");
@@ -355,15 +355,34 @@ public class Package_tourTracking extends Fragment {
                 String bgImage = routeObj.optString("bg_image", "");
                 String bgImageKey = routeObj.optString("bg_image_key", "");
                 String bgImageSize = routeObj.optString("bg_image_size", "");
-                
+
                 RouteItemDetail route = new RouteItemDetail(id, index, title, description, bgImage, bgImageKey, bgImageSize);
                 routesList.add(route);
             }
-            
+
+            // Buscar el paquete correspondiente en packagesArray para extraer datos del driver
+            String driverName = "-";
+            String driverPlate = "-";
+            String driverCar = "-";
+            if (packagesArray != null) {
+                for (int i = 0; i < packagesArray.length(); i++) {
+                    JSONObject pkg = packagesArray.getJSONObject(i);
+                    if (pkg.optString("title", "Paquete").equals(packageTitle)) {
+                        JSONObject driver = pkg.optJSONObject("package") != null ? pkg.optJSONObject("package").optJSONObject("driver") : null;
+                        if (driver != null) {
+                            driverName = driver.optString("name", "-") + " " + driver.optString("lastname", "-");
+                            driverPlate = driver.optString("number_plate", "-");
+                            driverCar = driver.optString("brand_car", "-") + " " + driver.optString("model_car", "-");
+                        }
+                        break;
+                    }
+                }
+            }
+
             // Crear y mostrar el dialog
-            RouteDetailsDialog dialog = RouteDetailsDialog.newInstance(routesList, packageTitle);
+            RouteDetailsDialog dialog = RouteDetailsDialog.newInstance(routesList, packageTitle, driverName, driverPlate, driverCar);
             dialog.show(getChildFragmentManager(), "RouteDetailsDialog");
-            
+
         } catch (JSONException e) {
             Log.e("Package_tourTracking", "Error al parsear route_json: " + e.getMessage(), e);
             Toast.makeText(getContext(), "Error al cargar detalles de rutas", Toast.LENGTH_SHORT).show();
