@@ -11,6 +11,10 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
 import android.util.Log;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,9 +31,11 @@ import org.json.JSONObject;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 
 import robin.pe.turistea.R;
 import robin.pe.turistea.Config;
+import robin.pe.turistea.models.RouteItemDetail;
 
 public class Package_tourTracking extends Fragment {
 
@@ -50,6 +56,7 @@ public class Package_tourTracking extends Fragment {
     private double packagePrice;
     private String packageLocation;
     private int packageDuration;
+    private JSONArray packagesArray; // Almacena todos los paquetes del response
 
     public Package_tourTracking() {
         // Required empty public constructor
@@ -224,42 +231,142 @@ public class Package_tourTracking extends Fragment {
     
     private void parseRoutesJson(String jsonResponse) {
         try {
-            // La respuesta es un array de paquetes.
-            JSONArray packagesArray = new JSONArray(jsonResponse);
+            // La respuesta es un array de paquetes - guardamos TODO el array
+            packagesArray = new JSONArray(jsonResponse);
             
-            // Usamos un StringBuilder para construir la lista de títulos.
-            StringBuilder titlesText = new StringBuilder();
-
-            // Recorrer cada objeto (paquete) en el array.
+            Log.d("Package_tourTracking", "Paquetes recibidos: " + packagesArray.length());
+            
+            // Construir Spannable con cada paquete y un botón [Ver]
+            SpannableStringBuilder spannableBuilder = new SpannableStringBuilder();
             for (int i = 0; i < packagesArray.length(); i++) {
                 JSONObject packageJson = packagesArray.getJSONObject(i);
-                
-                // Obtener el título principal de este paquete.
                 String title = packageJson.optString("title", "Título no disponible");
-                
-                // Añadirlo a nuestra lista, con un número.
-                titlesText.append(i + 1).append(". ").append(title).append("\n\n");
+                // Prefijo con numeración
+                String linePrefix = (i + 1) + ". " + title + " ";
+                spannableBuilder.append(linePrefix);
+                int startVer = spannableBuilder.length();
+                String verLabel = "[Ver]";
+                spannableBuilder.append(verLabel);
+                int endVer = spannableBuilder.length();
+                final int indexForClick = i;
+                spannableBuilder.setSpan(new ClickableSpan() {
+                    @Override
+                    public void onClick(@NonNull View widget) {
+                        try {
+                            JSONObject targetPackage = packagesArray.getJSONObject(indexForClick);
+                            String routeJsonString = targetPackage.optString("route_json", "");
+                            String packageTitle = targetPackage.optString("title", "Paquete");
+                            Log.d("Package_tourTracking", "Click paquete index=" + indexForClick + " title=" + packageTitle);
+                            if (!routeJsonString.isEmpty()) {
+                                showRouteDetailsModal(routeJsonString, packageTitle);
+                            } else {
+                                Toast.makeText(getContext(), "Este paquete no tiene rutas definidas", Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (JSONException e) {
+                            Log.e("Package_tourTracking", "Error al abrir rutas (span)", e);
+                            Toast.makeText(getContext(), "Error al cargar rutas", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }, startVer, endVer, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                spannableBuilder.append("\n\n");
             }
             
-            String finalText = titlesText.toString().trim();
-
             // Actualizar la UI en el hilo principal.
             if (getActivity() != null) {
                 getActivity().runOnUiThread(() -> {
                     if (getView() != null) {
                         TextView tvRutaContent = getView().findViewById(R.id.tvRutaContent);
                         if (tvRutaContent != null) {
-                            if (finalText.isEmpty()) {
-                                tvRutaContent.setText("No se encontraron títulos de paquetes.");
+                            if (packagesArray.length() == 0) {
+                                tvRutaContent.setText("No se encontraron paquetes disponibles.");
                             } else {
-                                tvRutaContent.setText(finalText);
+                                tvRutaContent.setText(spannableBuilder);
+                                tvRutaContent.setMovementMethod(LinkMovementMethod.getInstance());
                             }
+                            tvRutaContent.setTextColor(getResources().getColor(R.color.white));
                         }
                     }
                 });
             }
         } catch (JSONException e) {
             Log.e("Package_tourTracking", "Error al parsear JSON de paquetes: " + e.getMessage(), e);
+        }
+    }
+    
+    private void showPackageSelector() {
+        if (packagesArray == null || packagesArray.length() == 0) {
+            Toast.makeText(getContext(), "No hay paquetes disponibles", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        
+        try {
+            // Crear array de títulos para el diálogo
+            String[] packageTitles = new String[packagesArray.length()];
+            for (int i = 0; i < packagesArray.length(); i++) {
+                JSONObject pkg = packagesArray.getJSONObject(i);
+                String title = pkg.optString("title", "Sin título");
+                packageTitles[i] = (i + 1) + ". " + title;
+            }
+            
+            // Mostrar diálogo de selección
+            android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(getContext());
+            builder.setTitle("Selecciona un paquete para ver sus rutas");
+            builder.setItems(packageTitles, (dialog, position) -> {
+                try {
+                    JSONObject selectedPackage = packagesArray.getJSONObject(position);
+                    String routeJsonString = selectedPackage.optString("route_json", "");
+                    String packageTitle = selectedPackage.optString("title", "Paquete");
+                    int selectedPackageId = selectedPackage.optInt("id", 0);
+                    
+                    Log.d("Package_tourTracking", "Paquete seleccionado ID: " + selectedPackageId + ", título: " + packageTitle);
+                    Log.d("Package_tourTracking", "route_json: " + routeJsonString);
+                    
+                    if (!routeJsonString.isEmpty()) {
+                        showRouteDetailsModal(routeJsonString, packageTitle);
+                    } else {
+                        Toast.makeText(getContext(), "Este paquete no tiene rutas definidas", Toast.LENGTH_SHORT).show();
+                    }
+                } catch (JSONException e) {
+                    Log.e("Package_tourTracking", "Error al obtener paquete seleccionado: " + e.getMessage(), e);
+                    Toast.makeText(getContext(), "Error al cargar las rutas", Toast.LENGTH_SHORT).show();
+                }
+            });
+            builder.setNegativeButton("Cancelar", null);
+            builder.show();
+            
+        } catch (JSONException e) {
+            Log.e("Package_tourTracking", "Error al crear selector: " + e.getMessage(), e);
+            Toast.makeText(getContext(), "Error al mostrar opciones", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void showRouteDetailsModal(String routeJsonString, String packageTitle) {
+        try {
+            JSONArray routesArray = new JSONArray(routeJsonString);
+            ArrayList<RouteItemDetail> routesList = new ArrayList<>();
+            
+            for (int i = 0; i < routesArray.length(); i++) {
+                JSONObject routeObj = routesArray.getJSONObject(i);
+                
+                int id = routeObj.optInt("id", 0);
+                int index = routeObj.optInt("index", i);
+                String title = routeObj.optString("title", "Sin título");
+                String description = routeObj.optString("description", "Sin descripción");
+                String bgImage = routeObj.optString("bg_image", "");
+                String bgImageKey = routeObj.optString("bg_image_key", "");
+                String bgImageSize = routeObj.optString("bg_image_size", "");
+                
+                RouteItemDetail route = new RouteItemDetail(id, index, title, description, bgImage, bgImageKey, bgImageSize);
+                routesList.add(route);
+            }
+            
+            // Crear y mostrar el dialog
+            RouteDetailsDialog dialog = RouteDetailsDialog.newInstance(routesList, packageTitle);
+            dialog.show(getChildFragmentManager(), "RouteDetailsDialog");
+            
+        } catch (JSONException e) {
+            Log.e("Package_tourTracking", "Error al parsear route_json: " + e.getMessage(), e);
+            Toast.makeText(getContext(), "Error al cargar detalles de rutas", Toast.LENGTH_SHORT).show();
         }
     }
 }
