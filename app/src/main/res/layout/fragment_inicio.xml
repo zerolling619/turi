@@ -183,6 +183,7 @@
                         <!-- Los paquetes se cargan dinámicamente desde Inicio.java -->
 
                     </LinearLayout>
+
                 </HorizontalScrollView>
 
             </LinearLayout>
@@ -230,65 +231,28 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:orientation="vertical">
-
-                    <!-- Carrusel Vertical Desplazable -->
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
 
                         <ScrollView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:scrollbars="none"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent">
+                            tools:ignore="MissingConstraints">
 
                             <LinearLayout
+                                android:id="@+id/LinearListaPaquetesVertical"
                                 android:layout_width="match_parent"
-                                android:layout_height="wrap_content">
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:paddingLeft="24dp"
+                                android:paddingRight="24dp">
 
-                                <!-- Lista de Paquetes -->
-                                <androidx.constraintlayout.widget.ConstraintLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent">
-
-                                    <LinearLayout
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:orientation="vertical"
-                                        app:layout_constraintEnd_toEndOf="parent"
-                                        app:layout_constraintStart_toStartOf="parent"
-                                        tools:layout_editor_absoluteY="10dp"
-                                        tools:ignore="MissingConstraints">
-
-                                        <!-- Include vertical package items to match the screenshot layout -->
-                                        <include
-                                            android:id="@+id/cardPopular1"
-                                            layout="@layout/item_paquete_vertical" />
-
-                                        <include
-                                            android:id="@+id/cardPopular2"
-                                            layout="@layout/item_paquete_vertical" />
-
-                                        <include
-                                            android:id="@+id/cardPopular3"
-                                            layout="@layout/item_paquete_vertical" />
-
-                                        <include
-                                            android:id="@+id/cardPopular4"
-                                            layout="@layout/item_paquete_vertical" />
-
-                                    </LinearLayout>
-                                </androidx.constraintlayout.widget.ConstraintLayout>
-
+                                <!-- Aquí se agregarán dinámicamente las cards verticales -->
 
                             </LinearLayout>
+
                         </ScrollView>
-                    </androidx.constraintlayout.widget.ConstraintLayout>
 
                 </LinearLayout>
 
