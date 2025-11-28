@@ -382,7 +382,7 @@ public class Inicio extends Fragment {
                     conn.setRequestProperty("Authorization", "Bearer " + jwt);
                     android.util.Log.d("Inicio", "Header Authorization agregado: Bearer " + jwt.substring(0, Math.min(20, jwt.length())) + "...");
                 } else {
-                    android.util.Log.w("Inicio", "⚠️ No hay JWT - El usuario no ha iniciado sesión");
+                    android.util.Log.w("Inicio", "No hay JWT - El usuario no ha iniciado sesión");
                 }
 
                 int responseCode = conn.getResponseCode();
@@ -399,7 +399,7 @@ public class Inicio extends Fragment {
                     reader.close();
 
                     String jsonResponse = response.toString();
-                    android.util.Log.d("Inicio", "✅ Respuesta exitosa del servidor");
+                    android.util.Log.d("Inicio", "Respuesta exitosa del servidor");
                     android.util.Log.d("Inicio", "JSON recibido: " + jsonResponse.substring(0, Math.min(200, jsonResponse.length())) + "...");
 
                     // Parsear JSON
@@ -454,6 +454,12 @@ public class Inicio extends Fragment {
                 pkg.setId(packageJson.optInt("id", 0));
                 pkg.setName(packageJson.optString("title", "Paquete"));  // "title" en el backend
                 pkg.setDescription(packageJson.optString("description", "Sin descripción"));
+
+                try {
+                    Thread.sleep(1000);  // Simula tiempo de carga (quita esto en producción)
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
                 pkg.setImage(packageJson.optString("path_bg", ""));
                 // Construir ubicación desde name_district, name_province, name_region
                 String district = packageJson.optString("name_district", "");
@@ -466,6 +472,7 @@ public class Inicio extends Fragment {
                 // Valores por defecto para campos que no están en el backend
                 pkg.setPrice(0.0);  // No hay precio en el backend
                 pkg.setDuration(3);  // Duración por defecto: 3 días
+                pkg.setMaxPeople(packageJson.optInt("quantity_person", 1));
 
                 packageList.add(pkg);
 
@@ -483,6 +490,8 @@ public class Inicio extends Fragment {
             android.util.Log.e("Inicio", "JSON recibido: " + jsonResponse);
         }
     }
+
+
 
     private void displayPackages() {
         if (linearListaPaquetes == null) {
@@ -528,7 +537,6 @@ public class Inicio extends Fragment {
             itemView.setOnClickListener(v -> showPackageDetails(pkg));
             flHeart.setOnClickListener(v -> {
                 // Toggle visual feedback for favorite (simple example)
-                // TODO: persist favorite state in data model
                 ivHeart.setAlpha(ivHeart.getAlpha() == 1f ? 0.6f : 1f);
             });
 
@@ -544,6 +552,8 @@ public class Inicio extends Fragment {
         bundle.putString("package_name", pkg.getName());
         bundle.putString("package_description", pkg.getDescription());
         bundle.putString("package_image", pkg.getImage());
+        bundle.putInt("package_max_personas", pkg.getMaxPeople());
+        android.util.Log.d("Inicio", "Enviando max_personas: " + pkg.getMaxPeople());
         bundle.putDouble("package_price", pkg.getPrice());
         bundle.putString("package_location", pkg.getLocation());
         bundle.putInt("package_duration", pkg.getDuration());
@@ -599,7 +609,7 @@ public class Inicio extends Fragment {
         }
     }
 
-    // NUEVO: Método para mostrar paquetes en vertical
+    //  Metodo para mostrar paquetes en vertical
     private void displayPackagesVertical() {
         if (linearListaPaquetesVertical == null) {
             android.util.Log.e("Inicio", "linearListaPaquetesVertical es null");

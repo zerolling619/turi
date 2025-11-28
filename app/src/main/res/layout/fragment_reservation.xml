@@ -200,6 +200,7 @@
                         android:id="@+id/layoutRuta"
                         android:layout_width="match_parent"
                         android:layout_height="40dp"
+                        app:hintTextColor="@color/azul_oscuro"
                         android:hint="Selecciona ruta">
 
                         <Spinner

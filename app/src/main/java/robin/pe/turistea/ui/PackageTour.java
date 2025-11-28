@@ -37,6 +37,7 @@ public class PackageTour extends Fragment {
     private String packageName;
     private String packageDescription;
     private String packageImage;
+    private  int packageMaxPeople;
     private double packagePrice;
     private String packageLocation;
     private int packageDuration;
@@ -55,6 +56,7 @@ public class PackageTour extends Fragment {
             packageName = getArguments().getString("package_name", "");
             packageDescription = getArguments().getString("package_description", "");
             packageImage = getArguments().getString("package_image", "");
+            packageMaxPeople = getArguments().getInt("package_max_personas", 1);
             packagePrice = getArguments().getDouble("package_price", 0.0);
             packageLocation = getArguments().getString("package_location", "");
             packageDuration = getArguments().getInt("package_duration", 1);
@@ -79,9 +81,6 @@ public class PackageTour extends Fragment {
         imgBgPath = view.findViewById(R.id.imgBgPath);
         tvDetallesDestino = view.findViewById(R.id.tvDetallesDestino);
         tvDetallesTracking = view.findViewById(R.id.tvDetallesTracking);
-        tvCalificacion = view.findViewById(R.id.TvCalificacion);
-        tvTemperatura = view.findViewById(R.id.TvTemperatura);
-        tvDias = view.findViewById(R.id.TvDias);
         btnReservar = view.findViewById(R.id.btnReservar);
         
         // Configurar botón de atrás - navegar al inicio
@@ -107,6 +106,8 @@ public class PackageTour extends Fragment {
             bundle.putString("package_name", packageName);
             bundle.putString("package_description", packageDescription);
             bundle.putString("package_image", packageImage);
+            bundle.putInt("package_max_personas",packageMaxPeople); // Máximo por defecto, ajustar según tu lógica
+            android.util.Log.d("PackageTour", "Enviando max_personas" + packageMaxPeople);
             bundle.putDouble("package_price", packagePrice);
             bundle.putString("package_location", packageLocation);
             bundle.putInt("package_duration", packageDuration);
@@ -137,7 +138,7 @@ public class PackageTour extends Fragment {
                     bundle.putFloat("package_price", (float) packagePrice);
                     bundle.putString("package_location", packageLocation != null ? packageLocation : "");
                     bundle.putInt("package_duration", packageDuration);
-                    bundle.putInt("package_max_personas", 10); // Máximo por defecto, ajustar según tu lógica
+                    bundle.putInt("package_max_personas", packageMaxPeople); // Máximo por defecto, ajustar según tu lógica
                     
                     android.util.Log.d("PackageTour", "Navegando a reserva con datos: " + packageName);
                     navController.navigate(R.id.action_navigation_packageTour_to_navigation_reservation, bundle);
@@ -163,7 +164,7 @@ public class PackageTour extends Fragment {
             tvDias.setText(packageDuration + " Días");
         }
         
-        // TODO: Obtener más datos como calificación y temperatura desde el backend
+        // Obtener más datos como calificación y temperatura desde el backend
         // Por ahora usar valores por defecto
         if (tvCalificacion != null) {
             tvCalificacion.setText("4.5");
