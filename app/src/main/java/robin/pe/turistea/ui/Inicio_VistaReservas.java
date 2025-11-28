@@ -64,28 +64,33 @@ public class Inicio_VistaReservas extends Fragment implements ReservasAdapter.On
         adapter = new ReservasAdapter(listaReservas, this);
         recyclerViewReservas.setAdapter(adapter);
 
-        // **LA CORRECCIÓN ESTÁ AQUÍ**
-        // Se usan los nombres de estado exactos que tu API espera.
-        view.findViewById(R.id.btnStatusPending).setOnClickListener(v -> loadReservesFromBackend("pending"));
-        view.findViewById(R.id.btnStatusConfirmed).setOnClickListener(v -> loadReservesFromBackend("reserve")); // Corregido de "confirmed" a "reserve"
-        view.findViewById(R.id.btnStatusCompleted).setOnClickListener(v -> loadReservesFromBackend("done"));      // Corregido de "completed" a "done"
-        view.findViewById(R.id.btnStatusCancelled).setOnClickListener(v -> loadReservesFromBackend("rejected"));  // Corregido de "cancelled" a "rejected"
-        view.findViewById(R.id.btnStatusPendingPayinProcess).setOnClickListener(v -> loadReservesFromBackend("pending_pay_in_process"));
-
-        // Cargar las reservas pendientes por defecto al iniciar
-        loadReservesFromBackend("reserve");
+        // Ya no hay botones de filtro, se carga directamente la lista de reservas confirmadas
+        loadConfirmedReserves();
     }
 
-    private void loadReservesFromBackend(String status) {
+    private void loadConfirmedReserves() {
         new Thread(() -> {
             HttpURLConnection conn = null;
             try {
                 SharedPreferences prefs = requireContext().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
                 String jwt = prefs.getString("jwt", "");
+                String userRole = prefs.getString("user_role", "user"); // Se lee el rol del usuario
 
-                String urlString = Config.BASE_URL + "/api/user-account/form_reserves?page=1&status=" + status + "&state=1";
+                String urlString;
+                String status = "reserve"; // El estado que queremos ver
 
-                Log.d("Inicio_VistaReservas", "Llamando a la URL: " + urlString);
+                // **LA LÓGICA ESTÁ AQUÍ**
+                // Se construye la URL dependiendo del rol del usuario
+                if ("admin".equalsIgnoreCase(userRole)) {
+                    // El admin ve todas las reservas confirmadas
+                    // (Asumo una ruta de admin, ajústala si es diferente en tu backend)
+                    urlString = Config.BASE_URL + "/api/form_reserves/admin?page=1&status=" + status + "&state=1";
+                } else {
+                    // El usuario normal ve solo sus propias reservas confirmadas
+                    urlString = Config.BASE_URL + "/api/user-account/form_reserves?page=1&status=" + status + "&state=1";
+                }
+
+                Log.d("Inicio_VistaReservas", "Rol: " + userRole + ", Llamando a la URL: " + urlString);
 
                 URL url = new URL(urlString);
                 conn = (HttpURLConnection) url.openConnection();
@@ -129,7 +134,7 @@ public class Inicio_VistaReservas extends Fragment implements ReservasAdapter.On
                         getActivity().runOnUiThread(() -> {
                             adapter.notifyDataSetChanged();
                             if (listaReservas.isEmpty()) {
-                                Toast.makeText(getContext(), "No hay reservas con estado '" + status + "'", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getContext(), "No hay reservas confirmadas.", Toast.LENGTH_SHORT).show();
                             }
                         });
                     }
@@ -139,7 +144,7 @@ public class Inicio_VistaReservas extends Fragment implements ReservasAdapter.On
                     }
                 }
             } catch (Exception e) {
-                Log.e("Inicio_VistaReservas", "Error en loadReservesFromBackend", e);
+                Log.e("Inicio_VistaReservas", "Error en loadConfirmedReserves", e);
                 e.printStackTrace();
                 if (getActivity() != null) {
                     getActivity().runOnUiThread(() -> Toast.makeText(getContext(), "Error de conexión", Toast.LENGTH_SHORT).show());
