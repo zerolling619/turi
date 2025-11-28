@@ -1,6 +1,7 @@
-    plugins {
+plugins {
     alias(libs.plugins.android.application)
         id("com.google.gms.google-services")
+    alias(libs.plugins.kotlin.android)
 }
 
 android {
@@ -33,6 +34,9 @@ android {
     buildFeatures {
         viewBinding = true
     }
+    kotlinOptions {
+        jvmTarget = "11"
+    }
 }
 
 dependencies {
@@ -63,6 +67,10 @@ dependencies {
     // Volley para peticiones HTTP
     implementation("com.android.volley:volley:1.2.1")
     
+    // Gson para parseo de JSON
+    implementation("com.google.code.gson:gson:2.10.1")
+    implementation(libs.core.ktx)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)

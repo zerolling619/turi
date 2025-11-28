@@ -226,36 +226,61 @@ public class Package_tourTracking extends Fragment {
         }).start();
     }
 
-    private void parseRoutesJson(String jsonResponse) {
+  private void parseRoutesJson(String jsonResponse) {
         try {
-            // La respuesta de la API es un Array de paquetes
-            JSONArray packagesArray = new JSONArray(jsonResponse);
-
-            StringBuilder titlesText = new StringBuilder();
-
-            // Recorrer cada objeto (paquete) en el array
+            // La respuesta es un array de paquetes - guardamos TODO el array
+            packagesArray = new JSONArray(jsonResponse);
+            
+            Log.d("Package_tourTracking", "Paquetes recibidos: " + packagesArray.length());
+            
+            // Construir Spannable con cada paquete y un botón [Ver]
+            SpannableStringBuilder spannableBuilder = new SpannableStringBuilder();
             for (int i = 0; i < packagesArray.length(); i++) {
                 JSONObject packageJson = packagesArray.getJSONObject(i);
-
-                // Obtener el título principal de este paquete
                 String title = packageJson.optString("title", "Título no disponible");
-
-                // Añadirlo a nuestra lista, con un número
-                titlesText.append(i + 1).append(". ").append(title).append("\n\n");
+                // Prefijo con numeración
+                String linePrefix = (i + 1) + ". " + title + " ";
+                spannableBuilder.append(linePrefix);
+                int startVer = spannableBuilder.length();
+                String verLabel = "[Ver]";
+                spannableBuilder.append(verLabel);
+                int endVer = spannableBuilder.length();
+                final int indexForClick = i;
+                spannableBuilder.setSpan(new ClickableSpan() {
+                    @Override
+                    public void onClick(@NonNull View widget) {
+                        try {
+                            JSONObject targetPackage = packagesArray.getJSONObject(indexForClick);
+                            String routeJsonString = targetPackage.optString("route_json", "");
+                            String packageTitle = targetPackage.optString("title", "Paquete");
+                            Log.d("Package_tourTracking", "Click paquete index=" + indexForClick + " title=" + packageTitle);
+                            if (!routeJsonString.isEmpty()) {
+                                showRouteDetailsModal(routeJsonString, packageTitle);
+                            } else {
+                                Toast.makeText(getContext(), "Este paquete no tiene rutas definidas", Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (JSONException e) {
+                            Log.e("Package_tourTracking", "Error al abrir rutas (span)", e);
+                            Toast.makeText(getContext(), "Error al cargar rutas", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }, startVer, endVer, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                spannableBuilder.append("\n\n");
             }
-
-            final String finalText = titlesText.toString().trim();
-
+            
+            // Actualizar la UI en el hilo principal.
             if (getActivity() != null) {
                 getActivity().runOnUiThread(() -> {
                     if (getView() != null) {
                         TextView tvRutaContent = getView().findViewById(R.id.tvRutaContent);
                         if (tvRutaContent != null) {
-                            if (finalText.isEmpty()) {
-                                tvRutaContent.setText("No se encontraron títulos de paquetes.");
+                            if (packagesArray.length() == 0) {
+                                tvRutaContent.setText("No se encontraron paquetes disponibles.");
                             } else {
-                                tvRutaContent.setText(finalText);
+                                tvRutaContent.setText(spannableBuilder);
+                                tvRutaContent.setMovementMethod(LinkMovementMethod.getInstance());
                             }
+                            tvRutaContent.setTextColor(getResources().getColor(R.color.white));
                         }
                     }
                 });
@@ -264,6 +289,7 @@ public class Package_tourTracking extends Fragment {
             Log.e("Package_tourTracking", "Error al parsear JSON de paquetes: " + e.getMessage(), e);
         }
     }
+    
     
     private void showPackageSelector() {
         if (packagesArray == null || packagesArray.length() == 0) {

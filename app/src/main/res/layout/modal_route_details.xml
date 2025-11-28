@@ -10,6 +10,7 @@
         android:layout_height="match_parent"
         android:padding="16dp">
 
+
         <androidx.cardview.widget.CardView
             android:layout_width="0dp"
             android:layout_height="0dp"
@@ -25,6 +26,26 @@
                 android:layout_height="match_parent"
                 android:background="@color/white"
                 android:orientation="vertical">
+
+                <!-- Mapa de ruta con fondo -->
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="300dp">
+
+                    <ImageView
+                        android:id="@+id/routeBackground"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/background" />
+
+                    <robin.pe.turistea.ui.RoutePathView
+                        android:id="@+id/routeView"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:padding="16dp" />
+
+                </FrameLayout>
 
                 <!-- Header del modal -->
                 <LinearLayout

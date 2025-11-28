@@ -10,6 +10,10 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import java.lang.reflect.Type;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
@@ -80,6 +84,7 @@ public class RouteDetailsDialog extends DialogFragment {
         TextView tvDriverCar = view.findViewById(R.id.tvDriverCar);
         RecyclerView recyclerViewRoutes = view.findViewById(R.id.recyclerViewRoutes);
         Button btnCerrarModal = view.findViewById(R.id.btnCerrarModal);
+        RoutePathView routeView = view.findViewById(R.id.routeView);
 
         // Configurar el título del modal
         if (modalTitle != null) {
@@ -93,6 +98,16 @@ public class RouteDetailsDialog extends DialogFragment {
         }
         if (tvDriverCar != null) {
             tvDriverCar.setText("Auto: " + driverCar);
+        }
+
+        // Parsear el route_json y pasar los puntos al custom view
+        if (routesList != null && routeView != null) {
+            // Convertir RouteItemDetail a RoutePoint (solo los campos necesarios)
+            List<RoutePoint> points = new ArrayList<>();
+            for (RouteItemDetail r : routesList) {
+                points.add(new RoutePoint(r.getId(), r.getIndex(), r.getTitle(), r.getDescription(), r.getBgImage()));
+            }
+            routeView.setPoints(points);
         }
 
         // Configurar el RecyclerView
