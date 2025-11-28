@@ -20,15 +20,16 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import robin.pe.turistea.R;
 import robin.pe.turistea.Config;
+import robin.pe.turistea.MainActivity;
 
 public class Inicio_VistaReservas extends Fragment implements ReservasAdapter.OnItemClickListener {
 
@@ -52,8 +53,8 @@ public class Inicio_VistaReservas extends Fragment implements ReservasAdapter.On
 
         icMenuLateral = view.findViewById(R.id.IcMenuLateral);
         icMenuLateral.setOnClickListener(v -> {
-            if (getActivity() instanceof robin.pe.turistea.MainActivity) {
-                ((robin.pe.turistea.MainActivity) getActivity()).openDrawer();
+            if (getActivity() instanceof MainActivity) {
+                ((MainActivity) getActivity()).openDrawer();
             }
         });
 
@@ -63,36 +64,58 @@ public class Inicio_VistaReservas extends Fragment implements ReservasAdapter.On
         adapter = new ReservasAdapter(listaReservas, this);
         recyclerViewReservas.setAdapter(adapter);
 
-        loadReservesFromBackend();
+        // Asignar listeners a los botones de filtro
+        view.findViewById(R.id.btnStatusPending).setOnClickListener(v -> loadReservesFromBackend("pending"));
+        view.findViewById(R.id.btnStatusConfirmed).setOnClickListener(v -> loadReservesFromBackend("confirmed"));
+        view.findViewById(R.id.btnStatusCompleted).setOnClickListener(v -> loadReservesFromBackend("completed"));
+        view.findViewById(R.id.btnStatusCancelled).setOnClickListener(v -> loadReservesFromBackend("cancelled"));
+
+        // Cargar las reservas pendientes por defecto al iniciar
+        loadReservesFromBackend("pending");
     }
 
-    private void loadReservesFromBackend() {
+    private void loadReservesFromBackend(String status) {
         new Thread(() -> {
+            HttpURLConnection conn = null;
             try {
                 SharedPreferences prefs = requireContext().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
                 String jwt = prefs.getString("jwt", "");
 
-                String urlString = Config.BASE_URL + "/api/user-account/form_reserves";
+                // **LA CORRECCIÓN ESTÁ AQUÍ**
+                // Se añaden los parámetros page=1 y state=1 que el backend espera
+                String urlString = Config.BASE_URL + "/api/user-account/form_reserves?page=1&status=" + status + "&state=1";
+
+                Log.d("Inicio_VistaReservas", "Llamando a la URL: " + urlString);
 
                 URL url = new URL(urlString);
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("GET");
                 conn.setRequestProperty("Authorization", "Bearer " + jwt);
 
                 int responseCode = conn.getResponseCode();
-                if (responseCode == HttpURLConnection.HTTP_OK) {
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-                    StringBuilder response = new StringBuilder();
-                    String line;
-                    while ((line = reader.readLine()) != null) {
-                        response.append(line);
+                
+                InputStream inputStream = (responseCode == HttpURLConnection.HTTP_OK)
+                        ? conn.getInputStream() : conn.getErrorStream();
+                
+                if (inputStream == null) {
+                     if (getActivity() != null) {
+                        getActivity().runOnUiThread(() -> Toast.makeText(getContext(), "Error: No se recibió respuesta del servidor", Toast.LENGTH_SHORT).show());
                     }
-                    reader.close();
+                    return;
+                }
 
-                    String responseData = response.toString();
-                    Log.d("Inicio_VistaReservas", "Respuesta del backend: " + responseData);
+                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+                StringBuilder response = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    response.append(line);
+                }
+                reader.close();
 
-                    // **CORRECCIÓN**: Navegar a través del objeto para encontrar el array "rows"
+                String responseData = response.toString();
+                Log.d("Inicio_VistaReservas", "Respuesta completa del backend: " + responseData);
+
+                if (responseCode == HttpURLConnection.HTTP_OK) {
                     JSONObject responseObject = new JSONObject(responseData);
                     JSONObject dataObject = responseObject.getJSONObject("data");
                     JSONArray reservesArray = dataObject.getJSONArray("rows");
@@ -106,20 +129,24 @@ public class Inicio_VistaReservas extends Fragment implements ReservasAdapter.On
                         getActivity().runOnUiThread(() -> {
                             adapter.notifyDataSetChanged();
                             if (listaReservas.isEmpty()) {
-                                Toast.makeText(getContext(), "No hay reservas disponibles", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getContext(), "No hay reservas con estado '" + status + "'", Toast.LENGTH_SHORT).show();
                             }
                         });
                     }
                 } else {
                      if (getActivity() != null) {
-                        getActivity().runOnUiThread(() -> Toast.makeText(getContext(), "Error al cargar reservas: " + responseCode, Toast.LENGTH_SHORT).show());
+                        getActivity().runOnUiThread(() -> Toast.makeText(getContext(), "Error al cargar reservas. Código: " + responseCode, Toast.LENGTH_SHORT).show());
                     }
                 }
             } catch (Exception e) {
                 Log.e("Inicio_VistaReservas", "Error en loadReservesFromBackend", e);
                 e.printStackTrace();
                 if (getActivity() != null) {
-                    getActivity().runOnUiThread(() -> Toast.makeText(getContext(), "Error al procesar la respuesta del servidor", Toast.LENGTH_SHORT).show());
+                    getActivity().runOnUiThread(() -> Toast.makeText(getContext(), "Error de conexión", Toast.LENGTH_SHORT).show());
+                }
+            } finally {
+                if (conn != null) {
+                    conn.disconnect();
                 }
             }
         }).start();
@@ -128,10 +155,12 @@ public class Inicio_VistaReservas extends Fragment implements ReservasAdapter.On
     @Override
     public void onItemClick(JSONObject item) {
         try {
-            //El ID de la reserva es "id"
             int reserveId = item.getInt("id");
+            String statusForm = item.getString("status_form"); // Obtener el estado
+
             Bundle bundle = new Bundle();
             bundle.putInt("reserve_id", reserveId);
+            bundle.putString("status_form", statusForm); // **AÑADIR ESTA LÍNEA**
 
             if (getView() != null) {
                 Navigation.findNavController(getView()).navigate(R.id.action_navigation_inicio_VistaReservas_to_reservationDetail, bundle);

@@ -29,6 +29,8 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import android.content.Intent;
 
+import org.json.JSONObject;
+
 
 public class Login extends Fragment {
 
@@ -612,10 +614,10 @@ public class Login extends Fragment {
                 jsonParam.put("name", name);
                 jsonParam.put("lastname", lastname);
                 jsonParam.put("password", "google_" + googleId);
-                jsonParam.put("cellphone", (String) null);
-                jsonParam.put("sexo", (String) null);
-                jsonParam.put("dni", (String) null);
-                jsonParam.put("date_of_birth", (String) null);
+                jsonParam.put("cellphone", org.json.JSONObject.NULL);
+                jsonParam.put("sexo", org.json.JSONObject.NULL);
+                jsonParam.put("dni", org.json.JSONObject.NULL);
+                jsonParam.put("date_of_birth", org.json.JSONObject.NULL);
                 jsonParam.put("origin", "google");
                 jsonParam.put("path", "https://ui-avatars.com/api/?name=" + name + "+" + lastname + "&background=random"); // Avatar por defecto
                 
@@ -794,10 +796,10 @@ public class Login extends Fragment {
                 jsonParam.put("name", name);
                 jsonParam.put("lastname", lastname);
                 jsonParam.put("password", "google_" + googleId);
-                jsonParam.put("cellphone", (String) null);
-                jsonParam.put("sexo", (String) null);
-                jsonParam.put("dni", (String) null);
-                jsonParam.put("date_of_birth", (String) null);
+                jsonParam.put("cellphone", org.json.JSONObject.NULL);
+                jsonParam.put("sexo", org.json.JSONObject.NULL);
+                jsonParam.put("dni", org.json.JSONObject.NULL);
+                jsonParam.put("date_of_birth", org.json.JSONObject.NULL);
                 jsonParam.put("origin", "google");
                 jsonParam.put("path", "https://ui-avatars.com/api/?name=" + name + "+" + lastname + "&background=random"); // Avatar por defecto
 
@@ -843,7 +845,25 @@ public class Login extends Fragment {
                     if (obj.has("message")) {
                         String msg = obj.getString("message");
                         android.util.Log.e("SignUpSocialNetwork", "Respuesta backend: " + msg);
-                        android.widget.Toast.makeText(context, msg, android.widget.Toast.LENGTH_LONG).show();
+
+                        // **LA LÓGICA ESTÁ AQUÍ**
+                        if (msg.contains("Validation error")) {
+                            // El backend requiere más datos. Navegar a la pantalla de completar perfil.
+                            android.widget.Toast.makeText(context, "Información incompleta. Por favor, completa tu perfil.", android.widget.Toast.LENGTH_LONG).show();
+
+                            Bundle bundle = new Bundle();
+                            bundle.putString("name", name);
+                            bundle.putString("lastname", lastname);
+                            bundle.putString("email", email);
+                            bundle.putString("googleId", googleId);
+
+                            // Asegúrate de que esta acción existe en tu mobile_navigation.xml
+                            navController.navigate(R.id.action_login_to_completeGoogleSignIn, bundle);
+
+                        } else {
+                            // Otro tipo de error, mostrarlo en un Toast.
+                            android.widget.Toast.makeText(context, msg, android.widget.Toast.LENGTH_LONG).show();
+                        }
                         return;
                     }
                 }
