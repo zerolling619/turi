@@ -5,6 +5,9 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -12,49 +15,46 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-
 import robin.pe.turistea.R;
-import robin.pe.turistea.databinding.FragmentSplashBinding;
 
 public class Splash extends Fragment {
 
-    private static final long SPLASH_DELAY = 2000; // 2 segundos
+    private NavController navController;
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // No es necesario usar View Binding aquí, un layout simple es suficiente.
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_splash, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        navController = Navigation.findNavController(view);
 
+        // Un Handler para esperar unos segundos antes de navegar
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
-            // Después del retraso, decidir a dónde navegar.
-            checkSessionAndNavigate();
-        }, SPLASH_DELAY);
-    }
+            if (getContext() == null) return;
 
-    private void checkSessionAndNavigate() {
-        if (getContext() == null) {
-            return; // Evita errores si el fragmento se destruye.
-        }
+            SharedPreferences prefs = getContext().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
+            String jwt = prefs.getString("jwt", null);
+            String userRole = prefs.getString("user_role", ""); // Obtener el rol
 
-        SharedPreferences prefs = getContext().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
-        String jwt = prefs.getString("jwt", null);
+            // **LA LÓGICA ESTÁ AQUÍ**
+            if (jwt != null && !jwt.isEmpty()) {
+                // Si hay una sesión activa, decidir a dónde ir según el rol
+                if ("driver".equalsIgnoreCase(userRole) || "guide".equalsIgnoreCase(userRole) || "terrace".equalsIgnoreCase(userRole)) {
+                    // Si es un rol especial, ir a la vista de reservas
+                    navController.navigate(R.id.action_splash_to_inicio_vista_reservas); // Necesitarás crear esta acción
+                } else {
+                    // Si es user, admin o un rol no especificado, ir al inicio normal
+                    navController.navigate(R.id.action_splash_to_inicio);
+                }
+            } else {
+                // Si no hay sesión, ir a la pantalla de "Start App" o Login
+                navController.navigate(R.id.action_splash_to_start_app);
+            }
 
-        NavController navController = Navigation.findNavController(requireView());
-
-        if (jwt != null && !jwt.isEmpty()) {
-            // Si hay un token, el usuario ya ha iniciado sesión. Ir al inicio.
-            navController.navigate(R.id.action_splash_to_inicio);
-        } else {
-            // Si no hay token, ir al flujo normal de bienvenida/login.
-            navController.navigate(R.id.action_splash_to_start_app);
-        }
+        }, 2000); // 2 segundos de espera
     }
 }
