@@ -1,0 +1,334 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.PendingPay"
+    android:background="@drawable/fd_celeste_degrade">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="290dp"
+                android:layout_height="480dp"
+                android:background="@drawable/fd_btn_azul_bordes_transparente"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.363"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.298"
+                tools:ignore="MissingConstraints">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="15dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="Reserva - En Proceso de pago"
+                    android:textColor="@color/white"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    tools:ignore="MissingConstraints" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="139dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/TvContrato"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="0dp"
+                        android:padding="10dp"
+                        android:text="Realizaste la firma y validamos correctamente los documentos haras la reserva del 50% descuida este dinero estara congelado en el aplicativo si se presenta alguna interrupcion en el servicio comunicate con el area de soporte."
+                        android:textAlignment="center"
+                        android:textColor="@color/white"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    android:gravity="center_horizontal">
+
+                    <LinearLayout
+                        android:layout_width="240dp"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/fd_blanco_bordes_10"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="75dp"
+                            android:orientation="horizontal">
+
+                            <LinearLayout
+                                android:layout_width="89dp"
+                                android:layout_height="match_parent">
+
+                                <androidx.constraintlayout.widget.ConstraintLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent">
+
+                                    <ImageView
+                                        android:id="@+id/ImgRuta"
+                                        android:layout_width="80dp"
+                                        android:layout_height="60dp"
+                                        android:background="@drawable/none_tras"
+                                        app:layout_constraintBottom_toBottomOf="parent"
+                                        app:layout_constraintEnd_toEndOf="parent"
+                                        app:layout_constraintStart_toStartOf="parent"
+                                        app:layout_constraintTop_toTopOf="parent" />
+                                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:orientation="vertical">
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="20dp">
+
+                                    <TextView
+                                        android:id="@+id/tvTituloRuta"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:text="Titulo de la ruta"
+                                        android:textColor="@color/azul_oscuro" />
+
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="18dp"
+                                    android:orientation="horizontal">
+
+                                    <ImageView
+                                        android:layout_width="15dp"
+                                        android:layout_height="15dp"
+                                        android:background="@drawable/ic_location_blue" />
+
+                                    <TextView
+                                        android:id="@+id/tvTituloPaquete"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:text="Titulo de la ruta"
+                                        android:textColor="@color/azul_oscuro" />
+
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="18dp"
+                                    android:orientation="horizontal">
+
+                                    <ImageView
+                                        android:layout_width="15dp"
+                                        android:layout_height="15dp"
+                                        android:background="@drawable/ic_calendar_blue" />
+
+                                    <TextView
+                                        android:id="@+id/tvtvTituloFecha"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:text="Titulo de la ruta"
+                                        android:textColor="@color/azul_oscuro" />
+
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="18dp"
+                                    android:orientation="horizontal">
+
+                                    <ImageView
+                                        android:layout_width="15dp"
+                                        android:layout_height="15dp"
+                                        android:background="@drawable/ic_car_blue" />
+
+                                    <TextView
+                                        android:id="@+id/tvNombreConductor"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:text="Titulo de la ruta"
+                                        android:textColor="@color/azul_oscuro" />
+
+                                </LinearLayout>
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="75dp">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:orientation="vertical">
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="16dp"
+                                    android:orientation="horizontal"
+
+                                    android:padding="3dp">
+
+                                    <TextView
+                                        android:layout_width="65dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginLeft="5dp"
+                                        android:text="Punto de Inicio"
+                                        android:textColor="@color/azul_oscuro"
+                                        android:textSize="9sp" />
+
+                                    <TextView
+                                        android:id="@+id/tvPuntoInicio"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginLeft="10dp"
+                                        android:text="Punto de Inicio"
+                                        android:textColor="@color/azul_oscuro"
+                                        android:textSize="9sp" />
+
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="16dp"
+                                    android:orientation="horizontal"
+
+                                    android:padding="3dp">
+
+                                    <TextView
+                                        android:layout_width="65dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginLeft="5dp"
+                                        android:text="Punto de Salida"
+                                        android:textColor="@color/azul_oscuro"
+                                        android:textSize="9sp" />
+
+                                    <TextView
+                                        android:id="@+id/tvPuntoSalida"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginLeft="10dp"
+                                        android:text="Punto de Salida"
+                                        android:textColor="@color/azul_oscuro"
+                                        android:textSize="9sp" />
+
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="16dp"
+                                    android:orientation="horizontal"
+
+                                    android:padding="3dp">
+
+                                    <TextView
+                                        android:layout_width="65dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginLeft="5dp"
+                                        android:text="Hora"
+                                        android:textColor="@color/azul_oscuro"
+                                        android:textSize="9sp" />
+
+                                    <TextView
+                                        android:id="@+id/tvHora"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginLeft="10dp"
+                                        android:text="Hora"
+                                        android:textColor="@color/azul_oscuro"
+                                        android:textSize="9sp" />
+
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:orientation="horizontal"
+                                    android:padding="3dp">
+
+                                    <TextView
+                                        android:layout_width="164dp"
+                                        android:layout_height="match_parent"
+                                        android:layout_marginLeft="5dp"
+                                        android:text="Total"
+                                        android:textColor="@color/azul_oscuro" />
+
+                                    <TextView
+                                        android:id="@+id/tvPrecio"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:text="S/."
+                                        android:textColor="@color/azul_oscuro" />
+
+                                </LinearLayout>
+
+                            </LinearLayout>
+
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="10dp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <Button
+                            android:id="@+id/btnUploadReceipt"
+                            android:layout_width="110dp"
+                            android:layout_height="30dp"
+                            android:background="@drawable/fd_btn_gris_oscuro_bordes"
+                            android:text="Pagar"
+                            android:textColor="@color/azul_oscuro"
+                            android:textStyle="bold"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            tools:layout_editor_absoluteY="0dp" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </LinearLayout>
+
+
+</FrameLayout>

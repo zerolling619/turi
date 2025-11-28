@@ -64,14 +64,16 @@ public class Inicio_VistaReservas extends Fragment implements ReservasAdapter.On
         adapter = new ReservasAdapter(listaReservas, this);
         recyclerViewReservas.setAdapter(adapter);
 
-        // Asignar listeners a los botones de filtro
+        // **LA CORRECCIÓN ESTÁ AQUÍ**
+        // Se usan los nombres de estado exactos que tu API espera.
         view.findViewById(R.id.btnStatusPending).setOnClickListener(v -> loadReservesFromBackend("pending"));
-        view.findViewById(R.id.btnStatusConfirmed).setOnClickListener(v -> loadReservesFromBackend("confirmed"));
-        view.findViewById(R.id.btnStatusCompleted).setOnClickListener(v -> loadReservesFromBackend("completed"));
-        view.findViewById(R.id.btnStatusCancelled).setOnClickListener(v -> loadReservesFromBackend("cancelled"));
+        view.findViewById(R.id.btnStatusConfirmed).setOnClickListener(v -> loadReservesFromBackend("reserve")); // Corregido de "confirmed" a "reserve"
+        view.findViewById(R.id.btnStatusCompleted).setOnClickListener(v -> loadReservesFromBackend("done"));      // Corregido de "completed" a "done"
+        view.findViewById(R.id.btnStatusCancelled).setOnClickListener(v -> loadReservesFromBackend("rejected"));  // Corregido de "cancelled" a "rejected"
+        view.findViewById(R.id.btnStatusPendingPayinProcess).setOnClickListener(v -> loadReservesFromBackend("pending_pay_in_process"));
 
         // Cargar las reservas pendientes por defecto al iniciar
-        loadReservesFromBackend("pending");
+        loadReservesFromBackend("reserve");
     }
 
     private void loadReservesFromBackend(String status) {
@@ -81,8 +83,6 @@ public class Inicio_VistaReservas extends Fragment implements ReservasAdapter.On
                 SharedPreferences prefs = requireContext().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
                 String jwt = prefs.getString("jwt", "");
 
-                // **LA CORRECCIÓN ESTÁ AQUÍ**
-                // Se añaden los parámetros page=1 y state=1 que el backend espera
                 String urlString = Config.BASE_URL + "/api/user-account/form_reserves?page=1&status=" + status + "&state=1";
 
                 Log.d("Inicio_VistaReservas", "Llamando a la URL: " + urlString);
@@ -93,12 +93,12 @@ public class Inicio_VistaReservas extends Fragment implements ReservasAdapter.On
                 conn.setRequestProperty("Authorization", "Bearer " + jwt);
 
                 int responseCode = conn.getResponseCode();
-                
+
                 InputStream inputStream = (responseCode == HttpURLConnection.HTTP_OK)
                         ? conn.getInputStream() : conn.getErrorStream();
-                
+
                 if (inputStream == null) {
-                     if (getActivity() != null) {
+                    if (getActivity() != null) {
                         getActivity().runOnUiThread(() -> Toast.makeText(getContext(), "Error: No se recibió respuesta del servidor", Toast.LENGTH_SHORT).show());
                     }
                     return;
@@ -134,7 +134,7 @@ public class Inicio_VistaReservas extends Fragment implements ReservasAdapter.On
                         });
                     }
                 } else {
-                     if (getActivity() != null) {
+                    if (getActivity() != null) {
                         getActivity().runOnUiThread(() -> Toast.makeText(getContext(), "Error al cargar reservas. Código: " + responseCode, Toast.LENGTH_SHORT).show());
                     }
                 }
@@ -156,11 +156,11 @@ public class Inicio_VistaReservas extends Fragment implements ReservasAdapter.On
     public void onItemClick(JSONObject item) {
         try {
             int reserveId = item.getInt("id");
-            String statusForm = item.getString("status_form"); // Obtener el estado
+            String statusForm = item.getString("status_form");
 
             Bundle bundle = new Bundle();
             bundle.putInt("reserve_id", reserveId);
-            bundle.putString("status_form", statusForm); // **AÑADIR ESTA LÍNEA**
+            bundle.putString("status_form", statusForm);
 
             if (getView() != null) {
                 Navigation.findNavController(getView()).navigate(R.id.action_navigation_inicio_VistaReservas_to_reservationDetail, bundle);

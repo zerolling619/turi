@@ -157,6 +157,10 @@
             android:name="reserve_id"
             app:argType="integer"
             android:defaultValue="-1" />
+        <!-- **AÑADIDO**: Argumento para el estado -->
+        <argument
+            android:name="status_form"
+            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/navigation_packageTour"
@@ -202,6 +206,11 @@
         <action
             android:id="@+id/action_navigation_registered_reservation_to_navigation_signing_process"
             app:destination="@+id/navigation_signing_process" />
+        <!-- **AÑADIDO**: Argumento para el ID de reserva -->
+        <argument
+            android:name="reserve_id"
+            app:argType="integer"
+            android:defaultValue="-1" />
     </fragment>
     <fragment
         android:id="@+id/navigation_reservation"
@@ -253,7 +262,16 @@
         android:id="@+id/navigation_signing_process"
         android:name="robin.pe.turistea.ui.Signing_process"
         android:label="fragment_signing_process"
-        tools:layout="@layout/fragment_signing_process" />
+        tools:layout="@layout/fragment_signing_process" >
+        <action
+            android:id="@+id/action_signing_process_to_pending_pay"
+            app:destination="@id/navigation_pendingPay" />
+        <!-- **AÑADIDO**: Argumento para el ID de reserva -->
+        <argument
+            android:name="reserve_id"
+            app:argType="integer"
+            android:defaultValue="-1" />
+    </fragment>
     <fragment
         android:id="@+id/navigation_new_password"
         android:name="robin.pe.turistea.ui.New_password"
@@ -302,4 +320,23 @@
             android:name="googleId"
             app:argType="string" />
     </fragment>
+    <fragment
+        android:id="@+id/navigation_pendingPay"
+        android:name="robin.pe.turistea.ui.PendingPay"
+        android:label="fragment_pending_pay"
+        tools:layout="@layout/fragment_pending_pay" >
+        <action
+            android:id="@+id/action_navigation_pendingPay_to_pendingPayInProcess"
+            app:destination="@id/navigation_pendingPayInProcess" />
+        <!-- **AÑADIDO**: Argumento para el ID de reserva -->
+        <argument
+            android:name="reserve_id"
+            app:argType="integer"
+            android:defaultValue="-1" />
+    </fragment>
+    <fragment
+        android:id="@+id/navigation_pendingPayInProcess"
+        android:name="robin.pe.turistea.ui.PendingPayInProcess"
+        android:label="fragment_pending_pay_in_process"
+        tools:layout="@layout/fragment_pending_pay_in_process" />
 </navigation>

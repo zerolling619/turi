@@ -1,43 +1,143 @@
 package robin.pe.turistea.ui;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
+import android.util.Base64;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+
+import org.json.JSONObject;
+
+import java.io.ByteArrayOutputStream;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
+import robin.pe.turistea.Config;
 import robin.pe.turistea.R;
-
 
 public class Signing_process extends Fragment {
 
-    public Signing_process() {
-        // Required empty public constructor
-    }
+    private NavController navController;
+    private SignatureView signatureView;
+    private int reserveId = -1;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            reserveId = getArguments().getInt("reserve_id", -1);
+        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_signing_process, container, false);
+    }
 
-        View view = inflater.inflate(R.layout.fragment_signing_process, container, false);
-        TextView TvContrato = view.findViewById(R.id.TvContrato);
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        navController = Navigation.findNavController(view);
 
-        TvContrato.setText("\"La experiencia del viaje no solo se mide por los kilómetros recorridos, sino también por la profundidad de los momentos vividos. Cada destino tiene una historia única, una esencia que se guarda en las calles, en la gente y en los pequeños detalles que muchas veces pasan desapercibidos. Viajar es, de alguna manera, una forma de descubrirnos a nosotros mismos a través del reflejo de otros mundos. Al caminar por un nuevo lugar, nuestros sentidos se abren y nos permitimos observar aquello que en la rutina diaria solemos ignorar: el sonido del viento entre los árboles, el aroma de una comida recién preparada, la sonrisa de un desconocido que nos saluda sin esperar nada a cambio.\n" +
-                "\n" +
-                "A lo largo del camino, encontramos paisajes que parecen sacados de un sueño, ciudades que nunca duermen y pueblos donde el tiempo avanza con una calma casi poética. En cada destino, aprendemos algo nuevo; no solo sobre el lugar, sino también sobre nuestra propia capacidad de adaptación, de asombro y de comprensión. Hay viajes que nos cambian la vida sin que lo notemos en el momento, pero con el pasar del tiempo entendemos que algo dentro de nosotros fue transformado. A veces, basta con mirar un amanecer desde un punto alto para recordar que el mundo es más grande que nuestras preocupaciones diarias.\n" +
-                "\n" +
-                "Sin embargo, no son solo los paisajes o las experiencias externas las que hacen que un viaje sea memorable. También lo son las personas que encontramos en el camino. Conversaciones breves pueden dejarnos lecciones profundas, y amistades inesperadas se convierten en historias que recordaremos por siempre. Viajar no es escapar; es aprender, crecer y conectar con aquello que nos rodea. Cada paso nos invita a mirar más allá de lo evidente y a valorar la diversidad que compone este enorme mosaico llamado mundo.\n" +
-                "\n" +
-                "Cuando regresamos, no volvemos siendo los mismos. Traemos con nosotros recuerdos que se quedan grabados en la memoria, fotografías que capturan instantes irrepetibles y una nueva forma de observar nuestra vida cotidiana. Los viajes no terminan cuando regresamos a casa; continúan en nuestra manera de pensar, de sentir y de relacionarnos con el mundo. Y así, cada vez que emprendemos un nuevo destino, abrimos una puerta hacia una versión más amplia y consciente de quienes somos.\"");
+        signatureView = view.findViewById(R.id.signatureView);
+        Button btnSignature = view.findViewById(R.id.BtnSignature);
+        Button btnClear = view.findViewById(R.id.BtnClear);
+        TextView tvContrato = view.findViewById(R.id.TvContrato);
 
-        return view;
+        tvContrato.setText("Yo, [Nombre del Usuario], acepto los términos y condiciones del servicio de transporte turístico para el paquete [Nombre del Paquete] en la fecha [Fecha de Reserva]. Me comprometo a seguir las indicaciones del guía y respetar las normas de seguridad. Entiendo que la firma digital de este documento tiene la misma validez que una firma manuscrita.");
+
+        btnClear.setOnClickListener(v -> signatureView.clear());
+
+        btnSignature.setOnClickListener(v -> {
+            Bitmap signatureBitmap = signatureView.getSignatureBitmap();
+            if (signatureBitmap == null) {
+                Toast.makeText(getContext(), "Por favor, realiza tu firma", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            String base64Signature = bitmapToBase64(signatureBitmap);
+            sendSignatureAndUpdateStatus(base64Signature);
+        });
+    }
+
+    private String bitmapToBase64(Bitmap bitmap) {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
+        byte[] byteArray = byteArrayOutputStream.toByteArray();
+        return Base64.encodeToString(byteArray, Base64.DEFAULT);
+    }
+
+    private void sendSignatureAndUpdateStatus(String base64Signature) {
+        if (reserveId == -1) {
+            Toast.makeText(getContext(), "Error: ID de reserva no válido", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        new Thread(() -> {
+            try {
+                // **LA CORRECCIÓN ESTÁ AQUÍ**: Una sola llamada a la API
+                URL url = new URL(Config.FORM_RESERVE_URL + "/" + reserveId + "/" + "pending_pay");
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("PUT");
+                conn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+
+                SharedPreferences prefs = requireContext().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
+                String jwt = prefs.getString("jwt", "");
+                if (!jwt.isEmpty()) {
+                    conn.setRequestProperty("Authorization", "Bearer " + jwt);
+                }
+
+                // 1. Crear el JSON con AMBOS datos: la firma y el nuevo estado
+                JSONObject jsonParam = new JSONObject();
+                jsonParam.put("sign_img", base64Signature); // Corregido a sign_img como pediste
+                jsonParam.put("status_form", "pending_pay");
+
+                Log.d("SigningProcess", "Enviando JSON al backend: " + jsonParam.toString());
+
+                // 2. Enviar la petición
+                conn.setDoOutput(true);
+                try(OutputStream os = conn.getOutputStream()) {
+                    os.write(jsonParam.toString().getBytes("UTF-8"));
+                }
+
+                int responseCode = conn.getResponseCode();
+
+                if (getActivity() != null) {
+                    getActivity().runOnUiThread(() -> {
+                        if (responseCode == HttpURLConnection.HTTP_OK) {
+                            Toast.makeText(getContext(), "Firma guardada. Procediendo al pago...", Toast.LENGTH_SHORT).show();
+
+                            // 3. Navegar a la siguiente pantalla
+                            Bundle bundle = new Bundle();
+                            bundle.putInt("reserve_id", reserveId);
+                            navController.navigate(R.id.action_signing_process_to_pending_pay, bundle);
+                        } else {
+                            Log.e("SigningProcess", "Error al actualizar. Código: " + responseCode);
+                            Toast.makeText(getContext(), "Error al guardar la firma y actualizar estado.", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+
+            } catch (Exception e) {
+                Log.e("SigningProcess", "Error de conexión", e);
+                if(getActivity() != null) {
+                    getActivity().runOnUiThread(() -> Toast.makeText(getContext(), "Error de conexión.", Toast.LENGTH_SHORT).show());
+                }
+            }
+        }).start();
     }
 }

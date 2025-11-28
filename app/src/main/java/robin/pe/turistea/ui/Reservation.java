@@ -4,7 +4,6 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentResultListener;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import android.util.Log;
@@ -14,21 +13,23 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.view.inputmethod.InputMethodManager;
 import android.content.Context;
 import android.content.SharedPreferences;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Calendar;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Calendar;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.widget.AdapterView;
@@ -43,26 +44,9 @@ public class Reservation extends Fragment {
     private NavController navController;
     private RouteItem selectedRoute;
     private int packageIdFromResponse = 0;
-    private TextInputEditText edtUbiEncuentro;
 
     public Reservation() {
         // Constructor vacío requerido
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        getParentFragmentManager().setFragmentResultListener("location_request", this, new FragmentResultListener() {
-            @Override
-            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle bundle) {
-                String selectedLocation = bundle.getString("selected_location");
-                if (edtUbiEncuentro != null && selectedLocation != null) {
-                    edtUbiEncuentro.setText(selectedLocation);
-                    Log.d("Reservation", "Ubicación recibida: " + selectedLocation);
-                }
-            }
-        });
     }
 
     @Override
@@ -75,7 +59,6 @@ public class Reservation extends Fragment {
         TextInputEditText edtDni = view.findViewById(R.id.edtDni);
         TextInputEditText edtNombresyApelli = view.findViewById(R.id.edtNombresyApelli);
         TextInputEditText edtUbiTuristic = view.findViewById(R.id.edtUbiTuristic);
-        edtUbiEncuentro = view.findViewById(R.id.edtUbiEncuentro);
         TextView tvDni = view.findViewById(R.id.tvDetallesDestino);
         TextView tvCarnet = view.findViewById(R.id.tvDetallesTracking);
         TextView tvFechaHora = view.findViewById(R.id.TvFechaHora);
@@ -84,16 +67,9 @@ public class Reservation extends Fragment {
         CheckBox cbGuia = view.findViewById(R.id.CbGuiaTuristic);
         Button btnRegisterReservation = view.findViewById(R.id.BtnRegisterReservation);
         Spinner spinnerRutas = view.findViewById(R.id.spinnerRutas);
-        ImageView imLocation = view.findViewById(R.id.ImLocation);
 
         edtNombresyApelli.setHint("Ingrese su nombre completo");
         edtNombresyApelli.setEnabled(true);
-
-        imLocation.setOnClickListener(v -> {
-            if (navController != null) {
-                navController.navigate(R.id.navigation_location);
-            }
-        });
 
         Bundle args = getArguments();
         int packageId = args != null ? args.getInt("package_id", 0) : 0;
@@ -164,11 +140,10 @@ public class Reservation extends Fragment {
             String nombreCompletoForm = edtNombresyApelli.getText().toString().trim();
             String fechaHora = tvFechaHora.getText().toString().trim();
             String cant = edtCantPers.getText().toString().trim();
-            String meetingPoint = edtUbiEncuentro.getText().toString().trim();
             boolean terramoza = cbTerramoza.isChecked();
             boolean guia = cbGuia.isChecked();
 
-            if (doc.isEmpty() || nombreCompletoForm.isEmpty() || fechaHora.isEmpty() || cant.isEmpty() || meetingPoint.isEmpty() || selectedRoute == null) {
+            if (doc.isEmpty() || nombreCompletoForm.isEmpty() || fechaHora.isEmpty() || cant.isEmpty() || selectedRoute == null) {
                 Toast.makeText(getContext(), "Completa todos los campos.", Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -205,7 +180,6 @@ public class Reservation extends Fragment {
                     reservaJson.put("id_router_tracking", idRouterTracking);
                     reservaJson.put("date_reserve", fechaHora);
                     reservaJson.put("cant_people", cantidad);
-                    reservaJson.put("meeting_point", meetingPoint);
                     reservaJson.put("guide", guia ? 1 : 0);
                     reservaJson.put("terrace", terramoza ? 1 : 0);
                     reservaJson.put("price_total", selectedRoute.price);
@@ -224,16 +198,62 @@ public class Reservation extends Fragment {
                     os.close();
 
                     int respCode = conn.getResponseCode();
-                    String responseMessage = conn.getResponseMessage();
 
                     requireActivity().runOnUiThread(() -> {
                         if (respCode == HttpURLConnection.HTTP_CREATED || respCode == HttpURLConnection.HTTP_OK) {
-                            Toast.makeText(getContext(), "Reserva registrada correctamente.", Toast.LENGTH_SHORT).show();
-                            if (getView() != null) {
-                                Navigation.findNavController(getView()).navigate(R.id.action_navigation_reservation_to_navigation_registered_reservation);
+
+                            try {
+                                BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                                StringBuilder response = new StringBuilder();
+                                String line;
+                                while ((line = reader.readLine()) != null) {
+                                    response.append(line);
+                                }
+                                reader.close();
+
+                                Log.d("Reservation", "Respuesta del servidor (creación): " + response.toString());
+
+                                JSONObject jsonResponse = new JSONObject(response.toString());
+
+                                // **LA CORRECCIÓN ESTÁ AQUÍ**
+                                // 1. Acceder al objeto "data"
+                                JSONObject dataObject = jsonResponse.getJSONObject("data");
+                                // 2. Obtener el "id" de adentro del objeto "data"
+                                int newReserveId = dataObject.optInt("id", -1);
+
+
+                                Log.d("Reservation", "Reserva creada con ID: " + newReserveId);
+
+                                if (newReserveId != -1) {
+                                    Bundle bundle = new Bundle();
+                                    bundle.putInt("reserve_id", newReserveId);
+
+                                    Toast.makeText(getContext(), "Reserva registrada correctamente.", Toast.LENGTH_SHORT).show();
+                                    if (getView() != null) {
+                                        Navigation.findNavController(getView()).navigate(R.id.action_navigation_reservation_to_navigation_registered_reservation, bundle);
+                                    }
+                                } else {
+                                    Toast.makeText(getContext(), "Error: No se pudo obtener el ID de la nueva reserva.", Toast.LENGTH_LONG).show();
+                                }
+                            } catch (Exception e) {
+                                Log.e("Reservation", "Error al procesar respuesta de reserva", e);
+                                Toast.makeText(getContext(), "Error al procesar la respuesta del servidor.", Toast.LENGTH_LONG).show();
                             }
+
                         } else {
-                            Toast.makeText(getContext(), "Error " + respCode + ": " + responseMessage, Toast.LENGTH_LONG).show();
+                            try {
+                                BufferedReader errorReader = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
+                                StringBuilder errorResponse = new StringBuilder();
+                                String line;
+                                while ((line = errorReader.readLine()) != null) {
+                                    errorResponse.append(line);
+                                }
+                                errorReader.close();
+                                Log.e("Reservation", "Error " + respCode + ": " + errorResponse.toString());
+                                Toast.makeText(getContext(), "Error " + respCode + ": " + errorResponse.toString(), Toast.LENGTH_LONG).show();
+                            } catch(Exception e) {
+                                Toast.makeText(getContext(), "Error " + respCode, Toast.LENGTH_LONG).show();
+                            }
                         }
                     });
 
@@ -254,6 +274,8 @@ public class Reservation extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         navController = Navigation.findNavController(view);
     }
+    
+    // ... (El resto de tus métodos: loadRoutesFromBackend, parseRoutesJson, RouteItem, etc., se mantienen igual)
 
     private void loadRoutesFromBackend(int packageId, ArrayList<RouteItem> rutasList, Spinner spinnerRutas, TextView tvPrecio, double packagePrice) {
         new Thread(() -> {
@@ -275,7 +297,6 @@ public class Reservation extends Fragment {
                     while ((line = reader.readLine()) != null) response.append(line);
                     reader.close();
 
-                    // **LA CORRECCIÓN ESTÁ AQUÍ**
                     parseRoutesJson(response.toString(), rutasList, spinnerRutas, tvPrecio, packagePrice);
                 }
             } catch (Exception e) {
@@ -286,20 +307,14 @@ public class Reservation extends Fragment {
 
     private void parseRoutesJson(String jsonResponse, ArrayList<RouteItem> rutasList, Spinner spinnerRutas, TextView tvPrecio, double packagePrice) {
         try {
-            // La respuesta de la API es un array de paquetes.
             JSONArray packagesArray = new JSONArray(jsonResponse);
             rutasList.clear();
 
-            // 1. Recorremos el array principal de paquetes.
             for (int i = 0; i < packagesArray.length(); i++) {
                 JSONObject packageJson = packagesArray.getJSONObject(i);
-
                 int id = packageJson.optInt("id");
-                // 2. Obtenemos el TÍTULO PRINCIPAL de cada paquete.
                 String title = packageJson.optString("title", "Ruta sin nombre");
                 double price = packageJson.optDouble("price_route", packagePrice);
-
-                // 3. Añadimos el título principal a la lista del spinner.
                 if (id > 0 && !title.isEmpty()) {
                     rutasList.add(new RouteItem(id, title, price));
                 }
@@ -307,14 +322,13 @@ public class Reservation extends Fragment {
 
             if (getActivity() == null) return;
 
-            // 4. Actualizamos el Spinner en el hilo principal.
             getActivity().runOnUiThread(() -> {
                 ArrayAdapter<RouteItem> adapter = new ArrayAdapter<RouteItem>(requireContext(),
                         android.R.layout.simple_spinner_item, rutasList) {
                     @Override
                     public View getView(int position, View convertView, ViewGroup parent) {
                         View view = super.getView(position, convertView, parent);
-                        view.setBackgroundResource(R.drawable.fd_btn_gris_oscuro_bordes);
+                        view.setBackgroundResource(R.drawable.fd_blanco_bordes_10);
                         int heightPx = (int) (40 * getResources().getDisplayMetrics().density);
                         int paddingPx = (int) (8 * getResources().getDisplayMetrics().density);
                         view.setMinimumHeight(heightPx);
@@ -326,7 +340,7 @@ public class Reservation extends Fragment {
                     @Override
                     public View getDropDownView(int position, View convertView, ViewGroup parent) {
                         View view = super.getDropDownView(position, convertView, parent);
-                        view.setBackgroundResource(R.drawable.fd_btn_gris_bordes);
+                        view.setBackgroundResource(R.drawable.fd_blanco_bordes_10);
                         int heightPx = (int) (40 * getResources().getDisplayMetrics().density);
                         int paddingPx = (int) (8 * getResources().getDisplayMetrics().density);
                         view.setMinimumHeight(heightPx);
