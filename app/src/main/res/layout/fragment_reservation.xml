@@ -12,343 +12,352 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <LinearLayout
-            android:layout_width="350dp"
-            android:layout_height="644dp"
-            android:layout_marginLeft="25dp"
-            android:layout_marginTop="20dp"
-            android:background="@drawable/fd_btn_azul_bordes"
-            android:orientation="vertical">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="50dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Reserva"
-                    android:layout_marginLeft="120sp"
-                    android:textColor="@color/white"
-                    android:textStyle="bold"
-                    android:textSize="30sp"
-                    android:layout_gravity="center"
-                    />
-
-            </LinearLayout>
-
-            <!-- Fila con Numero de documento y opcion dni y carnet -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="57dp"
-                android:layout_marginTop="0dp"
-                android:orientation="horizontal"
-                android:weightSum="2">
-
-                <!-- Numero de documento -->
-                <FrameLayout
-                    android:layout_width="140dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp">
-
-                    <TextView
-                        android:layout_width="112dp"
-                        android:layout_height="14dp"
-                        android:layout_marginLeft="5dp"
-                        android:layout_marginTop="2dp"
-                        android:text="Numero de documento"
-                        android:textColor="@color/white"
-                        android:textSize="10dp" />
-
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/tilDni"
-                        android:layout_width="match_parent"
-                        android:layout_height="40dp"
-                        android:layout_marginTop="15dp"
-                        android:background="@drawable/fd_contorno_azul"
-                        app:boxBackgroundMode="none"
-                        app:errorEnabled="true"
-                        app:hintEnabled="false">
-
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/edtDni"
-                            android:layout_width="match_parent"
-                            android:layout_height="40dp"
-                            android:background="@drawable/fd_contorno_azu_fd_blancol"
-                            android:inputType="number"
-                            android:layout_marginStart="0dp"
-                            android:maxLength="50"
-                            android:padding="8dp"
-                            android:paddingTop="8dp" />
-
-                    </com.google.android.material.textfield.TextInputLayout>
-
-                </FrameLayout>
+                android:layout_width="350dp"
+                android:layout_height="644dp"
+                android:background="@drawable/fd_btn_azul_bordes"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="10dp">
-
-                    <!-- Opcion dni y carnet -->
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:layout_width="178dp"
-                        android:layout_height="34dp"
-                        android:layout_marginTop="17dp"
-                        android:background="@drawable/fd_btn_gris_bordes">
-
-                        <TextView
-                            android:id="@+id/tvDetallesDestino"
-                            android:layout_width="70dp"
-                            android:layout_height="34sp"
-                            android:background="@drawable/fd_btn_gris_oscuro_bordes"
-                            android:clickable="true"
-                            android:focusable="true"
-                            android:gravity="center"
-                            android:text="DNI"
-                            android:textAlignment="center"
-                            android:textColor="@color/black"
-                            android:textSize="15sp"
-                            android:textStyle="bold"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
-
-                        <TextView
-                            android:id="@+id/tvDetallesTracking"
-                            android:layout_width="100dp"
-                            android:layout_height="30sp"
-                            android:layout_marginTop="3dp"
-                            android:clickable="true"
-                            android:elevation="5dp"
-                            android:focusable="true"
-                            android:gravity="center"
-                            android:text="CARNET EXT"
-                            android:textAlignment="center"
-                            android:textColor="@color/black"
-                            android:textSize="15sp"
-                            android:textStyle="bold"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
-
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-
-                </LinearLayout>
-
-            </LinearLayout>
-
-            <!-- Nombre -->
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp">
-
-                <TextView
-                    android:layout_width="100dp"
-                    android:layout_height="14dp"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginTop="2dp"
-                    android:text="Nombre y apellido"
-                    android:textColor="@color/white"
-                    android:textSize="10dp" />
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/tilNombresyApelli"
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:layout_marginTop="15dp"
-                    app:boxBackgroundMode="none"
-                    app:errorEnabled="true"
-                    app:hintEnabled="false">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/edtNombresyApelli"
-                        android:layout_width="327dp"
-                        android:layout_height="40dp"
-                        android:background="@drawable/fd_btn_gris_bordes"
-                        android:inputType="textPersonName"
-                        android:maxLength="50"
-                        android:padding="8dp"
-                        android:paddingTop="8dp" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-            </FrameLayout>
-
-            <!-- Listas de rutas -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:orientation="horizontal">
-
-                <LinearLayout
-                    android:id="@+id/LinearLisRoute"
-                    android:layout_width="140dp"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:layout_height="50dp">
 
                     <TextView
-                        android:layout_width="110dp"
-                        android:layout_height="14dp"
-                        android:layout_marginLeft="5dp"
-                        android:layout_marginTop="2dp"
-                        android:text="Rutas"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="120sp"
+                        android:text="Reserva"
                         android:textColor="@color/white"
-                        android:textSize="10dp" />
-
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/layoutRuta"
-                        android:layout_width="match_parent"
-                        android:layout_height="40dp"
-                        app:hintTextColor="@color/azul_oscuro"
-                        android:hint="Selecciona ruta">
-
-                        <Spinner
-                            android:id="@+id/spinnerRutas"
-                            android:layout_width="140dp"
-                            android:layout_height="40dp"
-                            android:padding="0dp" />
-
-                    </com.google.android.material.textfield.TextInputLayout>
-
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/LinearFechaHora"
-                    android:layout_width="157dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="30dp"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="110dp"
-                        android:layout_height="14dp"
-                        android:layout_marginLeft="5dp"
-                        android:layout_marginTop="2dp"
-                        android:text="Fecha y hora de reserva"
-                        android:textColor="@color/white"
-                        android:textSize="10dp" />
-
-                    <TextView
-                        android:id="@+id/TvFechaHora"
-                        android:layout_width="match_parent"
-                        android:layout_height="40dp"
-                        android:padding="8dp"
-                        android:background="@drawable/fd_btn_gris_bordes" />
-
-                </LinearLayout>
-
-            </LinearLayout>
-
-            <!-- Ubicacion Turistica -->
-            <LinearLayout
-                android:id="@+id/LinearUbiTuristic"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <FrameLayout
-                    android:layout_width="211dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp">
-
-                    <TextView
-                        android:layout_width="112dp"
-                        android:layout_height="14dp"
-                        android:layout_marginLeft="5dp"
-                        android:layout_marginTop="2dp"
-                        android:text="Ubicacion Turistica"
-                        android:textColor="@color/white"
-                        android:textSize="10dp" />
-
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/tilUbiTuristic"
-                        android:layout_width="match_parent"
-                        android:layout_height="40dp"
-                        android:layout_marginTop="15dp"
-                        android:background="@drawable/fd_contorno_azul"
-                        app:boxBackgroundMode="none"
-                        app:errorEnabled="true"
-                        app:hintEnabled="false">
-
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/edtUbiTuristic"
-                            android:layout_width="match_parent"
-                            android:layout_height="40dp"
-                            android:background="@drawable/fd_contorno_azu_fd_blancol"
-                            android:inputType="text"
-                            android:textColor="@color/black"
-                            android:maxLength="50"
-                            android:padding="8dp"
-                            android:paddingTop="8dp" />
-
-                    </com.google.android.material.textfield.TextInputLayout>
-
-                </FrameLayout>
-
-            </LinearLayout>
-
-            <!-- Ubicacion de encuentro -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="112dp"
-                    android:layout_height="14dp"
-                    android:layout_marginLeft="15dp"
-                    android:layout_marginTop="2dp"
-                    android:text="Lugar de encuentro"
-                    android:textColor="@color/white"
-                    android:textSize="10dp" />
-
-                <LinearLayout
-                    android:layout_width="266dp"
-                    android:layout_height="40dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginTop="0dp"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:background="@drawable/fd_contorno_azu_fd_blancol">
-
-                    <!-- Campo de texto de locacion -->
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/edtUbiEncuentro"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:background="@android:color/transparent"
-                        android:hint="Escoge tu ubicacion"
-                        android:inputType="text"
-                        android:maxLength="40"
-                        android:paddingStart="20dp"
-                        android:paddingEnd="8dp"
-                        android:textColor="@color/azul_oscuro"
-                        android:textColorHint="@color/azul_oscuro"
-                        android:textSize="16sp"
+                        android:textSize="30sp"
                         android:textStyle="bold" />
 
-                    <!-- Icono de Locacion -->
-                    <ImageView
-                        android:id="@+id/ImLocation"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:src="@drawable/ic_location_blue"
-                        android:contentDescription="Buscar" />
+                </LinearLayout>
 
-                    <!-- Separador -->
-                    <View
-                        android:layout_width="1dp"
+                <!-- Fila con Numero de documento y opcion dni y carnet -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="57dp"
+                    android:layout_marginTop="0dp"
+                    android:orientation="horizontal"
+                    android:weightSum="2">
+
+                    <!-- Numero de documento -->
+                    <FrameLayout
+                        android:layout_width="140dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp">
+
+                        <TextView
+                            android:layout_width="112dp"
+                            android:layout_height="14dp"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginTop="2dp"
+                            android:text="Numero de documento"
+                            android:textColor="@color/white"
+                            android:textSize="10dp" />
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/tilDni"
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp"
+                            android:layout_marginTop="15dp"
+                            android:background="@drawable/fd_contorno_azul"
+                            app:boxBackgroundMode="none"
+                            app:errorEnabled="true"
+                            app:hintEnabled="false">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/edtDni"
+                                android:layout_width="match_parent"
+                                android:layout_height="40dp"
+                                android:layout_marginStart="0dp"
+                                android:background="@drawable/fd_contorno_azu_fd_blancol"
+                                android:inputType="number"
+                                android:maxLength="50"
+                                android:padding="8dp"
+                                android:paddingTop="8dp" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                    </FrameLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginHorizontal="8dp"
-                        android:background="@color/white" />
+                        android:layout_marginLeft="10dp">
+
+                        <!-- Opcion dni y carnet -->
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="178dp"
+                            android:layout_height="34dp"
+                            android:layout_marginTop="17dp"
+                            android:background="@drawable/fd_btn_gris_bordes">
+
+                            <TextView
+                                android:id="@+id/tvDetallesDestino"
+                                android:layout_width="70dp"
+                                android:layout_height="34sp"
+                                android:background="@drawable/fd_btn_gris_oscuro_bordes"
+                                android:clickable="true"
+                                android:focusable="true"
+                                android:gravity="center"
+                                android:text="DNI"
+                                android:textAlignment="center"
+                                android:textColor="@color/black"
+                                android:textSize="15sp"
+                                android:textStyle="bold"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <TextView
+                                android:id="@+id/tvDetallesTracking"
+                                android:layout_width="100dp"
+                                android:layout_height="30sp"
+                                android:layout_marginTop="3dp"
+                                android:clickable="true"
+                                android:elevation="5dp"
+                                android:focusable="true"
+                                android:gravity="center"
+                                android:text="CARNET EXT"
+                                android:textAlignment="center"
+                                android:textColor="@color/black"
+                                android:textSize="15sp"
+                                android:textStyle="bold"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    </LinearLayout>
 
                 </LinearLayout>
 
-            </LinearLayout>
+                <!-- Nombre -->
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp">
 
-            <!-- Ubicacion de Recojo
+                    <TextView
+                        android:layout_width="100dp"
+                        android:layout_height="14dp"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginTop="2dp"
+                        android:text="Nombre y apellido"
+                        android:textColor="@color/white"
+                        android:textSize="10dp" />
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/tilNombresyApelli"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_marginTop="15dp"
+                        app:boxBackgroundMode="none"
+                        app:errorEnabled="true"
+                        app:hintEnabled="false">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/edtNombresyApelli"
+                            android:layout_width="327dp"
+                            android:layout_height="40dp"
+                            android:background="@drawable/fd_blanco_bordes_10"
+                            android:inputType="textPersonName"
+                            android:maxLength="50"
+                            android:padding="8dp"
+                            android:paddingTop="8dp" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                </FrameLayout>
+
+                <!-- Listas de rutas -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:id="@+id/LinearLisRoute"
+                        android:layout_width="140dp"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="110dp"
+                            android:layout_height="14dp"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginTop="2dp"
+                            android:text="Rutas"
+                            android:textColor="@color/white"
+                            android:textSize="10dp" />
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/layoutRuta"
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp"
+                            android:hint="Selecciona ruta"
+                            app:hintTextColor="@color/azul_oscuro">
+
+                            <Spinner
+                                android:id="@+id/spinnerRutas"
+                                android:layout_width="140dp"
+                                android:layout_height="40dp"
+                                android:padding="0dp" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/LinearFechaHora"
+                        android:layout_width="157dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="30dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="110dp"
+                            android:layout_height="14dp"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginTop="2dp"
+                            android:text="Fecha y hora de reserva"
+                            android:textColor="@color/white"
+                            android:textSize="10dp" />
+
+                        <TextView
+                            android:id="@+id/TvFechaHora"
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp"
+                            android:background="@drawable/fd_blanco_bordes_10"
+                            android:padding="8dp" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <!-- Ubicacion Turistica -->
+                <LinearLayout
+                    android:id="@+id/LinearUbiTuristic"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <FrameLayout
+                        android:layout_width="211dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp">
+
+                        <TextView
+                            android:layout_width="112dp"
+                            android:layout_height="14dp"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginTop="2dp"
+                            android:text="Ubicacion Turistica"
+                            android:textColor="@color/white"
+                            android:textSize="10dp" />
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/tilUbiTuristic"
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp"
+                            android:layout_marginTop="15dp"
+                            android:background="@drawable/fd_contorno_azul"
+                            app:boxBackgroundMode="none"
+                            app:errorEnabled="true"
+                            app:hintEnabled="false">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/edtUbiTuristic"
+                                android:layout_width="match_parent"
+                                android:layout_height="40dp"
+                                android:background="@drawable/fd_contorno_azu_fd_blancol"
+                                android:inputType="text"
+                                android:maxLength="50"
+                                android:padding="8dp"
+                                android:paddingTop="8dp"
+                                android:textColor="@color/black" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                    </FrameLayout>
+
+                </LinearLayout>
+
+                <!-- Ubicacion de encuentro
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="112dp"
+                        android:layout_height="14dp"
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginTop="2dp"
+                        android:text="Lugar de encuentro"
+                        android:textColor="@color/white"
+                        android:textSize="10dp" />
+
+
+                    <LinearLayout
+                        android:layout_width="266dp"
+                        android:layout_height="40dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="0dp"
+                        android:background="@drawable/fd_contorno_azu_fd_blancol"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                         Campo de texto de locacion
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/edtUbiEncuentro"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:background="@android:color/transparent"
+                            android:hint="Escoge tu ubicacion"
+                            android:inputType="text"
+                            android:maxLength="40"
+                            android:paddingStart="20dp"
+                            android:paddingEnd="8dp"
+                            android:textColor="@color/azul_oscuro"
+                            android:textColorHint="@color/azul_oscuro"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+
+                        - Icono de Locacion -
+                        <ImageView
+                            android:id="@+id/ImLocation"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:contentDescription="Buscar"
+                            android:src="@drawable/ic_location_blue" />
+
+                        - Separador -
+                        <View
+                            android:layout_width="1dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginHorizontal="8dp"
+                            android:background="@color/white" />
+
+                    </LinearLayout>
+
+
+                </LinearLayout>
+
+                -->
+
+                <!-- Ubicacion de Recojo
             <LinearLayout
                 android:id="@+id/LinearUbiRecojo"
                 android:layout_width="match_parent"
@@ -395,7 +404,7 @@
             </LinearLayout>
 
             -->
-            <!-- Ubicacion de terminacion
+                <!-- Ubicacion de terminacion
             <LinearLayout
                 android:id="@+id/LinearUbiTermina"
                 android:layout_width="match_parent"
@@ -443,161 +452,162 @@
 
             -->
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="40dp"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp" />
 
-            <!-- Cantidad de Personas -->
-            <LinearLayout
-                android:id="@+id/LinearCantPers"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                <!-- Cantidad de Personas -->
+                <LinearLayout
+                    android:id="@+id/LinearCantPers"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
-                <FrameLayout
-                    android:layout_width="wrap_content"
+                    <FrameLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="14dp"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginTop="2dp"
+                            android:text="Can. de Personas"
+                            android:textColor="@color/white"
+                            android:textSize="10dp" />
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/tilCantPers"
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginTop="15dp"
+                            android:background="@drawable/fd_contorno_azul"
+                            app:boxBackgroundMode="none"
+                            app:errorEnabled="true"
+                            app:hintEnabled="false">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/edtCantPers"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:background="@drawable/fd_contorno_azu_fd_blancol"
+                                android:inputType="number"
+                                android:maxLength="2"
+                                android:padding="8dp"
+                                android:paddingTop="8dp"
+                                android:textAlignment="center" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                    </FrameLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp">
+                    android:layout_marginTop="5dp"
+                    android:orientation="vertical">
 
                     <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="14dp"
+                        android:layout_marginLeft="15dp"
+                        android:text="Servicios Adicionales"
+                        android:textColor="@color/white"
+                        android:textSize="10sp" />
+
+                    <!-- Terramoza -->
+                    <LinearLayout
                         android:layout_width="match_parent"
+                        android:layout_height="30dp"
+                        android:orientation="vertical">
+
+                        <CheckBox
+                            android:id="@+id/CbTerramoza"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="20dp"
+                            android:buttonTint="@color/white"
+                            android:checked="false"
+                            android:text="Terramoza"
+                            android:textColor="@color/white"
+                            android:textSize="13sp" />
+
+                    </LinearLayout>
+
+                    <!-- Guia Turistico -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="30dp"
+                        android:orientation="vertical">
+
+                        <CheckBox
+                            android:id="@+id/CbGuiaTuristic"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="20dp"
+                            android:buttonTint="@color/white"
+                            android:checked="false"
+                            android:text="Guia Turistico"
+                            android:textColor="@color/white"
+                            android:textSize="13sp" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <!-- Precio -->
+                <LinearLayout
+                    android:id="@+id/LinearPrecio"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="235dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="110dp"
                         android:layout_height="14dp"
                         android:layout_marginLeft="5dp"
                         android:layout_marginTop="2dp"
-                        android:text="Can. de Personas"
+                        android:text="Precio de Reserva"
                         android:textColor="@color/white"
                         android:textSize="10dp" />
 
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/tilCantPers"
-                        android:layout_width="match_parent"
+                    <TextView
+                        android:id="@+id/TvPrecio"
+                        android:layout_width="100dp"
                         android:layout_height="40dp"
-                        android:layout_marginTop="15dp"
-                        android:layout_marginLeft="5dp"
-                        android:background="@drawable/fd_contorno_azul"
-                        app:boxBackgroundMode="none"
-                        app:errorEnabled="true"
-                        app:hintEnabled="false">
-
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/edtCantPers"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:background="@drawable/fd_contorno_azu_fd_blancol"
-                            android:inputType="number"
-                            android:maxLength="2"
-                            android:padding="8dp"
-                            android:textAlignment="center"
-                            android:paddingTop="8dp" />
-
-                    </com.google.android.material.textfield.TextInputLayout>
-
-                </FrameLayout>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginTop="5dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="14dp"
-                    android:text="Servicios Adicionales"
-                    android:textColor="@color/white"
-                    android:textSize="10sp"
-                    android:layout_marginLeft="15dp"/>
-
-                <!-- Terramoza -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="30dp"
-                    android:orientation="vertical">
-
-                    <CheckBox
-                        android:id="@+id/CbTerramoza"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="20dp"
-                        android:text="Terramoza"
+                        android:background="@drawable/fd_btn_gris_bordes"
+                        android:gravity="center"
                         android:textColor="@color/white"
-                        android:buttonTint="@color/white"
-                        android:textSize="13sp"
-                        android:checked="false" />
+                        android:textSize="18sp" />
 
                 </LinearLayout>
 
-                <!-- Guia Turistico -->
+                <!-- Registrar Reserva -->
+
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="30dp"
-                    android:orientation="vertical">
+                    android:layout_height="wrap_content">
 
-                    <CheckBox
-                        android:id="@+id/CbGuiaTuristic"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="20dp"
-                        android:text="Guia Turistico"
-                        android:textColor="@color/white"
-                        android:buttonTint="@color/white"
-                        android:textSize="13sp"
-                        android:checked="false" />
+                    <Button
+                        android:id="@+id/BtnRegisterReservation"
+                        android:layout_width="195dp"
+                        android:layout_height="50dp"
+                        android:layout_marginLeft="75dp"
+                        android:layout_marginTop="10dp"
+                        android:background="@drawable/fd_btn_gris_oscuro_bordes"
+                        android:text="Registrar Reserva"
+                        android:textColor="@color/azul_oscuro"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
 
                 </LinearLayout>
 
             </LinearLayout>
-
-            <!-- Precio -->
-            <LinearLayout
-                android:id="@+id/LinearPrecio"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="235dp"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="110dp"
-                    android:layout_height="14dp"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginTop="2dp"
-                    android:text="Precio de Reserva"
-                    android:textColor="@color/white"
-                    android:textSize="10dp" />
-
-                <TextView
-                    android:id="@+id/TvPrecio"
-                    android:layout_width="100dp"
-                    android:layout_height="40dp"
-                    android:background="@drawable/fd_btn_gris_bordes"
-                    android:textColor="@color/white"
-                    android:textSize="18sp"
-                    android:gravity="center"  />
-
-            </LinearLayout>
-
-            <!-- Registrar Reserva -->
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <Button
-                    android:id="@+id/BtnRegisterReservation"
-                    android:layout_width="195dp"
-                    android:layout_height="50dp"
-                    android:text="Registrar Reserva"
-                    android:layout_marginLeft="75dp"
-                    android:layout_marginTop="10dp"
-                    android:background="@drawable/fd_btn_gris_oscuro_bordes"
-                    android:textColor="@color/azul_oscuro"
-                    android:textSize="15sp"
-                    android:textStyle="bold" />
-
-            </LinearLayout>
-
-        </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </LinearLayout>
 

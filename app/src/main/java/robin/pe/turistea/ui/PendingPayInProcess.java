@@ -10,8 +10,13 @@ import android.view.ViewGroup;
 
 import robin.pe.turistea.R;
 
-public class RouteDetail extends Fragment {
+public class PendingPayInProcess extends Fragment {
 
+
+
+    public PendingPayInProcess() {
+        // Required empty public constructor
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -22,6 +27,6 @@ public class RouteDetail extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_route_detail, container, false);
+        return inflater.inflate(R.layout.fragment_pending_pay_in_process, container, false);
     }
 }

@@ -29,6 +29,8 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import android.content.Intent;
 
+import org.json.JSONObject;
+
 
 public class Login extends Fragment {
 
@@ -520,7 +522,7 @@ public class Login extends Fragment {
             
             android.util.Log.d("GoogleSignIn", "=== GOOGLE SIGN-IN EXITOSO ===");
             android.util.Log.d("GoogleSignIn", "Usuario: " + displayName + ", Email: " + email);
-            android.util.Log.d("GoogleSignIn", "ID Token: " + (idToken != null ? "Recibido" : "NULL"));
+            android.util.Log.d("GoogleSignIn", "ID Token: " + (idToken != null ? idToken : "NULL"));
             
             // Mostrar mensaje de carga
             android.widget.Toast.makeText(context, "Validando con el servidor...", android.widget.Toast.LENGTH_SHORT).show();
@@ -544,11 +546,13 @@ public class Login extends Fragment {
     }
     
     // Tarea asíncrona para registrar/validar usuario de Google con el backend
+    // Tarea asíncrona para registrar/validar usuario de Google con el backend
     private static class GoogleSignInBackendTask extends android.os.AsyncTask<Void, Void, String> {
         private String email, name, lastname, googleId, idToken;
         private NavController navController;
         private Context context;
-        
+        private int responseCode; // Para guardar el código de respuesta
+
         GoogleSignInBackendTask(String email, String name, String lastname, String googleId, String idToken, NavController navController, Context context) {
             this.email = email;
             this.name = name;
@@ -558,213 +562,142 @@ public class Login extends Fragment {
             this.navController = navController;
             this.context = context;
         }
-        
+
         @Override
         protected String doInBackground(Void... voids) {
             try {
-                // PASO 1: Intentar login con Google ID Token (más seguro)
-                if (idToken != null && !idToken.isEmpty()) {
-                    android.util.Log.d("GoogleSignInBackend", "Intentando signin con Google ID Token");
-                    java.net.URL url = new java.net.URL(Config.GOOGLE_SIGNIN_URL);
-                    java.net.HttpURLConnection conn = (java.net.HttpURLConnection) url.openConnection();
-                    conn.setRequestMethod("POST");
-                    conn.setDoOutput(true);
-                    conn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
-                    
-                    org.json.JSONObject jsonParam = new org.json.JSONObject();
-                    jsonParam.put("token", idToken);
-                    
-                    java.io.OutputStream os = conn.getOutputStream();
-                    os.write(jsonParam.toString().getBytes("UTF-8"));
-                    os.flush();
-                    os.close();
-                    
-                    int responseCode = conn.getResponseCode();
-                    android.util.Log.d("GoogleSignInBackend", "signin-google código: " + responseCode);
-                    
-                    if (responseCode == java.net.HttpURLConnection.HTTP_OK) {
-                        java.io.BufferedReader reader = new java.io.BufferedReader(new java.io.InputStreamReader(conn.getInputStream()));
-                        StringBuilder response = new StringBuilder();
-                        String line;
-                        while ((line = reader.readLine()) != null) {
-                            response.append(line);
-                        }
-                        reader.close();
-                        android.util.Log.d("GoogleSignInBackend", "signin-google exitoso: " + response.toString());
-                        
-                        // Usuario existe, obtener JWT del perfil
-                        return "GOOGLE_VERIFIED:" + response.toString();
-                    } else {
-                        android.util.Log.w("GoogleSignInBackend", "signin-google falló, usuario no existe. Creando...");
-                    }
+                // Priorizar el uso del ID Token para una mayor seguridad
+                if (idToken == null || idToken.isEmpty()) {
+                    return "{\"message\":\"Error: ID Token de Google es nulo.\"}";
                 }
-                
-                // PASO 2: Si falla o no hay token, crear usuario con singup-social-network-user
-                android.util.Log.d("GoogleSignInBackend", "Creando usuario en backend: " + email);
-                java.net.URL url = new java.net.URL(Config.SOCIAL_REGISTER_URL);
+
+                android.util.Log.d("GoogleSignInBackend", "Intentando signin con Google ID Token");
+                java.net.URL url = new java.net.URL(Config.GOOGLE_SIGNIN_URL);
                 java.net.HttpURLConnection conn = (java.net.HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("POST");
                 conn.setDoOutput(true);
                 conn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
-                
+
                 org.json.JSONObject jsonParam = new org.json.JSONObject();
-                jsonParam.put("email", email);
-                jsonParam.put("name", name);
-                jsonParam.put("lastname", lastname);
-                jsonParam.put("password", "google_" + googleId);
-                jsonParam.put("cellphone", (String) null);
-                jsonParam.put("sexo", (String) null);
-                jsonParam.put("dni", (String) null);
-                jsonParam.put("date_of_birth", (String) null);
-                jsonParam.put("origin", "google");
-                jsonParam.put("path", "https://ui-avatars.com/api/?name=" + name + "+" + lastname + "&background=random"); // Avatar por defecto
-                
-                android.util.Log.d("GoogleSignInBackend", "Datos enviados: " + jsonParam.toString());
-                
+                jsonParam.put("token", idToken);
+
                 java.io.OutputStream os = conn.getOutputStream();
                 os.write(jsonParam.toString().getBytes("UTF-8"));
                 os.flush();
                 os.close();
-                
-                int responseCode = conn.getResponseCode();
-                android.util.Log.d("GoogleSignInBackend", "signup-social-network código: " + responseCode);
-                
-                java.io.InputStream inputStream = (responseCode == java.net.HttpURLConnection.HTTP_OK)
-                        ? conn.getInputStream() : conn.getErrorStream();
-                
-                if (inputStream != null) {
-                    java.io.BufferedReader reader = new java.io.BufferedReader(new java.io.InputStreamReader(inputStream));
-                    StringBuilder response = new StringBuilder();
-                    String line;
-                    while ((line = reader.readLine()) != null) {
-                        response.append(line);
-                    }
-                    reader.close();
-                    android.util.Log.d("GoogleSignInBackend", "Respuesta: " + response.toString());
-                    return response.toString();
+
+                responseCode = conn.getResponseCode(); // Guardar el código de respuesta
+
+                // Determinar si la respuesta es de éxito o de error
+                java.io.InputStream inputStream = (responseCode >= 400)
+                        ? conn.getErrorStream()
+                        : conn.getInputStream();
+
+                if (inputStream == null) {
+                    return "{\"message\":\"Error: No se recibió respuesta del servidor. Código: " + responseCode + "\"}";
                 }
+
+                // Leer la respuesta (sea de éxito o de error)
+                java.io.BufferedReader reader = new java.io.BufferedReader(new java.io.InputStreamReader(inputStream));
+                StringBuilder response = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    response.append(line);
+                }
+                reader.close();
+
+                return response.toString();
+
             } catch (Exception e) {
-                android.util.Log.e("GoogleSignInBackend", "Error: " + e.getMessage(), e);
-                return "ERROR:" + e.getMessage();
+                android.util.Log.e("GoogleSignInBackend", "Excepción en doInBackground: ", e);
+                return "{\"message\":\"Error de conexión: " + e.getMessage() + "\"}";
             }
-            return null;
         }
-        
+
         @Override
         protected void onPostExecute(String result) {
+            if (result == null) {
+                android.widget.Toast.makeText(context, "Error desconocido.", android.widget.Toast.LENGTH_LONG).show();
+                return;
+            }
+
+            android.util.Log.d("GoogleSignInBackend", "Respuesta recibida en onPostExecute: " + result);
+
             try {
-                // Manejar casos de error JSON: message
-                if (result != null && result.trim().startsWith("{")) {
-                    org.json.JSONObject obj = new org.json.JSONObject(result);
-                    if (obj.has("message")) {
-                        String msg = obj.getString("message");
-                        android.util.Log.e("GoogleSignUpBackend", "Error backend: " + msg);
-                        if (msg.equalsIgnoreCase("NO REGISTERED USER")) {
-                            // Intentar inscripción automática a signup-social-network
-                            new SignUpSocialNetworkTask(email, name, lastname, googleId, navController, context).execute();
-                            return;
-                        }
+                org.json.JSONObject json = new org.json.JSONObject(result);
+
+                // CASO 1: El backend devuelve un error (ej. "Validation error", "Usuario no encontrado")
+                if (json.has("message")) {
+                    String msg = json.getString("message");
+                    android.util.Log.e("GoogleSignInBackend", "Error del backend: " + msg);
+
+                    if (msg.equalsIgnoreCase("NO REGISTERED USER")) {
+                        android.util.Log.d("GoogleSignInBackend", "Usuario no registrado. Iniciando flujo de registro social.");
+                        new SignUpSocialNetworkTask(email, name, lastname, googleId, navController, context).execute();
+                    } else {
                         android.widget.Toast.makeText(context, msg, android.widget.Toast.LENGTH_LONG).show();
+                    }
+                    return;
+                }
+
+                // **LA CORRECCIÓN ESTÁ AQUÍ**
+                // CASO 2: Login/registro exitoso. La respuesta contiene "jwt" y "results".
+                if (responseCode == java.net.HttpURLConnection.HTTP_OK && json.has("jwt") && json.has("results")) {
+
+                    // 1. Extraer el JWT real
+                    org.json.JSONObject jwtObject = json.getJSONObject("jwt");
+                    String jwt = jwtObject.getString("JWT");
+
+                    // 2. Extraer los datos del usuario
+                    org.json.JSONObject resultsObject = json.getJSONObject("results");
+                    org.json.JSONObject user = resultsObject.getJSONObject("user");
+
+                    if (jwt.isEmpty()) {
+                        android.widget.Toast.makeText(context, "La respuesta del servidor no contiene un token válido.", android.widget.Toast.LENGTH_LONG).show();
                         return;
                     }
-                }
-                // Manejar error antiguo tipo string
-                if (result != null && (result.equalsIgnoreCase("Unauthorized") || result.startsWith("ERROR:"))) {
-                    android.util.Log.e("GoogleSignUpBackend", "No autorizado o error en Google SignIn");
-                    android.widget.Toast.makeText(context, "No autorizado. Verifica tu cuenta Google o usa otro método.", android.widget.Toast.LENGTH_LONG).show();
-                    return;
-                }
-                // Caso especial: Usuario verificado con signin-google
-                if (result != null && result.startsWith("GOOGLE_VERIFIED:")) {
-                    android.util.Log.d("GoogleSignInBackend", "Usuario verificado con Google");
-                    
-                    // Para usuarios de Google, siempre usar rol "user"
-                    String userRole = "user";
-                    String userImagePath = "https://ui-avatars.com/api/?name=" + name + "+" + lastname + "&background=random";
-                    
-                    android.util.Log.d("GoogleSignInBackend", "ROL ASIGNADO para usuario Google: '" + userRole + "'");
-                    
+
+                    int userId = user.optInt("id");
+                    String userRole = user.optString("role", "user"); // "role" no viene, se asume "user"
+                    String userImagePath = user.optString("path");
+
+                    // 3. Guardar todos los datos en SharedPreferences
                     android.content.SharedPreferences prefs = context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
                     android.content.SharedPreferences.Editor editor = prefs.edit();
+
+                    editor.putString("jwt", jwt); // El JWT real
+                    editor.putString("user_id", String.valueOf(userId));
                     editor.putString("user_name", name + " " + lastname);
                     editor.putString("user_email", email);
-                    editor.putString("jwt", "google_verified_" + googleId);
-                    editor.putString("user_role", userRole); // Siempre "user" para Google
-                    editor.putString("user_image_path", userImagePath); // Avatar generado
+                    editor.putString("user_role", userRole);
+                    editor.putString("user_image_path", userImagePath);
                     editor.apply();
-                    
-                    android.util.Log.d("GoogleSignInBackend", "ROL GUARDADO en SharedPreferences: '" + userRole + "'");
-                    
-                    // Actualizar el header del drawer
+
+                    android.util.Log.d("GoogleSignInBackend", "Sesión guardada exitosamente. Rol: " + userRole);
+
+                    // 4. Actualizar UI y navegar
                     if (context instanceof robin.pe.turistea.MainActivity) {
                         ((robin.pe.turistea.MainActivity) context).updateDrawerHeader();
                     }
-                    
                     android.widget.Toast.makeText(context, "¡Bienvenido " + name + "!", android.widget.Toast.LENGTH_SHORT).show();
                     navigateBasedOnRole(context, navController);
-                    return;
-                }
-                
-                org.json.JSONObject json = new org.json.JSONObject(result);
-                
-                // Obtener el JWT (puede venir como JWT, jwt o token)
-                String jwt = null;
-                if (json.has("JWT")) jwt = json.getString("JWT");
-                else if (json.has("jwt")) jwt = json.getString("jwt");
-                else if (json.has("token")) jwt = json.getString("token");
-                
-                if (jwt != null && !jwt.isEmpty()) {
-                    android.util.Log.d("GoogleSignUpBackend", "JWT recibido exitosamente");
-                    
-                    // Para usuarios de Google, siempre usar rol "user"
-                    String userRole = "user";
-                    String userImagePath = "https://ui-avatars.com/api/?name=" + name + "+" + lastname + "&background=random";
-                    
-                    android.util.Log.d("GoogleSignUpBackend", "ROL ASIGNADO para usuario Google: '" + userRole + "'");
-                    
-                    // Guardar datos en SharedPreferences
-                    android.content.SharedPreferences prefs = context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
-                    android.content.SharedPreferences.Editor editor = prefs.edit();
-                    editor.putString("user_name", name + " " + lastname);
-                    editor.putString("user_email", email);
-                    editor.putString("jwt", jwt);
-                    editor.putString("user_role", userRole); // Siempre "user" para Google
-                    editor.putString("user_image_path", userImagePath); // Avatar generado
-                    editor.apply();
-                    
-                    android.util.Log.d("GoogleSignUpBackend", "ROL GUARDADO en SharedPreferences: '" + userRole + "'");
-                    
-                    // Actualizar el header del drawer
-                    if (context instanceof robin.pe.turistea.MainActivity) {
-                        ((robin.pe.turistea.MainActivity) context).updateDrawerHeader();
-                    }
-                    
-                    android.widget.Toast.makeText(context, "¡Bienvenido " + name + "!", android.widget.Toast.LENGTH_SHORT).show();
-                    
-                        // Navegar según el rol del usuario
-                        try {
-                            navigateBasedOnRole(context, navController);
-                            android.util.Log.d("GoogleSignUpBackend", "Navegación exitosa");
-                        } catch (Exception navEx) {
-                            android.util.Log.e("GoogleSignUpBackend", "Error al navegar: " + navEx.getMessage());
-                            android.widget.Toast.makeText(context, "Login exitoso. Por favor reinicia la app.", android.widget.Toast.LENGTH_LONG).show();
-                        }
+
                 } else {
-                    android.util.Log.e("GoogleSignUpBackend", "No se recibió JWT en la respuesta");
-                    android.widget.Toast.makeText(context, "Error: No se recibió token de autenticación", android.widget.Toast.LENGTH_LONG).show();
+                    android.widget.Toast.makeText(context, "Respuesta inesperada del servidor.", android.widget.Toast.LENGTH_LONG).show();
                 }
+
             } catch (Exception e) {
-                android.util.Log.e("GoogleSignUpBackend", "Error al procesar respuesta: " + e.getMessage(), e);
-                android.widget.Toast.makeText(context, "Error al procesar respuesta del servidor", android.widget.Toast.LENGTH_LONG).show();
+                android.util.Log.e("GoogleSignInBackend", "Error al procesar la respuesta JSON: " + result, e);
+                android.widget.Toast.makeText(context, "Error al procesar la respuesta del servidor.", android.widget.Toast.LENGTH_LONG).show();
             }
         }
-    }
-
-    // Definición de SignUpSocialNetworkTask a nivel de clase (no dentro de GoogleSignInBackendTask)
+    }// Definición de SignUpSocialNetworkTask a nivel de clase (no dentro de GoogleSignInBackendTask)
+    // Reemplaza tu clase SignUpSocialNetworkTask completa con esta versión
     private static class SignUpSocialNetworkTask extends android.os.AsyncTask<Void, Void, String> {
         private String email, name, lastname, googleId;
         private NavController navController;
         private Context context;
+        private int responseCode;
 
         SignUpSocialNetworkTask(String email, String name, String lastname, String googleId, NavController navController, Context context) {
             this.email = email;
@@ -779,43 +712,33 @@ public class Login extends Fragment {
         protected String doInBackground(Void... voids) {
             try {
                 android.util.Log.d("SignUpSocialNetwork", "=== INICIANDO REGISTRO SOCIAL ===");
-                // Usar el endpoint que acepta el campo 'path' (singup-social-network-user)
                 java.net.URL url = new java.net.URL(Config.SOCIAL_REGISTER_URL);
                 java.net.HttpURLConnection conn = (java.net.HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("POST");
                 conn.setDoOutput(true);
                 conn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
                 conn.setRequestProperty("Accept", "application/json");
-                conn.setConnectTimeout(10000);
-                conn.setReadTimeout(10000);
 
                 org.json.JSONObject jsonParam = new org.json.JSONObject();
                 jsonParam.put("email", email);
                 jsonParam.put("name", name);
                 jsonParam.put("lastname", lastname);
                 jsonParam.put("password", "google_" + googleId);
-                jsonParam.put("cellphone", (String) null);
-                jsonParam.put("sexo", (String) null);
-                jsonParam.put("dni", (String) null);
-                jsonParam.put("date_of_birth", (String) null);
+                jsonParam.put("cellphone", org.json.JSONObject.NULL);
+                jsonParam.put("sexo", org.json.JSONObject.NULL);
+                jsonParam.put("dni", org.json.JSONObject.NULL);
+                jsonParam.put("date_of_birth", org.json.JSONObject.NULL);
                 jsonParam.put("origin", "google");
-                jsonParam.put("path", "https://ui-avatars.com/api/?name=" + name + "+" + lastname + "&background=random"); // Avatar por defecto
-
-                android.util.Log.d("SignUpSocialNetwork", "URL: " + url);
-                android.util.Log.d("SignUpSocialNetwork", "Datos a enviar: " + jsonParam.toString());
+                jsonParam.put("path", "https://ui-avatars.com/api/?name=" + name + "+" + lastname + "&background=random");
 
                 java.io.OutputStream os = conn.getOutputStream();
                 os.write(jsonParam.toString().getBytes("UTF-8"));
                 os.flush();
                 os.close();
 
-                int responseCode = conn.getResponseCode();
-                String responseMessage = conn.getResponseMessage();
-                android.util.Log.d("SignUpSocialNetwork", "Código de respuesta: " + responseCode);
-                android.util.Log.d("SignUpSocialNetwork", "Mensaje de respuesta: " + responseMessage);
-
-                java.io.InputStream inputStream = (responseCode == java.net.HttpURLConnection.HTTP_OK)
-                        ? conn.getInputStream() : conn.getErrorStream();
+                responseCode = conn.getResponseCode();
+                java.io.InputStream inputStream = (responseCode >= 400)
+                        ? conn.getErrorStream() : conn.getInputStream();
 
                 if (inputStream != null) {
                     java.io.BufferedReader reader = new java.io.BufferedReader(new java.io.InputStreamReader(inputStream));
@@ -825,58 +748,86 @@ public class Login extends Fragment {
                         response.append(line);
                     }
                     reader.close();
-                    android.util.Log.d("SignUpSocialNetwork", "Respuesta: " + response.toString());
                     return response.toString();
                 }
             } catch (Exception e) {
-                android.util.Log.e("SignUpSocialNetwork", "Error: " + e.getMessage(), e);
-                return "ERROR:" + e.getMessage();
+                return "{\"message\":\"Error de conexión: " + e.getMessage() + "\"}";
             }
             return null;
         }
 
         @Override
         protected void onPostExecute(String result) {
+            if (result == null) {
+                android.widget.Toast.makeText(context, "Error desconocido al registrar.", android.widget.Toast.LENGTH_LONG).show();
+                return;
+            }
+
+            android.util.Log.d("SignUpSocialNetwork", "Respuesta recibida: " + result);
+
             try {
-                if (result != null && result.trim().startsWith("{")) {
-                    org.json.JSONObject obj = new org.json.JSONObject(result);
-                    if (obj.has("message")) {
-                        String msg = obj.getString("message");
-                        android.util.Log.e("SignUpSocialNetwork", "Respuesta backend: " + msg);
+                org.json.JSONObject json = new org.json.JSONObject(result);
+
+                if (json.has("message")) {
+                    String msg = json.getString("message");
+                    android.util.Log.e("SignUpSocialNetwork", "Error del backend: " + msg);
+
+                    if (msg.contains("Validation error")) {
+                        android.widget.Toast.makeText(context, "Información incompleta. Por favor, completa tu perfil.", android.widget.Toast.LENGTH_LONG).show();
+                        Bundle bundle = new Bundle();
+                        bundle.putString("name", name);
+                        bundle.putString("lastname", lastname);
+                        bundle.putString("email", email);
+                        bundle.putString("googleId", googleId);
+                        navController.navigate(R.id.action_login_to_completeGoogleSignIn, bundle);
+                    } else {
                         android.widget.Toast.makeText(context, msg, android.widget.Toast.LENGTH_LONG).show();
+                    }
+                    return;
+                }
+
+                // **LA CORRECCIÓN ESTÁ AQUÍ**
+                // Si el registro fue exitoso, la respuesta contiene el objeto "user"
+                if (responseCode == java.net.HttpURLConnection.HTTP_OK && json.has("user")) {
+                    android.util.Log.d("SignUpSocialNetwork", "Registro social exitoso. Guardando sesión.");
+
+                    org.json.JSONObject user = json.getJSONObject("user");
+                    String jwt = user.optString("password", "");
+                    int userId = user.optInt("id");
+                    String userRole = user.optString("role", "user");
+                    String userImagePath = user.optString("path");
+
+                    if (jwt.isEmpty()) {
+                        android.widget.Toast.makeText(context, "La respuesta del servidor no contiene un token válido.", android.widget.Toast.LENGTH_LONG).show();
                         return;
                     }
+
+                    android.content.SharedPreferences prefs = context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
+                    android.content.SharedPreferences.Editor editor = prefs.edit();
+                    editor.putString("jwt", jwt);
+                    editor.putString("user_id", String.valueOf(userId));
+                    editor.putString("user_name", name + " " + lastname);
+                    editor.putString("user_email", email);
+                    editor.putString("user_role", userRole);
+                    editor.putString("user_image_path", userImagePath);
+                    editor.apply();
+
+                    android.util.Log.d("SignUpSocialNetwork", "Sesión guardada. Navegando al inicio.");
+
+                    if (context instanceof robin.pe.turistea.MainActivity) {
+                        ((robin.pe.turistea.MainActivity) context).updateDrawerHeader();
+                    }
+                    android.widget.Toast.makeText(context, "¡Bienvenido " + name + "!", android.widget.Toast.LENGTH_SHORT).show();
+                    navigateBasedOnRole(context, navController);
+
+                } else {
+                    android.widget.Toast.makeText(context, "Respuesta inesperada del servidor tras el registro.", android.widget.Toast.LENGTH_LONG).show();
                 }
-                // Si llega aquí y no hubo error, podrías volver a intentar login automático
-                new GoogleSignInBackendTask(email, name, lastname, googleId, null, navController, context).execute();
+
             } catch (Exception e) {
-                android.util.Log.e("SignUpSocialNetwork", "Error al procesar respuesta: " + e.getMessage(), e);
-                android.widget.Toast.makeText(context, "Error al procesar registro Google", android.widget.Toast.LENGTH_SHORT).show();
+                android.util.Log.e("SignUpSocialNetwork", "Error al procesar respuesta JSON: " + result, e);
+                android.widget.Toast.makeText(context, "Error al procesar la respuesta del servidor.", android.widget.Toast.LENGTH_LONG).show();
             }
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
